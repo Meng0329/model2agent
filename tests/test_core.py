@@ -72,5 +72,8 @@ def test_no_secrets_in_logs_or_tracked_files():
         p = ROOT / f
         if p.is_file() and p.suffix in (".py", ".md", ".json", ".txt", ".toml", ".example"):
             txt = p.read_text(errors="ignore")
-            assert "sk-ac8da1a908d5f984a9e2f592f23b8fa8ac" not in txt, f"secret in {f}"
-            assert "lgw-fe4c5edc0f436c40fbf305029e8caa5" not in txt, f"secret in {f}"
+            # assemble markers from fragments so this test file itself never contains a key
+            sk_marker = "sk" + "-ac8da1a"
+            lgw_marker = "lgw" + "-fe4c5ed"
+            assert sk_marker not in txt, f"secret in {f}"
+            assert lgw_marker not in txt, f"secret in {f}"
