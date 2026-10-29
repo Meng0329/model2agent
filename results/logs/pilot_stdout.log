@@ -1,0 +1,29 @@
+{
+  "B0": {
+    "agentified": 0,
+    "task_correct": 77,
+    "task_total": 90,
+    "cap_ok": 6,
+    "cap_total": 8,
+    "cost_usd": 0.044067,
+    "latency_ms": 918780.4584845435
+  },
+  "B2": {
+    "agentified": 0,
+    "task_correct": 48,
+    "task_total": 90,
+    "cap_ok": 7,
+    "cap_total": 8,
+    "cost_usd": 0.033607649999999996,
+    "latency_ms": 732337.9193854053
+  },
+  "M": {
+    "agentified": 2,
+    "task_correct": 80,
+    "task_total": 90,
+    "cap_ok": 7,
+    "cap_total": 8,
+    "cost_usd": 0.09125850000000009,
+    "latency_ms": 1004267.2953412402
+  }
+}

@@ -43,6 +43,9 @@ def _exec_m(agent_mod, task):
 def _exec_llm_method(method, llm, desc, task):
     if method == "B0":
         r = b0_run(llm, desc.bundle_dir, desc.card_text, desc.functions, task, _nl(task))
+    elif method == "B1":
+        from ..baselines.b1_generic_wrapper import run_task as b1_run
+        r = b1_run(llm, desc.bundle_dir, desc.card_text, desc.functions, task, _nl(task))
     else:
         r = b2_run(llm, desc.bundle_dir, desc.card_text, desc.functions, task, _nl(task))
     got = r.get("got")

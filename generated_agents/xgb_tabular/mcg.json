@@ -2,69 +2,134 @@
   "slug": "xgb_tabular",
   "nodes": [
     {
-      "name": "predict",
-      "description": "Predict class label (0=malignant, 1=benign) for a 30-dim feature vector following the load_breast_cancer schema.",
+      "name": "predict_class",
+      "description": "Classify a 30-dim breast-cancer feature vector as malignant (0) or benign (1) using the frozen XGBoost model.",
       "entry_function": "predict",
       "input_schema": {
-        "features": "array[30] of float (mean radius, mean texture, ... worst fractal dimension)"
+        "type": "object",
+        "properties": {
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 30,
+            "maxItems": 30,
+            "description": "30-dim float vector following sklearn load_breast_cancer schema (mean radius ... worst fractal dimension)"
+          }
+        },
+        "required": [
+          "features"
+        ]
       },
       "output_schema": {
-        "return": "int — 0 or 1"
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "0=malignant, 1=benign"
       },
       "depends_on": [
         "_load"
       ],
-      "failure_boundary": "Raises if features length != 30 or values outside training scale; returns class only, no confidence."
+      "failure_boundary": "Fails or returns unreliable output if features length != 30, contains non-numeric values, or is far outside training scale/distribution; no input validation or confidence signal is returned."
     },
     {
-      "name": "predict_proba",
-      "description": "Return per-class probability for a 30-dim input vector.",
+      "name": "predict_probability",
+      "description": "Return per-class probabilities for a 30-dim feature vector, enabling confidence-aware diagnosis.",
       "entry_function": "predict_proba",
       "input_schema": {
-        "features": "array[30] of float (breast_cancer schema)"
+        "type": "object",
+        "properties": {
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 30,
+            "maxItems": 30
+          }
+        },
+        "required": [
+          "features"
+        ]
       },
       "output_schema": {
-        "return": "dict — {'0': float, '1': float}"
+        "type": "object",
+        "properties": {
+          "0": {
+            "type": "number",
+            "description": "P(malignant)"
+          },
+          "1": {
+            "type": "number",
+            "description": "P(benign)"
+          }
+        },
+        "required": [
+          "0",
+          "1"
+        ]
       },
       "depends_on": [
         "_load"
       ],
-      "failure_boundary": "Same input constraints as predict; probabilities sum to 1.0, no calibration guarantee on out-of-distribution inputs."
+      "failure_boundary": "Same schema/scale constraints as predict; probabilities are uncalibrated and may be overconfident on out-of-distribution inputs; no rejection threshold."
     },
     {
-      "name": "explain",
-      "description": "Return top-k features by XGBoost gain importance.",
+      "name": "explain_feature_importance",
+      "description": "Report the top-k most important features by XGBoost gain importance, giving global model interpretability.",
       "entry_function": "explain",
       "input_schema": {
-        "top_k": "int — number of features to return"
+        "type": "object",
+        "properties": {
+          "top_k": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of top features to return"
+          }
+        },
+        "required": [
+          "top_k"
+        ]
       },
       "output_schema": {
-        "return": "list — top-k feature names/indices by gain"
+        "type": "array",
+        "description": "Ranked list of top-k feature names/importances by gain"
       },
       "depends_on": [
         "_load"
       ],
-      "failure_boundary": "top_k > 30 clamps to 30; relies on frozen gain values from model.json, not recomputed."
+      "failure_boundary": "top_k larger than the 30 available features may error or truncate; importance is global (not per-instance) and does not explain individual predictions."
     },
     {
-      "name": "classes",
-      "description": "Return the list of class labels the model was trained on.",
+      "name": "list_classes",
+      "description": "Return the class labels the model was trained on, for schema discovery and output decoding.",
       "entry_function": "classes",
-      "input_schema": {},
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
       "output_schema": {
-        "return": "list — [0, 1]"
+        "type": "array",
+        "items": {
+          "type": "integer"
+        },
+        "description": "[0, 1]"
       },
       "depends_on": [
         "_load"
       ],
-      "failure_boundary": "Static; no validation needed."
+      "failure_boundary": "Static metadata; fails only if the model artifact fails to load."
     }
   ],
   "edges": [],
   "root_capabilities": [
-    "predict",
-    "predict_proba",
-    "explain",
-    "classes"
+    "predict_class",
+    "predict_probability",
+    "explain_feature_importance",
+    "list_classes"
   ]
 }

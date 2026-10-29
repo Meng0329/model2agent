@@ -24,6 +24,12 @@ uses the external DeepSeek API for natural-language routing. Do not hand-edit pe
 import os, sys, json, time, importlib.util
 os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")
 BUNDLE_DIR = {bundle_dir!r}
+# Standalone launch: load the project .env (if present) so the agent runs independently.
+try:
+    from dotenv import load_dotenv as _load_dotenv
+    _load_dotenv(os.path.join(BUNDLE_DIR, "..", "..", ".env"))
+except Exception:
+    pass
 # Load the asset's native infer module under a UNIQUE name to avoid the global
 # `import infer` collision when multiple Model Agents live in one process.
 _spec = importlib.util.spec_from_file_location("m2a_infer_" + {slug!r}, os.path.join(BUNDLE_DIR, "infer.py"))
