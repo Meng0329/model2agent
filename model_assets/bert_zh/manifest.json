@@ -1,0 +1,16 @@
+{
+  "name": "bert-base-chinese",
+  "slug": "bert_zh",
+  "framework": "transformers",
+  "task_family": "nlp_text_representation",
+  "model_id": "bert-base-chinese",
+  "revision": "main",
+  "weights_path": null,
+  "entry_module": "infer.py",
+  "entry_functions": ["embed", "fill_mask", "similarity", "tokenize"],
+  "license": "Apache-2.0",
+  "deps": ["torch", "transformers"],
+  "device": "cuda:0",
+  "card": "model_card.md",
+  "examples": "examples.json"
+}

@@ -1,0 +1,13 @@
+method,model,split,n,accuracy
+B0,cnn_digits,tutorial,15,0.6666666666666666
+B0,cnn_digits,novel,15,0.6666666666666666
+B0,xgb_tabular,tutorial,30,0.9333333333333333
+B0,xgb_tabular,novel,30,0.8
+B2,cnn_digits,tutorial,15,0.6666666666666666
+B2,cnn_digits,novel,15,0.6
+B2,xgb_tabular,tutorial,30,0.4
+B2,xgb_tabular,novel,30,0.2
+M,cnn_digits,tutorial,15,0.4
+M,cnn_digits,novel,15,0.3333333333333333
+M,xgb_tabular,tutorial,30,0.0
+M,xgb_tabular,novel,30,0.0

@@ -1,0 +1,16 @@
+{
+  "name": "xgb-breast-cancer",
+  "slug": "xgb_tabular",
+  "framework": "xgboost",
+  "task_family": "tabular_classification",
+  "model_id": "xgboost-breast-cancer-20261029",
+  "revision": "trained-20261029",
+  "weights_path": "model.json",
+  "entry_module": "infer.py",
+  "entry_functions": ["predict", "predict_proba", "explain", "classes"],
+  "license": "Apache-2.0 (xgboost)",
+  "deps": ["xgboost", "scikit-learn", "numpy"],
+  "device": "cpu",
+  "card": "model_card.md",
+  "examples": "examples.json"
+}

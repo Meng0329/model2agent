@@ -1,0 +1,16 @@
+{
+  "name": "cnn-digits",
+  "slug": "cnn_digits",
+  "framework": "pytorch",
+  "task_family": "image_classification",
+  "model_id": "cnn-digits-20261029",
+  "revision": "trained-20261029",
+  "weights_path": "cnn_state.pt",
+  "entry_module": "infer.py",
+  "entry_functions": ["predict", "predict_proba", "saliency", "classes"],
+  "license": "PyTorch BSD-style",
+  "deps": ["torch", "numpy"],
+  "device": "cuda:0",
+  "card": "model_card.md",
+  "examples": "examples.json"
+}

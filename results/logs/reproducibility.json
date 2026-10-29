@@ -1,0 +1,79 @@
+{
+  "generated_at": "2026-10-29T16:43:43.409579+00:00",
+  "note": "Secrets and private LLM chain-of-thought are intentionally excluded.",
+  "git_commit": "6fe8621f51632403cd6145d16b20bf43576e7888",
+  "seed": 20261029,
+  "python": "3.12.3",
+  "platform": "Linux-6.17.0-40-generic-x86_64-with-glibc2.39",
+  "deepseek_model_id": "deepseek-v4.1-flash",
+  "deepseek_base_url": "https://api.inferaiapi.com/v1",
+  "claude_sdk_available": true,
+  "dependencies": {
+    "torch": "2.10.0",
+    "transformers": "4.57.6",
+    "scikit-learn": "1.9.1",
+    "xgboost": "3.4.1",
+    "pandas": "2.3.3",
+    "numpy": "2.2.6",
+    "scipy": "1.17.1",
+    "openai": "2.24.0",
+    "claude-agent-sdk": "0.2.170",
+    "anthropic": "0.85.0",
+    "gradio": "n/a",
+    "pytest": "9.1.1"
+  },
+  "gpu": {
+    "visible_devices": "0",
+    "name": "NVIDIA RTX A6000",
+    "count": 1
+  },
+  "models": {
+    "bert_zh": {
+      "model_id": "bert-base-chinese",
+      "revision": "main",
+      "framework": "transformers",
+      "weights_sha256": null,
+      "test_metric": {}
+    },
+    "cnn_digits": {
+      "model_id": "cnn-digits-20261029",
+      "revision": "trained-20261029",
+      "framework": "pytorch",
+      "weights_sha256": "9391a189f8917caeb153e3d3c973aed684221a3eb6d88ebb48c1ff2db854690f",
+      "test_metric": {
+        "test_accuracy": 0.9638888888888889,
+        "n_train": 1437,
+        "n_test": 360
+      }
+    },
+    "sklearn_digits": {
+      "model_id": "sklearn-ensemble-rf-digits",
+      "revision": "trained-20261029",
+      "framework": "sklearn",
+      "weights_sha256": "93f9a93af66b542dc31430569312ce45c450fc86bc4477574b7aade710214873",
+      "test_metric": {
+        "test_accuracy": 0.9722222222222222,
+        "n_train": 1437,
+        "n_test": 360
+      }
+    },
+    "xgb_tabular": {
+      "model_id": "xgboost-breast-cancer-20261029",
+      "revision": "trained-20261029",
+      "framework": "xgboost",
+      "weights_sha256": "a69d283f7193ec5e0a12225e6333ed2745f108bc5d18d023c7f512231b24bd0b",
+      "test_metric": {
+        "test_accuracy": 1.0,
+        "n_train": 455,
+        "n_test": 114
+      }
+    }
+  },
+  "artifacts": {
+    "frozen_tasks": "/data/mzb/paper2agent/results/frozen/tasks.json",
+    "raw_logs": "/data/mzb/paper2agent/results/logs/pilot_runs.jsonl",
+    "summary": "/data/mzb/paper2agent/results/logs/pilot_summary.json",
+    "analysis": "/data/mzb/paper2agent/results/logs/analysis.json",
+    "cost_csv": "/data/mzb/paper2agent/results/csv/summary.csv"
+  }
+}

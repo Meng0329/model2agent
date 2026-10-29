@@ -1,0 +1,10 @@
+{
+  "test_accuracy": 0.9638888888888889,
+  "n_train": 1437,
+  "n_test": 360,
+  "weights_sha256": "9391a189f8917caeb153e3d3c973aed684221a3eb6d88ebb48c1ff2db854690f",
+  "weights_path": "cnn_state.pt",
+  "epochs": 40,
+  "seed": 20261029,
+  "device": "cuda:0"
+}

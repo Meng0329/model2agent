@@ -1,0 +1,8 @@
+{
+  "test_accuracy": 0.9722222222222222,
+  "n_train": 1437,
+  "n_test": 360,
+  "weights_sha256": "93f9a93af66b542dc31430569312ce45c450fc86bc4477574b7aade710214873",
+  "weights_path": "model.joblib",
+  "seed": 20261029
+}

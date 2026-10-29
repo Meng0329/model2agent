@@ -1,0 +1,16 @@
+{
+  "name": "digits-rf",
+  "slug": "sklearn_digits",
+  "framework": "sklearn",
+  "task_family": "tabular_image_digit_classification",
+  "model_id": "sklearn-ensemble-rf-digits",
+  "revision": "trained-20261029",
+  "weights_path": "model.joblib",
+  "entry_module": "infer.py",
+  "entry_functions": ["predict", "predict_proba", "explain", "classes"],
+  "license": "BSD-3-Clause (scikit-learn)",
+  "deps": ["scikit-learn", "joblib", "numpy"],
+  "device": "cpu",
+  "card": "model_card.md",
+  "examples": "examples.json"
+}
