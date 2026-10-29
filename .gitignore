@@ -1,0 +1,11 @@
+.env
+.env.local
+__pycache__/
+*.pyc
+.pytest_cache/
+generated_agents/*/  # generated standalone agents (regenerated)
+results/logs/*.jsonl
+*.joblib
+!model_assets/**/*.joblib
+.venv/
+docs/模型API.md
