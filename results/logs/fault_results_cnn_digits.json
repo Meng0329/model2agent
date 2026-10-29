@@ -1,0 +1,70 @@
+{
+  "slug": "cnn_digits",
+  "ts": "2026-10-29T17:49:08.986473",
+  "detection_rate": 1.0,
+  "repair_rate": 0.0,
+  "consistency_rate": 1.0,
+  "unsafe_reject_rate": 1.0,
+  "results": [
+    {
+      "slug": "cnn_digits",
+      "fault": "missing_dependency",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": false,
+      "notes": "{\"m_success\": false, \"cap_rate\": null}"
+    },
+    {
+      "slug": "cnn_digits",
+      "fault": "broken_path",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": false,
+      "notes": "{\"m_success\": false, \"cap_rate\": 0.0}"
+    },
+    {
+      "slug": "cnn_digits",
+      "fault": "deprecated_api",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": false,
+      "notes": "{\"m_success\": false, \"cap_rate\": 0.0}"
+    },
+    {
+      "slug": "cnn_digits",
+      "fault": "invalid_input_schema",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": false,
+      "notes": "{\"m_success\": false, \"cap_rate\": 0.5}"
+    },
+    {
+      "slug": "cnn_digits",
+      "fault": "preprocessing_drift",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": true,
+      "notes": "{\"m_success\": false, \"cap_rate\": 0.75}"
+    },
+    {
+      "slug": "cnn_digits",
+      "fault": "weight_config_mismatch",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": true,
+      "notes": "{\"m_success\": false, \"cap_rate\": 0.75}"
+    }
+  ]
+}

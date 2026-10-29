@@ -18,8 +18,15 @@ from .verification.reference_exec import run_reference, load_infer, compare
 from .llm import LLMClient, scrub
 
 
-def run_method_m(bundle_dir, *, llm=None, repair: bool = True, verify: bool = True, build: bool = True):
-    """Full Model2Agent conversion of one asset. Returns a structured dict (success + evidence)."""
+def run_method_m(bundle_dir, *, llm=None, repair: bool = True, verify: bool = True,
+                 build: bool = True, oracle_dir=None):
+    """Full Model2Agent conversion of one asset. Returns a structured dict (success + evidence).
+
+    oracle_dir: optional path to a CLEAN asset bundle. When provided (fault-injection mode),
+    verification compares the converted agent's output against the clean oracle instead of
+    the possibly-corrupted bundle itself — this is what makes silent semantic faults
+    (e.g. preprocessing drift) detectable rather than self-consistent.
+    """
     bundle_dir = Path(bundle_dir)
     llm = llm or LLMClient("M")
     res = {"method": "M", "slug": bundle_dir.name, "steps": {}, "success": False}
@@ -78,6 +85,7 @@ def run_method_m(bundle_dir, *, llm=None, repair: bool = True, verify: bool = Tr
         checks = []
         unverified = []
         mod = load_infer(bundle_dir)
+        oracle = Path(oracle_dir) if oracle_dir else bundle_dir
         import json as _j
         examples = _j.loads(Path(bundle_dir).joinpath(desc.manifest.get("examples", "examples.json")).read_text(encoding="utf-8"))
         for c in caps:
@@ -91,7 +99,9 @@ def run_method_m(bundle_dir, *, llm=None, repair: bool = True, verify: bool = Tr
             sample = ex[0]
             try:
                 a = sample.get("args", {"_value": sample.get("input", sample)}) or {}
-                ref = run_reference(bundle_dir, c.entry_function, a)
+                # Reference comes from the CLEAN oracle bundle (fault-injection mode), never
+                # from the corrupted bundle itself.
+                ref = run_reference(oracle, c.entry_function, a)
                 got = getattr(mod, c.entry_function)(**a)
                 ok = compare(c.entry_function, ref, got)
                 verified += int(ok)

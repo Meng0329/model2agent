@@ -24,10 +24,15 @@ uses the external DeepSeek API for natural-language routing. Do not hand-edit pe
 import os, sys, json, time, importlib.util
 os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")
 BUNDLE_DIR = {bundle_dir!r}
-# Standalone launch: load the project .env (if present) so the agent runs independently.
+# Standalone launch: locate and load the project .env by walking up from BUNDLE_DIR.
 try:
     from dotenv import load_dotenv as _load_dotenv
-    _load_dotenv(os.path.join(BUNDLE_DIR, "..", "..", ".env"))
+    _d = BUNDLE_DIR
+    for _ in range(4):
+        if os.path.exists(os.path.join(_d, ".env")):
+            _load_dotenv(os.path.join(_d, ".env"))
+            break
+        _d = os.path.dirname(_d)
 except Exception:
     pass
 # Load the asset's native infer module under a UNIQUE name to avoid the global

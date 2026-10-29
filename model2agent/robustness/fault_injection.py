@@ -42,46 +42,70 @@ class FaultResult:
     notes: str = ""
 
 
+def _wrap_predict(src: str, transform: str) -> str:
+    """Append a wrapper that transforms incoming `features` for predict/predict_proba.
+
+    This makes semantic faults (schema/drift) ACTUALLY change outputs while keeping the
+    module importable — so a clean-oracle comparison can detect them.
+    """
+    src += (
+        "\n\n# --- injected fault wrapper (robustness test) ---\n"
+        "_FAULT_TX = lambda features: " + transform + "\n"
+        "for _n in ('predict', 'predict_proba', 'predict_class', 'predict_probability'):\n"
+        "    if _n in globals():\n"
+        "        _o = globals()[_n]\n"
+        "        def _w(features=None, *a, _o=_o, **k):\n"
+        "            return _o(_FAULT_TX(features), *a, **k)\n"
+        "        _w.__name__ = _n\n"
+        "        globals()[_n] = _w\n"
+    )
+    return src
+
+
 def _apply_fault(copy_dir: Path, fault: str) -> None:
-    """Mutate a COPY of the bundle to inject the fault. Returns silently on no-op."""
+    """Mutate a COPY of the bundle to inject an EFFECTIVE fault (returns silently on no-op)."""
     infer = copy_dir / "infer.py"
     manifest = copy_dir / "manifest.json"
     src = infer.read_text(encoding="utf-8")
     if fault == "missing_dependency":
-        # corrupt the import line so it cannot load (simulates missing dep)
-        src = src.replace("import torch", "import torch_nope_missing_dep_xyz")
-        infer.write_text(src, encoding="utf-8")
+        infer.write_text("import __nonexistent_dep_xyz__  # injected: missing dependency\n" + src, encoding="utf-8")
     elif fault == "broken_path":
+        # actually rename the weights file so loading fails (manifest-only edits are no-ops
+        # because infer.py hardcodes its filename)
         m = json.loads(manifest.read_text())
-        m["weights_path"] = "does_not_exist.pt"
+        wp = m.get("weights_path")
+        if wp and (copy_dir / wp).exists():
+            (copy_dir / wp).rename(copy_dir / (wp + ".moved"))
+        m["weights_path"] = wp  # leave manifest pointing at the now-missing file
         manifest.write_text(json.dumps(m), encoding="utf-8")
     elif fault == "deprecated_api":
-        # rewrite torch.load map_location usage to an undefined kwarg
-        src = src.replace("torch.load(_HERE / \"cnn_state.pt\", map_location=dev)",
-                          "tload(_HERE / \"cnn_state.pt\")")
-        src = src.replace("joblib.load(_HERE / \"model.joblib\")", "joblib_load_bad(_HERE / \"model.joblib\")")
-        src = src.replace("clf.load_model(str(_HERE / \"model.json\"))", "clf.load_model_bad(str(_HERE / \"model.json\"))")
+        import re as _re
+        src = _re.sub(r"\btorch\.load\(", "torch.load_removed_api(", src)
+        src = _re.sub(r"\bjoblib\.load\(", "joblib.load_removed_api(", src)
+        src = _re.sub(r"\.load_model\(", ".load_model_removed_api(", src)
         infer.write_text(src, encoding="utf-8")
     elif fault == "invalid_input_schema":
-        ex = json.loads((copy_dir / "examples.json").read_text())
-        for block in ex.values():
-            for e in block:
-                a = e.get("args", {})
-                if "features" in a and isinstance(a["features"], list) and len(a["features"]) >= 2:
-                    a["features"][0], a["features"][-1] = a["features"][-1], a["features"][0]
-        (copy_dir / "examples.json").write_text(json.dumps(ex), encoding="utf-8")
+        # reorder incoming features (silently wrong schema)
+        infer.write_text(_wrap_predict(src, "list(reversed(features))"), encoding="utf-8")
     elif fault == "preprocessing_drift":
-        # change normalization scale 16.0 -> 8.0 (CNN) — silently changes semantics
-        src = src.replace("scale = 16.0", "scale = 8.0")
-        infer.write_text(src, encoding="utf-8")
+        # silently change input scaling
+        infer.write_text(_wrap_predict(src, "[f * 2.0 for f in features]"), encoding="utf-8")
     elif fault == "weight_config_mismatch":
-        # corrupt metadata label order (model.json metrics) — unsafe if used
+        # corrupt label ordering / class map if metadata exposes it
         mp = copy_dir / "metrics.json"
+        changed = False
         if mp.exists():
             m = json.loads(mp.read_text())
-            if "classes" in m and isinstance(m["classes"], list) and len(m["classes"]) > 1:
-                m["classes"] = m["classes"][::-1]
-                mp.write_text(json.dumps(m), encoding="utf-8")
+            if isinstance(m.get("classes"), list) and len(m["classes"]) > 1:
+                m["classes"] = m["classes"][::-1]; mp.write_text(json.dumps(m)); changed = True
+        if not changed:
+            # fall back to an effective label-remap wrapper
+            infer.write_text(_wrap_predict(src, "features"), encoding="utf-8")
+            extra = ("\n\n# injected: label remap\n"
+                     "if 'predict' in globals():\n"
+                     "    _p0 = globals()['predict']\n"
+                     "    globals()['predict'] = lambda features, *a, **k: (_p0(features, *a, **k) + 1) % 10\n")
+            infer.write_text(infer.read_text() + extra, encoding="utf-8")
 
 
 def run_fault_injection(slug: str, methods=("M",), faults=None, repair: bool = True) -> list[FaultResult]:
@@ -114,12 +138,14 @@ def run_fault_injection(slug: str, methods=("M",), faults=None, repair: bool = T
         for method in methods:
             try:
                 llm = LLMClient("robust")
-                m_res = run_method_m(copy_dir, llm=llm, repair=repair, verify=True)
+                m_res = run_method_m(copy_dir, llm=llm, repair=repair, verify=True, oracle_dir=orig)
                 success = bool(m_res.get("success"))
-                # Detection: did verification mark any capability as failed/None, or did build fail?
+                # Detection: verification (against CLEAN oracle) flags a mismatch, or the
+                # import/scan/build fails explicitly.
                 checks = m_res.get("steps", {}).get("verification", {}).get("checks", [])
-                detected = (m_res.get("steps", {}).get("induction", {}).get("error") is not None
-                            or any(c.get("verified") is False or c.get("reason") for c in checks)
+                detected = (m_res.get("steps", {}).get("scan", {}).get("import_error") is not None
+                            or m_res.get("steps", {}).get("induction", {}).get("error") is not None
+                            or any(c.get("verified") is False for c in checks)
                             or m_res.get("steps", {}).get("build", {}).get("error") is not None)
                 # Consistency: re-run on clean handled by comparing to ref_outputs if verified
                 consistent = True

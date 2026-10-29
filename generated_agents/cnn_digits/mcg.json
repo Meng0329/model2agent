@@ -15,7 +15,7 @@
             },
             "minItems": 64,
             "maxItems": 64,
-            "description": "Flattened 8x8 image, raw pixel values 0..16 (normalized internally by /16.0)"
+            "description": "Flattened 8x8 image, raw pixel values 0..16"
           }
         },
         "required": [
@@ -32,11 +32,11 @@
         "_load",
         "_prep"
       ],
-      "failure_boundary": "Requires exactly 64 numeric values in the 0..16 scale; other lengths or out-of-scale values (e.g. 0..255) yield unreliable or invalid predictions. Only valid for 8x8 load_digits-style inputs; not general images."
+      "failure_boundary": "Requires exactly 64 numeric values in the 0..16 scale; other lengths or out-of-scale values (e.g. already-normalized 0..1 inputs) yield unreliable or invalid predictions. No rejection of malformed input is guaranteed."
     },
     {
       "name": "digit_probability_estimation",
-      "description": "Return the full class-probability distribution over the 10 digit classes for a 64-dim input, enabling confidence inspection and ranking.",
+      "description": "Return the full class->probability distribution over the 10 digit classes for a 64-dim pixel-flattened input, enabling confidence inspection and ranking.",
       "entry_function": "predict_proba",
       "input_schema": {
         "type": "object",
@@ -57,20 +57,20 @@
       },
       "output_schema": {
         "type": "object",
-        "description": "Mapping of class label string (e.g. '0'..'9') to probability float; values sum to ~1.0",
         "additionalProperties": {
           "type": "number"
-        }
+        },
+        "description": "Mapping of class label string (e.g. '0'..'9') to probability"
       },
       "depends_on": [
         "_load",
         "_prep"
       ],
-      "failure_boundary": "Same input constraints as predict (64 values, 0..16 scale). Probabilities are softmax outputs from a tiny model and may be overconfident; not calibrated."
+      "failure_boundary": "Same 64-value, 0..16 input constraint as predict; probabilities are only meaningful for in-distribution digit images and may be overconfident on out-of-distribution inputs."
     },
     {
-      "name": "pixel_saliency_explanation",
-      "description": "Compute input-gradient saliency for the predicted class and return the top-k most influential pixels, giving a local explanation of the classification.",
+      "name": "pixel_saliency_attribution",
+      "description": "Compute input-gradient saliency for the predicted class and return the top-k most influential pixels, supporting explanation of which image regions drove the classification.",
       "entry_function": "saliency",
       "input_schema": {
         "type": "object",
@@ -98,21 +98,18 @@
       },
       "output_schema": {
         "type": "array",
-        "description": "Top-k influential pixel entries (e.g. pixel index and/or gradient magnitude), ordered by influence",
-        "items": {
-          "type": "object"
-        }
+        "description": "List of top-k influential pixel entries (pixel index/value with gradient magnitude) for the predicted class"
       },
       "depends_on": [
         "_load",
         "_prep",
         "predict"
       ],
-      "failure_boundary": "Requires a valid 64-dim input and top_k in 1..64; top_k > 64 or < 1 is invalid. Explanation is gradient-based for the predicted class only and inherits any misclassification of predict."
+      "failure_boundary": "Depends on a valid forward pass to determine the predicted class; top_k must be between 1 and 64. Saliency is a local gradient heuristic, not a causal explanation, and is unreliable for out-of-distribution or malformed inputs."
     },
     {
       "name": "class_label_enumeration",
-      "description": "List the digit class labels the model was trained on, for validating outputs and building probability mappings.",
+      "description": "List the digit class labels the model was trained on, allowing callers to validate or interpret predict/predict_proba outputs.",
       "entry_function": "classes",
       "input_schema": {
         "type": "object",
@@ -136,7 +133,7 @@
   "root_capabilities": [
     "digit_classification",
     "digit_probability_estimation",
-    "pixel_saliency_explanation",
+    "pixel_saliency_attribution",
     "class_label_enumeration"
   ]
 }

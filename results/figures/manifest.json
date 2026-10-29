@@ -16,7 +16,7 @@
     "note": "Template only — insufficient data (no fabricated numbers)."
   },
   "fig5_robustness.png": {
-    "data_driven": false,
-    "note": "Template only — insufficient data (no fabricated numbers)."
+    "data_driven": true,
+    "note": "From 2 fault-result files."
   }
 }

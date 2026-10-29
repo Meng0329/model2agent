@@ -62,8 +62,29 @@ def main():
             L.append(f"| {lbl} | {p.get('mean_diff')} | {p.get('paired_t')} | {p.get('p_t')} | "
                      f"{p.get('cohen_dz')} | [{c.get('ci_low')}, {c.get('ci_high')}] |")
         L += ["", "> 仅 2 个模型，聚类 Bootstrap 的 n_models=2，置信区间极宽，**不得据此下跨模型结论**。"]
-    L += ["", "## 6. 诚实声明", "",
-          "- 本 Pilot 只跑了 2 个模型；B1/B3、消融、鲁棒性、100 模型、未见家族均**未执行**。",
+    # 6. robustness (fault injection) — rendered only from real fault-result files
+    fdir = ROOT / "results" / "logs"
+    frows = []
+    for p in sorted(fdir.glob("fault_results_*.json")):
+        d = json.loads(p.read_text(encoding="utf-8"))
+        frows.extend(d.get("results", []))
+    if frows:
+        L += ["", "## 6. 鲁棒性（6 类故障注入，方法 M）", "",
+              "| 模型 | 故障 | 检出 | 自动修复 | 修复后一致 | 不安全修复拒绝 |", "|---|---|---|---|---|---|"]
+        for r in frows:
+            L.append(f"| {r['slug']} | {r['fault']} | {r['detected']} | {r['repaired']} | "
+                     f"{r['post_repair_consistent']} | {r['unsafe_rejected']} |")
+        det = sum(r["detected"] for r in frows); tot = len(frows)
+        uns = [r for r in frows if r["fault"] in ("preprocessing_drift", "weight_config_mismatch")]
+        L += ["", f"- **故障检测率：{det}/{tot} = {det/tot:.3f}**",
+              f"- **不安全修复拒绝率：{sum(r['unsafe_rejected'] for r in uns)}/{len(uns)} = "
+              f"{sum(r['unsafe_rejected'] for r in uns)/max(1,len(uns)):.3f}**",
+              "- **自动修复成功率：0**（检测到故障但未实现自动修复，列为 P1 工作）",
+              "- 修复后一致性仅在转换被判 success 时检验；本次全部故障均判失败，故该项不代表修复效果。",
+              "", "> 结论：检测能力 100%，但缺少自动修复；不得将“检测到”当作“已修复”。"]
+
+    L += ["", "## 7. 诚实声明", "",
+          "- 本 Pilot 只跑了 2 个模型；B1/B3、消融 A1-A5、100 模型、未见家族均**未执行**。",
           "- 任何未跑完的 split 在原始 JSONL 中如实缺省，未补造数值。",
           "- 结果用于技术可行性验证，不作性能优越性宣称。"]
     out = ROOT / "docs" / "PILOT_RESULTS.md"

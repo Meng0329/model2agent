@@ -2,7 +2,7 @@
   "slug": "xgb_tabular",
   "nodes": [
     {
-      "name": "predict_class",
+      "name": "binary_tumor_classification",
       "description": "Classify a 30-dim breast-cancer feature vector as malignant (0) or benign (1) using the frozen XGBoost model.",
       "entry_function": "predict",
       "input_schema": {
@@ -15,7 +15,7 @@
             },
             "minItems": 30,
             "maxItems": 30,
-            "description": "30-dim float vector following sklearn load_breast_cancer schema (mean radius ... worst fractal dimension)"
+            "description": "30-dim float vector in load_breast_cancer schema order (mean radius ... worst fractal dimension)"
           }
         },
         "required": [
@@ -33,10 +33,10 @@
       "depends_on": [
         "_load"
       ],
-      "failure_boundary": "Fails or returns unreliable output if features length != 30, contains non-numeric values, or is far outside training scale/distribution; no input validation or confidence signal is returned."
+      "failure_boundary": "Fails or returns unreliable output if features length != 30, non-numeric values, or values far outside training scale/distribution; no schema validation or confidence is returned."
     },
     {
-      "name": "predict_probability",
+      "name": "class_probability_estimation",
       "description": "Return per-class probabilities for a 30-dim feature vector, enabling confidence-aware diagnosis.",
       "entry_function": "predict_proba",
       "input_schema": {
@@ -75,10 +75,10 @@
       "depends_on": [
         "_load"
       ],
-      "failure_boundary": "Same schema/scale constraints as predict; probabilities are uncalibrated and may be overconfident on out-of-distribution inputs; no rejection threshold."
+      "failure_boundary": "Same input-shape/scale constraints as predict; probabilities are uncalibrated and may be overconfident on out-of-distribution inputs."
     },
     {
-      "name": "explain_feature_importance",
+      "name": "feature_importance_explanation",
       "description": "Report the top-k most important features by XGBoost gain importance, giving global model interpretability.",
       "entry_function": "explain",
       "input_schema": {
@@ -87,6 +87,7 @@
           "top_k": {
             "type": "integer",
             "minimum": 1,
+            "maximum": 30,
             "description": "Number of top features to return"
           }
         },
@@ -96,16 +97,16 @@
       },
       "output_schema": {
         "type": "array",
-        "description": "Ranked list of top-k feature names/importances by gain"
+        "description": "Ordered list of top-k feature names/importances by gain"
       },
       "depends_on": [
         "_load"
       ],
-      "failure_boundary": "top_k larger than the 30 available features may error or truncate; importance is global (not per-instance) and does not explain individual predictions."
+      "failure_boundary": "top_k outside [1,30] or non-integer may error or return fewer than requested; importance is global, not per-instance, so it does not explain individual predictions."
     },
     {
-      "name": "list_classes",
-      "description": "Return the class labels the model was trained on, for schema discovery and output decoding.",
+      "name": "class_label_discovery",
+      "description": "Return the class labels the model was trained on, allowing an agent to map numeric outputs to semantic labels.",
       "entry_function": "classes",
       "input_schema": {
         "type": "object",
@@ -117,19 +118,19 @@
         "items": {
           "type": "integer"
         },
-        "description": "[0, 1]"
+        "description": "Trained class labels, expected [0,1]"
       },
       "depends_on": [
         "_load"
       ],
-      "failure_boundary": "Static metadata; fails only if the model artifact fails to load."
+      "failure_boundary": "Static metadata; fails only if the model artifact cannot be loaded."
     }
   ],
   "edges": [],
   "root_capabilities": [
-    "predict_class",
-    "predict_probability",
-    "explain_feature_importance",
-    "list_classes"
+    "binary_tumor_classification",
+    "class_probability_estimation",
+    "feature_importance_explanation",
+    "class_label_discovery"
   ]
 }

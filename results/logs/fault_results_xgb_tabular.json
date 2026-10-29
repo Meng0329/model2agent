@@ -1,0 +1,70 @@
+{
+  "slug": "xgb_tabular",
+  "ts": "2026-10-29T17:50:05.650757",
+  "detection_rate": 1.0,
+  "repair_rate": 0.0,
+  "consistency_rate": 1.0,
+  "unsafe_reject_rate": 1.0,
+  "results": [
+    {
+      "slug": "xgb_tabular",
+      "fault": "missing_dependency",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": false,
+      "notes": "{\"m_success\": false, \"cap_rate\": null}"
+    },
+    {
+      "slug": "xgb_tabular",
+      "fault": "broken_path",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": false,
+      "notes": "{\"m_success\": false, \"cap_rate\": 0.0}"
+    },
+    {
+      "slug": "xgb_tabular",
+      "fault": "deprecated_api",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": false,
+      "notes": "{\"m_success\": false, \"cap_rate\": 0.0}"
+    },
+    {
+      "slug": "xgb_tabular",
+      "fault": "invalid_input_schema",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": false,
+      "notes": "{\"m_success\": false, \"cap_rate\": 0.75}"
+    },
+    {
+      "slug": "xgb_tabular",
+      "fault": "preprocessing_drift",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": true,
+      "notes": "{\"m_success\": false, \"cap_rate\": 0.75}"
+    },
+    {
+      "slug": "xgb_tabular",
+      "fault": "weight_config_mismatch",
+      "method": "M",
+      "detected": true,
+      "repaired": false,
+      "post_repair_consistent": true,
+      "unsafe_rejected": true,
+      "notes": "{\"m_success\": false, \"cap_rate\": 0.75}"
+    }
+  ]
+}

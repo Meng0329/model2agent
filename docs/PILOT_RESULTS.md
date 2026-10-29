@@ -44,8 +44,32 @@
 
 > 仅 2 个模型，聚类 Bootstrap 的 n_models=2，置信区间极宽，**不得据此下跨模型结论**。
 
-## 6. 诚实声明
+## 6. 鲁棒性（6 类故障注入，方法 M）
 
-- 本 Pilot 只跑了 2 个模型；B1/B3、消融、鲁棒性、100 模型、未见家族均**未执行**。
+| 模型 | 故障 | 检出 | 自动修复 | 修复后一致 | 不安全修复拒绝 |
+|---|---|---|---|---|---|
+| cnn_digits | missing_dependency | True | False | True | False |
+| cnn_digits | broken_path | True | False | True | False |
+| cnn_digits | deprecated_api | True | False | True | False |
+| cnn_digits | invalid_input_schema | True | False | True | False |
+| cnn_digits | preprocessing_drift | True | False | True | True |
+| cnn_digits | weight_config_mismatch | True | False | True | True |
+| xgb_tabular | missing_dependency | True | False | True | False |
+| xgb_tabular | broken_path | True | False | True | False |
+| xgb_tabular | deprecated_api | True | False | True | False |
+| xgb_tabular | invalid_input_schema | True | False | True | False |
+| xgb_tabular | preprocessing_drift | True | False | True | True |
+| xgb_tabular | weight_config_mismatch | True | False | True | True |
+
+- **故障检测率：12/12 = 1.000**
+- **不安全修复拒绝率：4/4 = 1.000**
+- **自动修复成功率：0**（检测到故障但未实现自动修复，列为 P1 工作）
+- 修复后一致性仅在转换被判 success 时检验；本次全部故障均判失败，故该项不代表修复效果。
+
+> 结论：检测能力 100%，但缺少自动修复；不得将“检测到”当作“已修复”。
+
+## 7. 诚实声明
+
+- 本 Pilot 只跑了 2 个模型；B1/B3、消融 A1-A5、100 模型、未见家族均**未执行**。
 - 任何未跑完的 split 在原始 JSONL 中如实缺省，未补造数值。
 - 结果用于技术可行性验证，不作性能优越性宣称。

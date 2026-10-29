@@ -1,0 +1,16 @@
+=== fault injection: cnn_digits ===
+  missing_dependency       detected=True repaired=False consistent=True unsafe_rejected=False
+  broken_path              detected=True repaired=False consistent=True unsafe_rejected=False
+  deprecated_api           detected=True repaired=False consistent=True unsafe_rejected=False
+  invalid_input_schema     detected=True repaired=False consistent=True unsafe_rejected=False
+  preprocessing_drift      detected=True repaired=False consistent=True unsafe_rejected=True
+  weight_config_mismatch   detected=True repaired=False consistent=True unsafe_rejected=True
+  -> /data/mzb/paper2agent/results/logs/fault_results_cnn_digits.json
+=== fault injection: xgb_tabular ===
+  missing_dependency       detected=True repaired=False consistent=True unsafe_rejected=False
+  broken_path              detected=True repaired=False consistent=True unsafe_rejected=False
+  deprecated_api           detected=True repaired=False consistent=True unsafe_rejected=False
+  invalid_input_schema     detected=True repaired=False consistent=True unsafe_rejected=False
+  preprocessing_drift      detected=True repaired=False consistent=True unsafe_rejected=True
+  weight_config_mismatch   detected=True repaired=False consistent=True unsafe_rejected=True
+  -> /data/mzb/paper2agent/results/logs/fault_results_xgb_tabular.json
