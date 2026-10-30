@@ -1,0 +1,1996 @@
+<html lang="zh-CN" vid="0"><head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" vid="5">
+    <script src="https://unpkg.com/@phosphor-icons/web" vid="6"></script>
+    <style vid="7">
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f4f8;
+        }
+        .teal-btn { background-color: #00a3a6; }
+        .teal-text { color: #00a3a6; }
+        .teal-border { border-color: #00a3a6; }
+        .teal-bg-light { background-color: rgba(0, 163, 166, 0.05); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+    </style>
+
+  <style type="text/css">
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
+}/*
+! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+5. Use the user's configured `sans` font-feature-settings by default.
+6. Use the user's configured `sans` font-variation-settings by default.
+7. Disable tap highlights on iOS
+*/
+
+html,
+:host {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+  font-feature-settings: normal; /* 5 */
+  font-variation-settings: normal; /* 6 */
+  -webkit-tap-highlight-color: transparent; /* 7 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font-family by default.
+2. Use the user's configured `mono` font-feature-settings by default.
+3. Use the user's configured `mono` font-variation-settings by default.
+4. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-feature-settings: normal; /* 2 */
+  font-variation-settings: normal; /* 3 */
+  font-size: 1em; /* 4 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-feature-settings: inherit; /* 1 */
+  font-variation-settings: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  letter-spacing: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+input:where([type='button']),
+input:where([type='reset']),
+input:where([type='submit']) {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Reset default styling for dialogs.
+*/
+dialog {
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden]:where(:not([hidden="until-found"])) {
+  display: none;
+}
+.pointer-events-none {
+  pointer-events: none;
+}
+.absolute {
+  position: absolute;
+}
+.relative {
+  position: relative;
+}
+.inset-0 {
+  inset: 0px;
+}
+.right-1 {
+  right: 0.25rem;
+}
+.right-2 {
+  right: 0.5rem;
+}
+.right-4 {
+  right: 1rem;
+}
+.top-1 {
+  top: 0.25rem;
+}
+.top-2 {
+  top: 0.5rem;
+}
+.top-4 {
+  top: 1rem;
+}
+.-ml-1 {
+  margin-left: -0.25rem;
+}
+.mb-0\.5 {
+  margin-bottom: 0.125rem;
+}
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+.ml-10 {
+  margin-left: 2.5rem;
+}
+.ml-14 {
+  margin-left: 3.5rem;
+}
+.ml-3 {
+  margin-left: 0.75rem;
+}
+.ml-4 {
+  margin-left: 1rem;
+}
+.ml-6 {
+  margin-left: 1.5rem;
+}
+.ml-auto {
+  margin-left: auto;
+}
+.mt-0\.5 {
+  margin-top: 0.125rem;
+}
+.mt-3 {
+  margin-top: 0.75rem;
+}
+.mt-4 {
+  margin-top: 1rem;
+}
+.mt-5 {
+  margin-top: 1.25rem;
+}
+.mt-auto {
+  margin-top: auto;
+}
+.block {
+  display: block;
+}
+.flex {
+  display: flex;
+}
+.grid {
+  display: grid;
+}
+.aspect-\[4\/3\] {
+  aspect-ratio: 4/3;
+}
+.h-10 {
+  height: 2.5rem;
+}
+.h-12 {
+  height: 3rem;
+}
+.h-16 {
+  height: 4rem;
+}
+.h-2 {
+  height: 0.5rem;
+}
+.h-20 {
+  height: 5rem;
+}
+.h-3 {
+  height: 0.75rem;
+}
+.h-4 {
+  height: 1rem;
+}
+.h-6 {
+  height: 1.5rem;
+}
+.h-7 {
+  height: 1.75rem;
+}
+.h-8 {
+  height: 2rem;
+}
+.h-full {
+  height: 100%;
+}
+.min-h-screen {
+  min-height: 100vh;
+}
+.w-1\/4 {
+  width: 25%;
+}
+.w-1\/5 {
+  width: 20%;
+}
+.w-10 {
+  width: 2.5rem;
+}
+.w-12 {
+  width: 3rem;
+}
+.w-2 {
+  width: 0.5rem;
+}
+.w-3 {
+  width: 0.75rem;
+}
+.w-32 {
+  width: 8rem;
+}
+.w-4 {
+  width: 1rem;
+}
+.w-5\/6 {
+  width: 83.333333%;
+}
+.w-6 {
+  width: 1.5rem;
+}
+.w-7 {
+  width: 1.75rem;
+}
+.w-full {
+  width: 100%;
+}
+.max-w-\[80\%\] {
+  max-width: 80%;
+}
+.max-w-\[85\%\] {
+  max-width: 85%;
+}
+.flex-1 {
+  flex: 1 1 0%;
+}
+.shrink-0 {
+  flex-shrink: 0;
+}
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.resize-none {
+  resize: none;
+}
+.list-decimal {
+  list-style-type: decimal;
+}
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-start {
+  align-items: flex-start;
+}
+.items-end {
+  align-items: flex-end;
+}
+.items-center {
+  align-items: center;
+}
+.justify-end {
+  justify-content: flex-end;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.gap-1 {
+  gap: 0.25rem;
+}
+.gap-1\.5 {
+  gap: 0.375rem;
+}
+.gap-10 {
+  gap: 2.5rem;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.gap-3 {
+  gap: 0.75rem;
+}
+.gap-4 {
+  gap: 1rem;
+}
+.space-y-0\.5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.125rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.125rem * var(--tw-space-y-reverse));
+}
+.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+}
+.space-y-1\.5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.375rem * var(--tw-space-y-reverse));
+}
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+.space-y-3 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+}
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+.overflow-y-auto {
+  overflow-y: auto;
+}
+.rounded {
+  border-radius: 0.25rem;
+}
+.rounded-full {
+  border-radius: 9999px;
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+.rounded-md {
+  border-radius: 0.375rem;
+}
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+.border {
+  border-width: 1px;
+}
+.border-2 {
+  border-width: 2px;
+}
+.border-b {
+  border-bottom-width: 1px;
+}
+.border-l {
+  border-left-width: 1px;
+}
+.border-r {
+  border-right-width: 1px;
+}
+.border-t {
+  border-top-width: 1px;
+}
+.border-dashed {
+  border-style: dashed;
+}
+.border-emerald-100 {
+  --tw-border-opacity: 1;
+  border-color: rgb(209 250 229 / var(--tw-border-opacity, 1));
+}
+.border-orange-100 {
+  --tw-border-opacity: 1;
+  border-color: rgb(255 237 213 / var(--tw-border-opacity, 1));
+}
+.border-slate-100 {
+  --tw-border-opacity: 1;
+  border-color: rgb(241 245 249 / var(--tw-border-opacity, 1));
+}
+.border-slate-200 {
+  --tw-border-opacity: 1;
+  border-color: rgb(226 232 240 / var(--tw-border-opacity, 1));
+}
+.border-slate-50 {
+  --tw-border-opacity: 1;
+  border-color: rgb(248 250 252 / var(--tw-border-opacity, 1));
+}
+.border-teal-100 {
+  --tw-border-opacity: 1;
+  border-color: rgb(204 251 241 / var(--tw-border-opacity, 1));
+}
+.border-teal-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(20 184 166 / var(--tw-border-opacity, 1));
+}
+.border-white {
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
+}
+.border-white\/20 {
+  border-color: rgb(255 255 255 / 0.2);
+}
+.bg-black\/5 {
+  background-color: rgb(0 0 0 / 0.05);
+}
+.bg-blue-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1));
+}
+.bg-emerald-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 250 229 / var(--tw-bg-opacity, 1));
+}
+.bg-emerald-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(236 253 245 / var(--tw-bg-opacity, 1));
+}
+.bg-indigo-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(238 242 255 / var(--tw-bg-opacity, 1));
+}
+.bg-orange-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 247 237 / var(--tw-bg-opacity, 1));
+}
+.bg-rose-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 241 242 / var(--tw-bg-opacity, 1));
+}
+.bg-slate-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1));
+}
+.bg-slate-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1));
+}
+.bg-slate-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 213 225 / var(--tw-bg-opacity, 1));
+}
+.bg-slate-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(148 163 184 / var(--tw-bg-opacity, 1));
+}
+.bg-slate-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 250 252 / var(--tw-bg-opacity, 1));
+}
+.bg-teal-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(240 253 250 / var(--tw-bg-opacity, 1));
+}
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+.p-1 {
+  padding: 0.25rem;
+}
+.p-1\.5 {
+  padding: 0.375rem;
+}
+.p-2 {
+  padding: 0.5rem;
+}
+.p-3 {
+  padding: 0.75rem;
+}
+.p-4 {
+  padding: 1rem;
+}
+.p-5 {
+  padding: 1.25rem;
+}
+.p-8 {
+  padding: 2rem;
+}
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+.px-1\.5 {
+  padding-left: 0.375rem;
+  padding-right: 0.375rem;
+}
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+.py-0\.5 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+.py-1\.5 {
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+}
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.pl-12 {
+  padding-left: 3rem;
+}
+.pl-2 {
+  padding-left: 0.5rem;
+}
+.pl-4 {
+  padding-left: 1rem;
+}
+.pl-8 {
+  padding-left: 2rem;
+}
+.pr-2 {
+  padding-right: 0.5rem;
+}
+.pt-2 {
+  padding-top: 0.5rem;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+.text-\[10px\] {
+  font-size: 10px;
+}
+.text-\[12px\] {
+  font-size: 12px;
+}
+.text-\[6px\] {
+  font-size: 6px;
+}
+.text-\[7px\] {
+  font-size: 7px;
+}
+.text-\[8px\] {
+  font-size: 8px;
+}
+.text-\[9px\] {
+  font-size: 9px;
+}
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.font-bold {
+  font-weight: 700;
+}
+.font-medium {
+  font-weight: 500;
+}
+.italic {
+  font-style: italic;
+}
+.leading-relaxed {
+  line-height: 1.625;
+}
+.text-amber-400 {
+  --tw-text-opacity: 1;
+  color: rgb(251 191 36 / var(--tw-text-opacity, 1));
+}
+.text-blue-400 {
+  --tw-text-opacity: 1;
+  color: rgb(96 165 250 / var(--tw-text-opacity, 1));
+}
+.text-blue-500 {
+  --tw-text-opacity: 1;
+  color: rgb(59 130 246 / var(--tw-text-opacity, 1));
+}
+.text-emerald-500 {
+  --tw-text-opacity: 1;
+  color: rgb(16 185 129 / var(--tw-text-opacity, 1));
+}
+.text-emerald-600 {
+  --tw-text-opacity: 1;
+  color: rgb(5 150 105 / var(--tw-text-opacity, 1));
+}
+.text-indigo-500 {
+  --tw-text-opacity: 1;
+  color: rgb(99 102 241 / var(--tw-text-opacity, 1));
+}
+.text-indigo-600 {
+  --tw-text-opacity: 1;
+  color: rgb(79 70 229 / var(--tw-text-opacity, 1));
+}
+.text-orange-500 {
+  --tw-text-opacity: 1;
+  color: rgb(249 115 22 / var(--tw-text-opacity, 1));
+}
+.text-orange-600 {
+  --tw-text-opacity: 1;
+  color: rgb(234 88 12 / var(--tw-text-opacity, 1));
+}
+.text-orange-700 {
+  --tw-text-opacity: 1;
+  color: rgb(194 65 12 / var(--tw-text-opacity, 1));
+}
+.text-rose-500 {
+  --tw-text-opacity: 1;
+  color: rgb(244 63 94 / var(--tw-text-opacity, 1));
+}
+.text-slate-300 {
+  --tw-text-opacity: 1;
+  color: rgb(203 213 225 / var(--tw-text-opacity, 1));
+}
+.text-slate-400 {
+  --tw-text-opacity: 1;
+  color: rgb(148 163 184 / var(--tw-text-opacity, 1));
+}
+.text-slate-500 {
+  --tw-text-opacity: 1;
+  color: rgb(100 116 139 / var(--tw-text-opacity, 1));
+}
+.text-slate-600 {
+  --tw-text-opacity: 1;
+  color: rgb(71 85 105 / var(--tw-text-opacity, 1));
+}
+.text-slate-800 {
+  --tw-text-opacity: 1;
+  color: rgb(30 41 59 / var(--tw-text-opacity, 1));
+}
+.text-teal-500 {
+  --tw-text-opacity: 1;
+  color: rgb(20 184 166 / var(--tw-text-opacity, 1));
+}
+.text-teal-600 {
+  --tw-text-opacity: 1;
+  color: rgb(13 148 136 / var(--tw-text-opacity, 1));
+}
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+.opacity-0 {
+  opacity: 0;
+}
+.opacity-40 {
+  opacity: 0.4;
+}
+.opacity-50 {
+  opacity: 0.5;
+}
+.opacity-70 {
+  opacity: 0.7;
+}
+.shadow-2xl {
+  --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.shadow-lg {
+  --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.shadow-teal-100 {
+  --tw-shadow-color: #ccfbf1;
+  --tw-shadow: var(--tw-shadow-colored);
+}
+.blur-\[2px\] {
+  --tw-blur: blur(2px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.hover\:bg-slate-50:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 250 252 / var(--tw-bg-opacity, 1));
+}
+.hover\:opacity-90:hover {
+  opacity: 0.9;
+}
+.focus\:outline-none:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+.focus\:ring-1:focus {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+.focus\:ring-teal-500:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(20 184 166 / var(--tw-ring-opacity, 1));
+}
+.group:hover .group-hover\:bg-blue-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(219 234 254 / var(--tw-bg-opacity, 1));
+}
+.group:hover .group-hover\:bg-emerald-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 250 229 / var(--tw-bg-opacity, 1));
+}
+.group:hover .group-hover\:bg-indigo-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(224 231 255 / var(--tw-bg-opacity, 1));
+}
+.group:hover .group-hover\:bg-rose-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 228 230 / var(--tw-bg-opacity, 1));
+}
+.group:hover .group-hover\:bg-slate-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1));
+}
+@media (min-width: 768px) {
+
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}* {
+      -ms-overflow-style: none !important;
+      scrollbar-width: none !important;
+    }
+
+    *::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+  </style></head>
+<body class="w-full min-h-screen p-8 text-slate-800" vid="8">
+
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 w-full" vid="9">
+        
+        
+        <div class="flex flex-col gap-4" vid="10">
+            <div class="flex items-start gap-3" vid="11">
+                <div class="flex items-center justify-center w-7 h-7 rounded-full teal-btn text-white font-bold text-sm" vid="12">1</div>
+                <div vid="13">
+                    <h2 class="text-xl font-bold" vid="14">创建任务</h2>
+                    <p class="text-slate-500 text-sm" vid="15">填写任务信息并上传模型资产，开始创建 Agent</p>
+                </div>
+            </div>
+            
+            
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200 aspect-[4/3] flex" vid="16">
+                
+                <div class="w-1/4 border-r border-slate-100 flex flex-col p-3" vid="17">
+                    <div class="flex items-center gap-2 mb-4" vid="18">
+                        <i class="ph-fill ph-waves teal-text text-xl" vid="19"></i>
+                        <span class="font-bold text-xs" vid="20">Model2Agent</span>
+                    </div>
+                    <button class="teal-btn text-white rounded-md py-1.5 px-2 text-[10px] flex items-center justify-center gap-1 mb-4" vid="21">
+                        <i class="ph ph-plus" vid="22"></i> 新建任务
+                    </button>
+                    <div class="text-[9px] text-slate-400 mb-2" vid="23">任务历史</div>
+                    <div class="space-y-3" vid="24">
+                        <div class="flex gap-2" vid="25">
+                            <i class="ph ph-leaf teal-text text-sm" vid="26"></i>
+                            <div vid="27">
+                                <div class="text-[9px] font-medium teal-text" vid="28">植物病害识别 Agent</div>
+                                <div class="text-[8px] text-slate-400" vid="29">进行中 · 10:24</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 opacity-50" vid="30">
+                            <i class="ph ph-chart-bar text-sm" vid="31"></i>
+                            <div vid="32">
+                                <div class="text-[9px] font-medium" vid="33">XGBoost 预测 Agent</div>
+                                <div class="text-[8px] text-slate-400" vid="34">已完成 · 09:15</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 opacity-50" vid="35">
+                            <i class="ph ph-circle text-sm" vid="36"></i>
+                            <div vid="37">
+                                <div class="text-[9px] font-medium" vid="38">图像分割 Agent</div>
+                                <div class="text-[8px] text-slate-400" vid="39">已完成 · 08:20</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 opacity-50" vid="40">
+                            <i class="ph ph-circle text-sm" vid="41"></i>
+                            <div vid="42">
+                                <div class="text-[9px] font-medium" vid="43">目标检测 Agent</div>
+                                <div class="text-[8px] text-slate-400" vid="44">已完成 · 昨天</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 bg-slate-50 p-4 flex flex-col" vid="45">
+                    <div class="flex justify-end gap-3 mb-4" vid="46">
+                        <div class="bg-white border border-slate-200 rounded px-2 py-0.5 flex items-center gap-1 text-[8px]" vid="47">
+                            <i class="ph ph-cpu" vid="48"></i> GPU 0 · RTX 4090
+                        </div>
+                        <i class="ph ph-gear text-slate-400 text-xs" vid="49"></i>
+                        <div class="flex items-center gap-1 bg-slate-200 rounded-full px-2 py-0.5 text-[8px]" vid="50">
+                            <span class="w-3 h-3 bg-slate-400 rounded-full flex items-center justify-center text-white text-[6px]" vid="51">A</span>
+                            admin
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg p-5 flex-1 flex flex-col shadow-sm border border-slate-100" vid="52">
+                        <div class="flex items-center gap-2 mb-4" vid="53">
+                            <i class="ph ph-pencil-simple-line text-lg teal-text" vid="54"></i>
+                            <div vid="55">
+                                <h3 class="text-xs font-bold" vid="56">创建新任务</h3>
+                                <p class="text-[8px] text-slate-400" vid="57">上传模型资产，描述任务目标，开始创建 Agent。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3" vid="58">
+                            <div vid="59">
+                                <label class="text-[9px] font-medium block mb-1" vid="60">任务名称</label>
+                                <input type="text" value="植物病害识别 Agent" class="w-full border border-slate-200 rounded p-1.5 text-[9px] focus:outline-none focus:ring-1 focus:ring-teal-500" vid="61">
+                            </div>
+                            <div vid="62">
+                                <label class="text-[9px] font-medium block mb-1" vid="63">任务目标</label>
+                                <textarea class="w-full border border-slate-200 rounded p-1.5 text-[9px] h-16 resize-none focus:outline-none focus:ring-1 focus:ring-teal-500" vid="64">将上传的植物病害识别 CNN 模型转换为可交互的 Agent，用户可以上传叶片图片，识别病害类型，并提供防治建议。</textarea>
+                                <div class="text-right text-[8px] text-slate-300 mt-0.5" vid="65">0/500</div>
+                            </div>
+                            <div vid="66">
+                                <label class="text-[9px] font-medium block mb-1" vid="67">模型资产 (ZIP 格式，必填)</label>
+                                <div class="border-2 border-dashed border-slate-200 rounded-lg p-4 flex flex-col items-center justify-center gap-1 cursor-pointer" vid="68">
+                                    <i class="ph ph-upload-simple text-slate-400 text-lg" vid="69"></i>
+                                    <span class="text-[9px] font-medium" vid="70">点击上传模型资产 ZIP</span>
+                                    <span class="text-[7px] text-slate-400" vid="71">支持 .zip 格式，包含模型文件和相关配置</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 flex items-center justify-between border border-slate-100 rounded p-2" vid="72">
+                            <div class="flex items-center gap-2" vid="73">
+                                <i class="ph ph-file-zip text-teal-500" vid="74"></i>
+                                <span class="text-[9px]" vid="75">plant_disease_model.zip</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-[8px] text-slate-400" vid="76">
+                                <span vid="77">289 MB</span>
+                                <i class="ph ph-x cursor-pointer" vid="78"></i>
+                            </div>
+                        </div>
+
+                        <button class="w-full teal-btn text-white rounded-md py-2 mt-auto text-[10px] flex items-center justify-center gap-1 font-medium" vid="79">
+                            创建任务 <i class="ph ph-arrow-right" vid="80"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="flex flex-col gap-4" vid="81">
+            <div class="flex items-start gap-3" vid="82">
+                <div class="flex items-center justify-center w-7 h-7 rounded-full teal-btn text-white font-bold text-sm" vid="83">2</div>
+                <div vid="84">
+                    <h2 class="text-xl font-bold" vid="85">首次设备配置 (弹窗)</h2>
+                    <p class="text-slate-500 text-sm" vid="86">自动检测本机设备，选择一次后永久保存</p>
+                </div>
+            </div>
+            
+            
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200 aspect-[4/3] flex relative" vid="87">
+                
+                <div class="w-full h-full flex blur-[2px] opacity-40" vid="88">
+                    <div class="w-1/4 border-r border-slate-100 p-3" vid="89"></div>
+                    <div class="flex-1 bg-slate-50" vid="90"></div>
+                </div>
+                
+                
+                <div class="absolute inset-0 flex items-center justify-center bg-black/5" vid="91">
+                    <div class="bg-white w-5/6 rounded-lg shadow-2xl p-5 relative" vid="92">
+                        <i class="ph ph-x absolute right-4 top-4 text-slate-400 text-sm cursor-pointer" vid="93"></i>
+                        <h3 class="text-xs font-bold mb-1" vid="94">设置计算设备</h3>
+                        <p class="text-[8px] text-slate-400 mb-4 leading-relaxed" vid="95">
+                            自动检测到以下可用设备，请选择用于运行 Agent 的设备。<br vid="96">
+                            该设置将被保存，后续任务不再重复配置。
+                        </p>
+                        
+                        <div class="space-y-3" vid="97">
+                            <div class="border teal-border teal-bg-light rounded-lg p-3 flex items-center gap-3 relative" vid="98">
+                                <div class="w-10 h-10 bg-slate-100 rounded flex items-center justify-center" vid="99">
+                                    <i class="ph-fill ph-cpu text-slate-500 text-xl" vid="100"></i>
+                                </div>
+                                <div class="flex-1" vid="101">
+                                    <div class="flex items-center gap-2" vid="102">
+                                        <span class="text-[10px] font-bold" vid="103">GPU 0</span>
+                                        <span class="text-[9px] text-slate-500" vid="104">NVIDIA RTX 4090</span>
+                                    </div>
+                                    <div class="flex gap-3 mt-0.5" vid="105">
+                                        <span class="text-[7px] text-slate-400" vid="106">显存 24 GB</span>
+                                        <span class="text-[7px] text-slate-400" vid="107">当前使用 2.1 GB</span>
+                                        <span class="text-[7px] text-slate-400" vid="108">可用 21.9 GB</span>
+                                    </div>
+                                </div>
+                                <div class="w-4 h-4 border-2 teal-border rounded-full flex items-center justify-center" vid="109">
+                                    <div class="w-2 h-2 teal-btn rounded-full" vid="110"></div>
+                                </div>
+                            </div>
+
+                            <div class="border border-slate-100 rounded-lg p-3 flex items-center gap-3" vid="111">
+                                <div class="w-10 h-10 bg-slate-100 rounded flex items-center justify-center" vid="112">
+                                    <i class="ph ph-microchip text-slate-400 text-xl" vid="113"></i>
+                                </div>
+                                <div class="flex-1" vid="114">
+                                    <div class="flex items-center gap-2" vid="115">
+                                        <span class="text-[10px] font-bold" vid="116">CPU</span>
+                                        <span class="text-[9px] text-slate-500" vid="117">Intel(R) Core(TM) i9-13900K</span>
+                                    </div>
+                                    <div class="flex gap-3 mt-0.5" vid="118">
+                                        <span class="text-[7px] text-slate-400" vid="119">32 核心</span>
+                                        <span class="text-[7px] text-slate-400" vid="120">64 线程</span>
+                                    </div>
+                                </div>
+                                <div class="w-4 h-4 border-2 border-slate-200 rounded-full" vid="121"></div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-[7px] text-slate-400 mt-4 italic" vid="122">设备信息为设计示例，实际以本机检测结果为准。</p>
+                        
+                        <div class="flex justify-end gap-2 mt-5" vid="123">
+                            <button class="px-6 py-1.5 rounded border border-slate-200 text-[10px] font-medium text-slate-600 hover:bg-slate-50" vid="124">取消</button>
+                            <button class="px-6 py-1.5 rounded teal-btn text-white text-[10px] font-medium hover:opacity-90" vid="125">保存并继续</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="flex flex-col gap-4" vid="126">
+            <div class="flex items-start gap-3" vid="127">
+                <div class="flex items-center justify-center w-7 h-7 rounded-full teal-btn text-white font-bold text-sm" vid="128">3</div>
+                <div vid="129">
+                    <h2 class="text-xl font-bold" vid="130">Agent 执行工作台</h2>
+                    <p class="text-slate-500 text-sm" vid="131">流式对话与工具执行，右侧显示工作空间</p>
+                </div>
+            </div>
+            
+            
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200 aspect-[4/3] flex" vid="132">
+                
+                <div class="w-1/5 border-r border-slate-100 flex flex-col p-2" vid="133">
+                    <div class="flex items-center gap-1 mb-3" vid="134">
+                        <i class="ph-fill ph-waves teal-text text-base" vid="135"></i>
+                        <span class="font-bold text-[9px]" vid="136">Model2Agent</span>
+                    </div>
+                    <button class="teal-btn text-white rounded-md py-1 text-[8px] flex items-center justify-center gap-1 mb-3" vid="137">
+                        <i class="ph ph-plus" vid="138"></i> 新建任务
+                    </button>
+                    <div class="text-[7px] text-slate-400 mb-1" vid="139">任务历史</div>
+                    <div class="space-y-2" vid="140">
+                        <div class="flex gap-1.5 p-1 teal-bg-light rounded" vid="141">
+                            <i class="ph ph-leaf teal-text text-[10px]" vid="142"></i>
+                            <div vid="143">
+                                <div class="text-[8px] font-medium teal-text" vid="144">植物病害识别 Agent</div>
+                                <div class="text-[7px] text-slate-400" vid="145">进行中 · 10:24</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-1.5 p-1 opacity-50" vid="146">
+                            <i class="ph ph-chart-bar text-[10px]" vid="147"></i>
+                            <div vid="148">
+                                <div class="text-[8px] font-medium" vid="149">XGBoost 预测 Agent</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-1.5 p-1 opacity-50" vid="150">
+                            <i class="ph ph-circle text-[10px]" vid="151"></i>
+                            <div vid="152">
+                                <div class="text-[8px] font-medium" vid="153">图像分割 Agent</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-1.5 p-1 opacity-50" vid="154">
+                            <i class="ph ph-circle text-[10px]" vid="155"></i>
+                            <div vid="156">
+                                <div class="text-[8px] font-medium" vid="157">目标检测 Agent</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-auto space-y-1" vid="158">
+                        <div class="flex items-center gap-1 text-[8px] text-slate-500" vid="159"><i class="ph ph-gear" vid="160"></i> 设备设置</div>
+                        <div class="flex items-center gap-1 text-[8px] text-slate-500" vid="161"><i class="ph ph-question" vid="162"></i> 帮助与文档</div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 bg-white border-r border-slate-100 flex flex-col" vid="163">
+                    <div class="p-2 border-b border-slate-50 flex items-center gap-2" vid="164">
+                        <i class="ph ph-leaf teal-text" vid="165"></i>
+                        <span class="text-[9px] font-bold" vid="166">植物病害识别 Agent</span>
+                    </div>
+                    <div class="flex-1 p-4 space-y-4" vid="167">
+                        <div class="flex justify-center" vid="168">
+                            <div class="bg-slate-50 rounded-lg p-3 max-w-[80%] text-center border border-slate-100" vid="169">
+                                <p class="text-[9px] text-slate-600 leading-relaxed" vid="170">
+                                    请根据我上传的模型，帮我生成一个可交互的植物病害识别 Agent。
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2" vid="171">
+                            <div class="w-6 h-6 teal-bg-light rounded flex items-center justify-center shrink-0" vid="172">
+                                <i class="ph-fill ph-waves teal-text text-sm" vid="173"></i>
+                            </div>
+                            <div class="space-y-3" vid="174">
+                                <p class="text-[9px] text-slate-600 leading-relaxed" vid="175">
+                                    我将分析模型结构并生成完整的 Agent 项目。执行以下步骤：
+                                </p>
+                                <div class="space-y-2" vid="176">
+                                    <div class="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded px-2 py-1.5" vid="177">
+                                        <div class="flex items-center gap-2" vid="178">
+                                            <i class="ph ph-check-circle text-emerald-500" vid="179"></i>
+                                            <span class="text-[8px] font-medium" vid="180">读取模型资产</span>
+                                        </div>
+                                        <span class="text-[7px] text-slate-400" vid="181">12s</span>
+                                    </div>
+                                    <div class="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded px-2 py-1.5" vid="182">
+                                        <div class="flex items-center gap-2" vid="183">
+                                            <i class="ph ph-check-circle text-emerald-500" vid="184"></i>
+                                            <span class="text-[8px] font-medium" vid="185">分析模型结构和依赖</span>
+                                        </div>
+                                        <span class="text-[7px] text-slate-400" vid="186">28s</span>
+                                    </div>
+                                    <div class="flex items-center justify-between border border-slate-100 rounded px-2 py-1.5" vid="187">
+                                        <div class="flex items-center gap-2" vid="188">
+                                            <i class="ph ph-circle-notch text-teal-500 animate-spin" vid="189"></i>
+                                            <span class="text-[8px] font-medium" vid="190">生成 Agent 项目文件</span>
+                                        </div>
+                                        <span class="text-[7px] teal-text" vid="191">进行中...</span>
+                                    </div>
+                                    <div class="flex items-center justify-between border border-slate-50 opacity-50 rounded px-2 py-1.5" vid="192">
+                                        <div class="flex items-center gap-2" vid="193">
+                                            <i class="ph ph-circle text-slate-300" vid="194"></i>
+                                            <span class="text-[8px] font-medium" vid="195">验证运行环境</span>
+                                        </div>
+                                        <span class="text-[7px] text-slate-300" vid="196">等待中</span>
+                                    </div>
+                                </div>
+                                <div class="text-[8px] text-slate-400 bg-slate-50 border border-slate-100 rounded px-2 py-1" vid="197">
+                                    正在生成前端界面和配置文件...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 border-t border-slate-50" vid="198">
+                        <div class="border border-slate-200 rounded-full px-3 py-1.5 flex items-center gap-2 bg-white" vid="199">
+                            <i class="ph ph-paperclip text-slate-400" vid="200"></i>
+                            <input type="text" placeholder="继续提问或让 Agent 修改项目..." class="flex-1 text-[9px] focus:outline-none" vid="201">
+                            <i class="ph-fill ph-paper-plane-right teal-text cursor-pointer" vid="202"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="w-1/5 bg-slate-50 flex flex-col" vid="203">
+                    <div class="p-2 flex items-center justify-between border-b border-slate-200" vid="204">
+                        <span class="text-[8px] font-bold" vid="205">工作空间</span>
+                    </div>
+                    <div class="p-2 flex-1 overflow-y-auto scrollbar-hide" vid="206">
+                        <div class="space-y-1" vid="207">
+                            <div class="flex items-center gap-1.5 text-[8px]" vid="208">
+                                <i class="ph ph-folder text-slate-400" vid="209"></i> /project
+                            </div>
+                            <div class="ml-3 space-y-1" vid="210">
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="211">
+                                    <i class="ph ph-file-py text-blue-500" vid="212"></i> app.py
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] teal-text font-medium" vid="213">
+                                    <i class="ph ph-file-py" vid="214"></i> agent.py
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="215">
+                                    <i class="ph ph-file-py text-blue-500" vid="216"></i> model_runtime.py
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="217">
+                                    <i class="ph ph-caret-right" vid="218"></i> <i class="ph ph-folder" vid="219"></i> skills/
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="220">
+                                    <i class="ph ph-caret-right" vid="221"></i> <i class="ph ph-folder" vid="222"></i> utils/
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="223">
+                                    <i class="ph ph-caret-right" vid="224"></i> <i class="ph ph-folder" vid="225"></i> tests/
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="226">
+                                    <i class="ph ph-file-text" vid="227"></i> Dockerfile
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="228">
+                                    <i class="ph ph-file-text" vid="229"></i> README.md
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="230">
+                                    <i class="ph ph-file-text" vid="231"></i> requirements.txt
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute top-2 right-2 flex gap-1 items-center pointer-events-none opacity-0" vid="232">
+                        <i class="ph ph-user-circle" vid="233"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="flex flex-col gap-4" vid="234">
+            <div class="flex items-start gap-3" vid="235">
+                <div class="flex items-center justify-center w-7 h-7 rounded-full teal-btn text-white font-bold text-sm" vid="236">4</div>
+                <div vid="237">
+                    <h2 class="text-xl font-bold" vid="238">文件工作空间</h2>
+                    <p class="text-slate-500 text-sm" vid="239">查看和编辑生成的项目文件，支持运行预览</p>
+                </div>
+            </div>
+            
+            
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200 aspect-[4/3] flex flex-col" vid="240">
+                
+                <div class="h-8 border-b border-slate-100 flex items-center justify-between px-3 bg-white" vid="241">
+                    <div class="flex items-center gap-2" vid="242">
+                        <i class="ph-fill ph-waves teal-text text-sm" vid="243"></i>
+                        <span class="font-bold text-[8px]" vid="244">Model2Agent</span>
+                    </div>
+                    <div class="flex items-center gap-3" vid="245">
+                        <div class="bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5 flex items-center gap-1 text-[7px]" vid="246">
+                            <i class="ph ph-cpu" vid="247"></i> GPU 0 · RTX 4090
+                        </div>
+                        <i class="ph ph-gear text-slate-400 text-[10px]" vid="248"></i>
+                        <div class="flex items-center gap-1 bg-slate-200 rounded-full px-1.5 py-0.5 text-[7px]" vid="249">
+                            <span class="w-3 h-3 bg-slate-400 rounded-full flex items-center justify-center text-white text-[6px]" vid="250">A</span>
+                            admin
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 flex overflow-hidden" vid="251">
+                    
+                    <div class="w-1/4 border-r border-slate-100 bg-white p-3" vid="252">
+                        <div class="flex items-center justify-between mb-3" vid="253">
+                            <span class="text-[9px] font-bold" vid="254">项目文件</span>
+                            <div class="flex gap-1.5 text-slate-400" vid="255">
+                                <i class="ph ph-magnifying-glass text-[8px]" vid="256"></i>
+                                <i class="ph ph-plus-square text-[8px]" vid="257"></i>
+                                <i class="ph ph-folder-plus text-[8px]" vid="258"></i>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5" vid="259">
+                            <div class="flex items-center gap-1 text-[8px] font-medium" vid="260">
+                                <i class="ph ph-caret-down" vid="261"></i> /project
+                            </div>
+                            <div class="ml-3 space-y-1.5" vid="262">
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="263">
+                                    <i class="ph ph-file-py text-blue-400" vid="264"></i> app.py
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] teal-bg-light teal-text px-1 rounded -ml-1" vid="265">
+                                    <i class="ph ph-file-py" vid="266"></i> agent.py
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="267">
+                                    <i class="ph ph-file-py text-blue-400" vid="268"></i> model_runtime.py
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="269">
+                                    <i class="ph ph-caret-down" vid="270"></i> <i class="ph ph-folder text-amber-400" vid="271"></i> skills/
+                                </div>
+                                <div class="ml-4 space-y-1" vid="272">
+                                    <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="273">
+                                        <i class="ph ph-file-py text-blue-400" vid="274"></i> plant_skill.py
+                                    </div>
+                                    <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="275">
+                                        <i class="ph ph-file-text" vid="276"></i> SKILL.md
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="277">
+                                    <i class="ph ph-caret-right" vid="278"></i> <i class="ph ph-folder" vid="279"></i> utils/
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="280">
+                                    <i class="ph ph-caret-right" vid="281"></i> <i class="ph ph-folder" vid="282"></i> tests/
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="283">
+                                    <i class="ph ph-file-text" vid="284"></i> Dockerfile
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="285">
+                                    <i class="ph ph-file-text" vid="286"></i> README.md
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[8px] text-slate-500" vid="287">
+                                    <i class="ph ph-file-text" vid="288"></i> requirements.txt
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 bg-slate-50 flex flex-col" vid="289">
+                        <div class="flex items-center gap-4 px-4 h-7 bg-white border-b border-slate-100" vid="290">
+                            <span class="text-[8px] font-medium border-b border-teal-500 teal-text h-full flex items-center" vid="291">agent.py</span>
+                            <span class="text-[8px] text-slate-400 h-full flex items-center" vid="292">SKILL.md</span>
+                            <button class="ml-auto teal-btn text-white text-[7px] px-2 py-0.5 rounded flex items-center gap-1" vid="293">
+                                <i class="ph-fill ph-play" vid="294"></i> 运行预览
+                            </button>
+                        </div>
+                        <div class="p-3 text-[7px] font-mono leading-relaxed text-slate-600 overflow-hidden" vid="295">
+                            <div class="flex" vid="296">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="297">1</div>
+                                <div class="text-indigo-600" vid="298">from <span class="text-slate-800" vid="299">agent</span> import <span class="text-slate-800" vid="300">PlantDiseaseAgent</span></div>
+                            </div>
+                            <div class="flex" vid="301">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="302">2</div>
+                                <div class="text-indigo-600" vid="303">import <span class="text-slate-800" vid="304">gradio as gr</span></div>
+                            </div>
+                            <div class="flex" vid="305">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="306">3</div>
+                                <div class="text-indigo-600" vid="307">import <span class="text-slate-800" vid="308">os</span></div>
+                            </div>
+                            <div class="flex" vid="309">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="310">4</div>
+                                <div vid="311">&nbsp;</div>
+                            </div>
+                            <div class="flex" vid="312">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="313">5</div>
+                                <div class="text-emerald-600" vid="314"># 初始化 Agent</div>
+                            </div>
+                            <div class="flex" vid="315">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="316">6</div>
+                                <div vid="317">agent = PlantDiseaseAgent(</div>
+                            </div>
+                            <div class="flex" vid="318">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="319">7</div>
+                                <div class="pl-4" vid="320">model_path=<span class="text-orange-600" vid="321">"model/plant_model.pth"</span>,</div>
+                            </div>
+                            <div class="flex" vid="322">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="323">8</div>
+                                <div class="pl-4" vid="324">device=<span class="text-orange-600" vid="325">"cuda"</span></div>
+                            </div>
+                            <div class="flex" vid="326">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="327">9</div>
+                                <div vid="328">)</div>
+                            </div>
+                            <div class="flex" vid="329">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="330">10</div>
+                                <div vid="331">&nbsp;</div>
+                            </div>
+                            <div class="flex" vid="332">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="333">11</div>
+                                <div class="text-emerald-600" vid="334"># 创建 Gradio 界面</div>
+                            </div>
+                            <div class="flex" vid="335">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="336">12</div>
+                                <div vid="337">def create_demo():</div>
+                            </div>
+                            <div class="flex" vid="338">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="339">13</div>
+                                <div class="pl-4" vid="340">with gr.Blocks(title=<span class="text-orange-600" vid="341">"植物病害识别 Agent"</span>) as demo:</div>
+                            </div>
+                            <div class="flex" vid="342">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="343">14</div>
+                                <div class="pl-8" vid="344">gr.Markdown(</div>
+                            </div>
+                            <div class="flex" vid="345">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="346">15</div>
+                                <div class="pl-12 text-orange-600" vid="347">"### 请上传叶片图片，识别病害类型，并提供防治建议。"</div>
+                            </div>
+                            <div class="flex" vid="348">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="349">16</div>
+                                <div class="pl-8" vid="350">)</div>
+                            </div>
+                            <div class="flex" vid="351">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="352">17</div>
+                                <div vid="353">&nbsp;</div>
+                            </div>
+                            <div class="flex" vid="354">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="355">18</div>
+                                <div class="pl-4" vid="356">return demo</div>
+                            </div>
+                            <div class="flex" vid="357">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="358">19</div>
+                                <div vid="359">&nbsp;</div>
+                            </div>
+                            <div class="flex" vid="360">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="361">20</div>
+                                <div vid="362">if __name__ == <span class="text-orange-600" vid="363">"__main__"</span>:</div>
+                            </div>
+                            <div class="flex" vid="364">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="365">21</div>
+                                <div class="pl-4" vid="366">demo = create_demo()</div>
+                            </div>
+                            <div class="flex" vid="367">
+                                <div class="w-4 text-slate-300 text-right pr-2" vid="368">22</div>
+                                <div class="pl-4" vid="369">demo.launch()</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="flex flex-col gap-4" vid="370">
+            <div class="flex items-start gap-3" vid="371">
+                <div class="flex items-center justify-center w-7 h-7 rounded-full teal-btn text-white font-bold text-sm" vid="372">5</div>
+                <div vid="373">
+                    <h2 class="text-xl font-bold" vid="374">Generated Agent 交互预览</h2>
+                    <p class="text-slate-500 text-sm" vid="375">真实启动的独立 Agent 应用，支持多轮对话和图片上传</p>
+                </div>
+            </div>
+            
+            
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200 aspect-[4/3] flex flex-col" vid="376">
+                
+                <div class="h-8 border-b border-slate-100 flex items-center justify-between px-3" vid="377">
+                    <div class="flex items-center gap-2" vid="378">
+                        <i class="ph-fill ph-waves teal-text text-sm" vid="379"></i>
+                        <span class="font-bold text-[8px]" vid="380">Model2Agent</span>
+                    </div>
+                    <div class="flex items-center gap-3" vid="381">
+                        <div class="bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5 flex items-center gap-1 text-[7px]" vid="382">
+                            <i class="ph ph-cpu" vid="383"></i> GPU · 4090
+                        </div>
+                        <div class="flex items-center gap-1 bg-slate-200 rounded-full px-1.5 py-0.5 text-[7px]" vid="384">
+                            <span class="w-3 h-3 bg-slate-400 rounded-full flex items-center justify-center text-white text-[6px]" vid="385">A</span>
+                            admin
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 bg-slate-50 p-3 overflow-hidden flex flex-col" vid="386">
+                    <div class="flex items-center justify-between mb-3" vid="387">
+                        <div class="flex items-center gap-2" vid="388">
+                            <i class="ph ph-arrow-left text-slate-400 text-[10px]" vid="389"></i>
+                            <span class="text-[9px] font-bold" vid="390">植物病害识别 Agent</span>
+                            <span class="bg-emerald-100 text-emerald-600 text-[6px] px-1.5 py-0.5 rounded" vid="391">运行中</span>
+                        </div>
+                        <div class="flex items-center gap-2" vid="392">
+                            <button class="bg-white border border-slate-200 rounded px-1.5 py-0.5 text-[7px] flex items-center gap-1 text-slate-500" vid="393">
+                                <i class="ph ph-arrow-square-out" vid="394"></i> 在新窗口打开
+                            </button>
+                            <i class="ph ph-corners-out text-slate-400 text-[10px]" vid="395"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 bg-white rounded-lg shadow-sm p-4 space-y-4 overflow-y-auto scrollbar-hide border border-slate-100" vid="396">
+                        <div class="flex gap-2" vid="397">
+                            <div class="w-6 h-6 teal-bg-light rounded flex items-center justify-center shrink-0" vid="398">
+                                <i class="ph-fill ph-waves teal-text text-[12px]" vid="399"></i>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-3 max-w-[85%] border border-slate-100" vid="400">
+                                <p class="text-[8px] text-slate-600 leading-relaxed" vid="401">
+                                    你好！我是植物病害识别助手。<br vid="402">
+                                    请上传植物叶片图片，我可以帮你识别病害类型，并提供防治建议。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-end gap-1" vid="403">
+                            <div class="w-32 h-20 bg-slate-200 rounded-lg overflow-hidden border-2 border-white shadow-sm relative" vid="404">
+                                <div class="w-full h-full bg-slate-300" vid="405"></div> 
+                                <div class="absolute inset-0 flex items-center justify-center text-white text-[10px]" vid="406"><i class="ph-fill ph-image" vid="407"></i></div>
+                                <i class="ph-fill ph-x-circle absolute top-1 right-1 text-white text-[10px]" vid="408"></i>
+                            </div>
+                            <span class="text-[7px] text-slate-400" vid="409">这是我拍的叶片图片，请帮我识别。</span>
+                        </div>
+
+                        <div class="flex gap-2" vid="410">
+                            <div class="w-6 h-6 teal-bg-light rounded flex items-center justify-center shrink-0" vid="411">
+                                <i class="ph-fill ph-waves teal-text text-[12px]" vid="412"></i>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-3 max-w-[85%] border border-slate-100" vid="413">
+                                <div class="flex items-start gap-2 mb-2" vid="414">
+                                    <div class="w-12 h-12 bg-slate-300 rounded shrink-0" vid="415"></div> 
+                                    <div class="text-[8px]" vid="416">
+                                        <div class="font-bold mb-1" vid="417">识别结果 (示例)</div>
+                                        <div vid="418">病害类型：<span class="text-rose-500 font-bold" vid="419">叶斑病</span></div>
+                                        <div vid="420">置信度：92%</div>
+                                    </div>
+                                </div>
+                                <div class="text-[8px] border-t border-slate-200 pt-2" vid="421">
+                                    <div class="font-bold mb-1" vid="422">防治建议：</div>
+                                    <ol class="list-decimal ml-3 space-y-0.5" vid="423">
+                                        <li vid="424">及时清除病叶；</li>
+                                        <li vid="425">使用多菌灵或代森锰锌进行喷施；</li>
+                                        <li vid="426">保持通风，避免过度浇水。</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center text-[7px] text-slate-300 pt-2" vid="427">以上为示例结果，仅用于界面展示，非真实模型推理结果。</div>
+                    </div>
+                    
+                    <div class="mt-3 relative" vid="428">
+                        <div class="border border-slate-200 rounded-full px-3 py-1.5 flex items-center gap-2 bg-white" vid="429">
+                            <i class="ph ph-paperclip text-slate-400" vid="430"></i>
+                            <input type="text" placeholder="继续提问，例如：这种病害如何防治？" class="flex-1 text-[8px] focus:outline-none" vid="431">
+                            <i class="ph-fill ph-paper-plane-right teal-text cursor-pointer" vid="432"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="flex flex-col gap-4" vid="433">
+            <div class="flex items-start gap-3" vid="434">
+                <div class="flex items-center justify-center w-7 h-7 rounded-full teal-btn text-white font-bold text-sm" vid="435">6</div>
+                <div vid="436">
+                    <h2 class="text-xl font-bold" vid="437">Docker 项目导出</h2>
+                    <p class="text-slate-500 text-sm" vid="438">打包完整项目，包含模型权重和运行环境</p>
+                </div>
+            </div>
+            
+            
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200 aspect-[4/3] flex flex-col" vid="439">
+                
+                <div class="h-8 border-b border-slate-100 flex items-center justify-between px-3" vid="440">
+                    <div class="flex items-center gap-2" vid="441">
+                        <i class="ph-fill ph-waves teal-text text-sm" vid="442"></i>
+                        <span class="font-bold text-[8px]" vid="443">Model2Agent</span>
+                    </div>
+                    <div class="flex items-center gap-3" vid="444">
+                        <div class="bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5 flex items-center gap-1 text-[7px]" vid="445">
+                            <i class="ph ph-cpu" vid="446"></i> GPU 0 · RTX 4090
+                        </div>
+                        <div class="flex items-center gap-1 bg-slate-200 rounded-full px-1.5 py-0.5 text-[7px]" vid="447">
+                            <span class="w-3 h-3 bg-slate-400 rounded-full flex items-center justify-center text-white text-[6px]" vid="448">A</span>
+                            admin
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 p-5 flex flex-col" vid="449">
+                    <div class="flex items-center gap-3 mb-4" vid="450">
+                        <div class="w-10 h-10 bg-teal-50 border border-teal-100 rounded-lg flex items-center justify-center text-teal-600" vid="451">
+                            <i class="ph ph-shipping-container text-xl" vid="452"></i>
+                        </div>
+                        <div vid="453">
+                            <h3 class="text-[10px] font-bold" vid="454">导出完整项目</h3>
+                            <p class="text-[8px] text-slate-400" vid="455">将生成的 Agent 项目打包为可运行的 Docker 版本，包含模型、代码和前端界面。</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-orange-50 border border-orange-100 rounded-lg p-3 flex gap-3 mb-5" vid="456">
+                        <i class="ph-fill ph-info text-orange-500 text-sm" vid="457"></i>
+                        <div class="text-[8px] text-orange-700" vid="458">
+                            <div class="font-bold mb-0.5" vid="459">Docker 构建未验证</div>
+                            <div vid="460">当前导出的 Docker 项目尚未经过完整构建验证，下载后请根据 README 进行使用。</div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1" vid="461">
+                        <div class="text-[9px] font-bold mb-3" vid="462">将包含以下内容</div>
+                        <div class="space-y-2" vid="463">
+                            <div class="flex items-center gap-3 group" vid="464">
+                                <div class="w-7 h-7 bg-blue-50 rounded flex items-center justify-center text-blue-500 group-hover:bg-blue-100 transition-colors" vid="465">
+                                    <i class="ph-fill ph-code" vid="466"></i>
+                                </div>
+                                <div class="flex-1 flex items-center justify-between" vid="467">
+                                    <span class="text-[8px] font-medium" vid="468">应用代码</span>
+                                    <span class="text-[8px] text-slate-400" vid="469">完整的 Agent 后端代码和前端界面</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 group" vid="470">
+                                <div class="w-7 h-7 bg-emerald-50 rounded flex items-center justify-center text-emerald-500 group-hover:bg-emerald-100 transition-colors" vid="471">
+                                    <i class="ph-fill ph-database" vid="472"></i>
+                                </div>
+                                <div class="flex-1 flex items-center justify-between border-t border-slate-50 pt-2" vid="473">
+                                    <span class="text-[8px] font-medium" vid="474">模型权重</span>
+                                    <span class="text-[8px] text-slate-500" vid="475">上传的模型文件 (已包含) <span class="ml-4 text-slate-400" vid="476">289 MB</span></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 group" vid="477">
+                                <div class="w-7 h-7 bg-slate-100 rounded flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition-colors" vid="478">
+                                    <i class="ph-fill ph-shipping-container" vid="479"></i>
+                                </div>
+                                <div class="flex-1 flex items-center justify-between border-t border-slate-50 pt-2" vid="480">
+                                    <span class="text-[8px] font-medium" vid="481">Dockerfile</span>
+                                    <span class="text-[8px] text-slate-500" vid="482">预配置的 Docker 运行环境 <span class="ml-10 text-slate-400" vid="483">1 KB</span></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 group" vid="484">
+                                <div class="w-7 h-7 bg-indigo-50 rounded flex items-center justify-center text-indigo-500 group-hover:bg-indigo-100 transition-colors" vid="485">
+                                    <i class="ph-fill ph-file-text" vid="486"></i>
+                                </div>
+                                <div class="flex-1 flex items-center justify-between border-t border-slate-50 pt-2" vid="487">
+                                    <span class="text-[8px] font-medium" vid="488">依赖配置</span>
+                                    <span class="text-[8px] text-slate-500" vid="489">requirements.txt 等依赖配置文件 <span class="ml-6 text-slate-400" vid="490">2 KB</span></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 group" vid="491">
+                                <div class="w-7 h-7 bg-rose-50 rounded flex items-center justify-center text-rose-500 group-hover:bg-rose-100 transition-colors" vid="492">
+                                    <i class="ph-fill ph-article" vid="493"></i>
+                                </div>
+                                <div class="flex-1 flex items-center justify-between border-t border-slate-50 pt-2" vid="494">
+                                    <span class="text-[8px] font-medium" vid="495">说明文档</span>
+                                    <span class="text-[8px] text-slate-500" vid="496">README.md 运行说明 <span class="ml-14 text-slate-400" vid="497">4 KB</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full teal-btn text-white rounded-lg py-3 mt-auto flex items-center justify-center gap-2 text-[10px] font-bold shadow-lg shadow-teal-100" vid="498">
+                        <i class="ph ph-download-simple" vid="499"></i> 下载完整 Docker ZIP (包含模型权重)
+                        <span class="opacity-70 text-[8px] border-l border-white/20 pl-2" vid="500">约 289 MB</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</body></html>
