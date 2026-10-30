@@ -102,7 +102,8 @@ def _make_builder_tools():
         PREVIEWS.stop(task_id)
         return {"content": [{"type": "text", "text": "preview stopped"}]}
 
-    return create_sdk_mcp_server("m2a_builder", tools=[start_preview, stop_preview])
+    return create_sdk_mcp_server("m2a_builder",
+                                 tools=[generate_agent, verify_agent, start_preview, stop_preview])
 
 
 class AgentSession:

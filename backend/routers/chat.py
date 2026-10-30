@@ -65,9 +65,6 @@ async def _run(task_id: str, prompt: str):
     db.update_task(task_id, status="running")
     _publish(task_id, {"type": "run_started", "run_id": run_id})
 
-    # ensure a workspace exists
-    ws = Workspace(task_id).create()
-
     # persistence: a single assistant message accumulates text + tool cards
     msg_id = db.append_message(task_id, "assistant", "")["id"]
     tool_cards: list[dict] = []
@@ -75,6 +72,8 @@ async def _run(task_id: str, prompt: str):
     full_text = ""
 
     try:
+        # ensure a workspace exists (inside try so any failure is reported & run finished)
+        ws = Workspace(task_id).create()
         session = await SESSIONS.get_or_create(task_id, str(ws.root), resume_session_id=task.get("session_id"), with_builder_tools=True)
         async for ev in session.respond(prompt):
             kind = ev.get("type")
@@ -125,7 +124,6 @@ async def _run(task_id: str, prompt: str):
         # detect generation outcome from the filesystem (works whether the agent
         # used the generate_agent MCP tool or ran gen_cli via Bash)
         try:
-            from ..workspace import Workspace
             cfg = Workspace(task_id).project / "config.json"
             if cfg.exists():
                 db.update_task(task_id, has_generated=1, status="ready")
