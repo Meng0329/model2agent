@@ -1,0 +1,9 @@
+gradio>=6
+claude-agent-sdk>=0.2.170
+anthropic>=0.85.0
+python-dotenv
+torch
+numpy
+scikit-learn
+xgboost
+joblib

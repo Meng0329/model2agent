@@ -1,16 +1,23 @@
 ---
 name: agent-generation
-description: Generate a standalone Model Agent project (SDK runtime + DeepSeek + Gradio UI + skills + Dockerfile) in the task workspace. Use after the model is inspected and executed.
+description: Generate a standalone Model Agent project (its own SDK runtime + DeepSeek + Gradio UI + skills + Dockerfile) in the task workspace using the shared generator. Use after the model is inspected and executed.
 ---
 # Agent Generation
 
-Produce a complete, independently-runnable Agent project in `project/`:
-- `runtime.py`: Claude Agent SDK runtime (`ClaudeSDKClient`) pointed at the Anthropic-compatible DeepSeek endpoint.
-- `agent.py`: capability routing + multi-turn chat.
-- `app.py`: ChatGPT-style Gradio UI adapted to the model's real I/O type (image upload / CSV upload / text input).
-- `skills/`: model-specific skills.
-- `model_exec.py`: loads real weights, exposes inference functions.
-- `Dockerfile`, `requirements.txt`, `.env.example`, `README.md`.
+To produce a complete, independently-runnable Agent project in `project/`, call the
+deterministic generator (real tool work, not LLM text):
 
-The generated Agent must call REAL weights and must have its OWN SDK session —
-never depend on the Builder's in-memory objects.
+```python
+import sys; sys.path.insert(0, "/data/mzb/paper2agent")
+from m2a_app.generator import generate
+proj = generate("<TASK_ID>", "<path to uploaded asset dir under inputs/>")
+```
+
+- `<TASK_ID>` is the current task id (from the workspace path).
+- The asset dir is under `inputs/<slug>/` (the uploaded bundle).
+- The generator copies the model-agnostic template, copies the REAL weights into
+  `project/assets/<slug>/`, and writes `project/config.json` derived from the asset's
+  manifest + examples (input type, capabilities). Never guess capabilities from the name.
+
+Then verify with model-execution / agent-testing skills. The generated Agent has its
+OWN Claude Agent SDK session — it never depends on the Builder's in-memory objects.

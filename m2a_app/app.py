@@ -51,6 +51,8 @@ body{background:var(--bg);color:var(--text)}
 .dim{color:var(--muted)}
 .empty{padding:40px 20px;text-align:center;color:var(--muted)}
 .modal{background:#fff;border-radius:16px;padding:24px;margin:48px auto 0;width:480px;max-width:92vw;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.m2a-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.25);display:flex;align-items:flex-start;justify-content:center}
+.m2a-modalbox{margin-top:48px;width:480px;max-width:92vw;background:#fff;border-radius:16px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:100}
 .m2a-card{border:1px solid var(--border);border-radius:10px;margin-top:8px;overflow:hidden;font-size:13px;background:#fff}
 .m2a-card-head{padding:8px 12px;background:#f3f4f6;font-weight:600}
@@ -289,18 +291,21 @@ with gr.Blocks(title="Model2Agent") as demo:
             gr.HTML("<div style='font-weight:600'>主 Agent 工作台</div>")
             status_html = gr.HTML(status_badge(""))
             stop_btn = gr.Button("停止", elem_classes="m2a-btn ghost", size="sm")
-        chat = gr.Chatbot(height="72vh", show_label=False, elem_classes="m2a-chat", sanitize_html=False)
+        chat = gr.Chatbot(height="64vh", show_label=False, elem_classes="m2a-chat", sanitize_html=False)
         with gr.Row(elem_classes="m2a-inputbar"):
             msg = gr.Textbox(placeholder="用自然语言描述下一步，或追问…", lines=2, scale=1, show_label=False, container=False)
             send = gr.Button("发送", elem_classes="m2a-btn")
 
     # RIGHT
     with gr.Column(scale=0, elem_classes="m2a-right"):
-        with gr.Row(elem_classes="m2a-right-head"):
-            gr.HTML("工作空间")
-            prev_btn = gr.Button("启动预览", elem_classes="m2a-btn ghost", size="sm")
-            stop_prev = gr.Button("停止预览", elem_classes="m2a-btn ghost", size="sm")
-            dl_btn = gr.Button("下载 ZIP", elem_classes="m2a-btn ghost", size="sm")
+        with gr.Column(elem_classes="m2a-right-head"):
+            with gr.Row():
+                gr.HTML("工作空间")
+            with gr.Row():
+                prev_btn = gr.Button("启动预览", elem_classes="m2a-btn ghost", size="sm")
+                stop_prev = gr.Button("停止预览", elem_classes="m2a-btn ghost", size="sm")
+            with gr.Row():
+                dl_btn = gr.Button("下载 ZIP", elem_classes="m2a-btn ghost", size="sm")
         with gr.Tabs():
             with gr.Tab("文件"):
                 fe = gr.FileExplorer(root_dir=str(config.WORKSPACES_DIR), scale=1, height=420)
@@ -309,31 +314,27 @@ with gr.Blocks(title="Model2Agent") as demo:
                 preview_frame = gr.HTML('<div class="empty">预览未启动</div>')
 
     # DEVICE MODAL
-    with gr.Column(visible=False) as dev_panel:
-        gr.HTML('<div class="backdrop"></div>')
-        with gr.Row(scale=0):
-            with gr.Column(scale=1):
-                gr.HTML('<div class="modal"><div style="font-size:18px;font-weight:700;margin-bottom:6px">设备配置</div>'
-                        '<div class="dim" style="margin-bottom:14px">请选择本机真实可用的计算设备（仅一次，可随时修改）</div>')
-                dev_radio = gr.Radio(choices=device_choices(), label="计算设备", value=None)
-                dev_err = gr.HTML('<span style="color:#dc2626;font-size:13px"></span>')
-                with gr.Row():
-                    save_dev = gr.Button("保存设备", elem_classes="m2a-btn")
-                    cancel_dev = gr.Button("取消", elem_classes="m2a-btn ghost")
+    with gr.Column(visible=False, elem_classes="m2a-overlay") as dev_panel:
+        with gr.Column(elem_classes="m2a-modalbox"):
+            gr.HTML('<div style="font-size:18px;font-weight:700;margin-bottom:6px">设备配置</div>'
+                    '<div class="dim" style="margin-bottom:14px">请选择本机真实可用的计算设备（仅一次，可随时修改）</div>')
+            dev_radio = gr.Radio(choices=device_choices(), label="计算设备", value=None)
+            dev_err = gr.HTML('<span style="color:#dc2626;font-size:13px"></span>')
+            with gr.Row():
+                save_dev = gr.Button("保存设备", elem_classes="m2a-btn")
+                cancel_dev = gr.Button("取消", elem_classes="m2a-btn ghost")
 
     # NEW TASK FORM
-    with gr.Column(visible=False) as new_panel:
-        gr.HTML('<div class="backdrop"></div>')
-        with gr.Row(scale=0):
-            with gr.Column(scale=1):
-                gr.HTML('<div class="modal"><div style="font-size:18px;font-weight:700;margin-bottom:14px">新建模型 Agent 任务</div>')
-                name_in = gr.Textbox(label="任务名称", placeholder="例如：植物病害识别 Agent")
-                goal_in = gr.Textbox(label="任务目标", lines=4, placeholder="用自然语言描述要生成什么 Agent…")
-                files_in = gr.File(label="模型资产（ZIP 或目录，可多文件）", file_count="multiple")
-                form_err = gr.HTML('<span style="color:#dc2626;font-size:13px"></span>')
-                with gr.Row():
-                    create_btn = gr.Button("创建任务并开始", elem_classes="m2a-btn")
-                    cancel_form = gr.Button("取消", elem_classes="m2a-btn ghost")
+    with gr.Column(visible=False, elem_classes="m2a-overlay") as new_panel:
+        with gr.Column(elem_classes="m2a-modalbox"):
+            gr.HTML('<div style="font-size:18px;font-weight:700;margin-bottom:14px">新建模型 Agent 任务</div>')
+            name_in = gr.Textbox(label="任务名称", placeholder="例如：植物病害识别 Agent")
+            goal_in = gr.Textbox(label="任务目标", lines=4, placeholder="用自然语言描述要生成什么 Agent…")
+            files_in = gr.File(label="模型资产（ZIP 或目录，可多文件）", file_count="multiple")
+            form_err = gr.HTML('<span style="color:#dc2626;font-size:13px"></span>')
+            with gr.Row():
+                create_btn = gr.Button("创建任务并开始", elem_classes="m2a-btn")
+                cancel_form = gr.Button("取消", elem_classes="m2a-btn ghost")
 
     # ---- wiring ----
     new_btn.click(_gate_device, None, [dev_panel, new_panel])
