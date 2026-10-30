@@ -11,3 +11,9 @@ results/logs/*.jsonl
 docs/模型API.md
 m2a_data/
 datasets_cache/
+# V2 frontend build + test artifacts
+frontend/node_modules/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/
+m2a_data/v2.db
