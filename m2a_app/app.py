@@ -36,6 +36,9 @@ body{background:var(--bg);color:var(--text);margin:0}
 .m2a-right{background:var(--panel);border-left:1px solid var(--border);height:100%;overflow:auto}
 .m2a-brand{padding:18px 16px;font-weight:700;font-size:16px;border-bottom:1px solid var(--border);color:var(--accent);letter-spacing:.2px}
 .m2a-topbar{padding:10px 16px;border-bottom:1px solid var(--border);align-items:center;gap:12px;background:var(--panel)}
+.m2a-topbar>*{flex:0 0 auto!important}
+.m2a-status{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:420px}
+.m2a-status .html-container{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .m2a-inputbar{padding:12px 16px;border-top:1px solid var(--border);background:var(--panel);gap:10px}
 .m2a-btn{background:var(--accent)!important;color:#fff!important;border:none!important;border-radius:0.625rem!important;font-weight:600!important;transition:all .15s ease}
 .m2a-btn:hover{filter:brightness(.95);transform:translateY(-1px)}
@@ -59,7 +62,7 @@ body{background:var(--bg);color:var(--text);margin:0}
 #taskhist label:has(input:checked){background:#ccfbf1;border-color:var(--accent)}
 /* neutralize Gradio's flex-grow stretching inside the workbench columns */
 .m2a-side{display:block!important}
-.m2a-side .m2a-hist{max-height:calc(100vh - 240px);overflow:auto}
+.m2a-side .m2a-hist{max-height:calc(100vh - 240px);overflow:auto;padding-bottom:18px}
 .m2a-side button{height:38px!important;min-height:38px!important;max-height:38px!important}
 .m2a-right{display:block!important}
 .m2a-right .tabs{max-height:calc(100vh - 120px);overflow:auto}
@@ -320,7 +323,7 @@ with gr.Blocks(title="Model2Agent", fill_width=True, fill_height=True) as demo:
         with gr.Column(scale=1, min_width=520, elem_classes="m2a-center"):
             with gr.Row(elem_classes="m2a-topbar"):
                 gr.HTML("<div style='font-weight:600'>主 Agent 工作台</div>")
-                status_html = gr.HTML(status_badge(""))
+                status_html = gr.HTML(status_badge(""), elem_classes="m2a-status")
                 stop_btn = gr.Button("停止", elem_classes="m2a-btn ghost", size="sm")
             chat = gr.Chatbot(height="64vh", show_label=False, elem_classes="m2a-chat", sanitize_html=False)
             with gr.Row(elem_classes="m2a-inputbar"):
