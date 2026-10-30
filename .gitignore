@@ -9,3 +9,5 @@ results/logs/*.jsonl
 !model_assets/**/*.joblib
 .venv/
 docs/模型API.md
+m2a_data/
+datasets_cache/
