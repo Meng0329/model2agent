@@ -58,8 +58,12 @@ class Workspace:
 
     def add_asset_zip(self, zip_path: str | Path, extract: bool = True) -> Path:
         zp = Path(zip_path)
-        dst = self.inputs / zp.name
-        shutil.copy2(zp, dst)
+        # if the upload was already staged inside this workspace, use it directly
+        if zp.parent.resolve() == self.inputs.resolve():
+            dst = zp
+        else:
+            dst = self.inputs / zp.name
+            shutil.copy2(zp, dst)
         if extract:
             dest = self.inputs / zp.stem
             dest.mkdir(parents=True, exist_ok=True)

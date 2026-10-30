@@ -23,3 +23,7 @@ generated_agent_template/web/node_modules/
 generated_agent_template/web/test-results/
 generated_agent_template/web/playwright-report/
 *.tsbuildinfo
+# Docker verify test artifacts
+export.zip
+/tmp/
+*.zip

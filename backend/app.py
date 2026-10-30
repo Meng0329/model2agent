@@ -8,8 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from . import config, db
-from .routers import devices, tasks, chat, workspace
-from .workspace import start_watcher
+from .routers import devices, tasks, chat, workspace, preview, export
+from .preview import PREVIEWS
+from .workspace import start_watcher, stop_watcher
 
 app = FastAPI(title="Model2Agent V2.0", version="2.0.0")
 config.ensure_dirs()
@@ -29,6 +30,14 @@ app.include_router(devices.router)
 app.include_router(tasks.router)
 app.include_router(chat.router)
 app.include_router(workspace.router)
+app.include_router(preview.router)
+app.include_router(export.router)
+
+
+@app.on_event("shutdown")
+def _shutdown():
+    PREVIEWS.stop_all_except(None)
+    stop_watcher()
 
 
 @app.get("/api/health")
