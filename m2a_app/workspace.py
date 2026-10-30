@@ -1,5 +1,6 @@
 """Per-task workspace: isolated dirs, safe path resolution, asset intake, zip export."""
 from __future__ import annotations
+import json
 import shutil
 import zipfile
 from pathlib import Path
@@ -94,3 +95,42 @@ class Workspace:
                 if p.is_file():
                     z.write(p, p.relative_to(self.root))
         return out
+
+    def export_project_zip(self, out_path: str | Path) -> Path:
+        """Export ONLY the generated project (project/), excluding secrets, caches
+        and the Builder's private files. Weights are included when the license allows."""
+        out = Path(out_path)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        skip_names = {".env", ".env.local", "chat.json", "__pycache__", ".git", ".pytest_cache"}
+        skip_suffixes = (".pyc",)
+        with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+            if not self.project.exists():
+                return out
+            for p in self.project.rglob("*"):
+                if not p.is_file():
+                    continue
+                rel = p.relative_to(self.project)
+                if any(part in skip_names for part in rel.parts):
+                    continue
+                if p.name.endswith(skip_suffixes):
+                    continue
+                # never ship a real API key file or dot-env anywhere
+                if p.name in (".env", ".env.local", ".credentials.json"):
+                    continue
+                z.write(p, rel)
+        return out
+
+    # ---- chat history persistence (survives restart, no DB server) ----
+    def save_chat(self, messages: list) -> None:
+        self.root.mkdir(parents=True, exist_ok=True)
+        (self.root / "chat.json").write_text(
+            json.dumps(messages, ensure_ascii=False, default=str), encoding="utf-8")
+
+    def load_chat(self) -> list:
+        p = self.root / "chat.json"
+        if not p.exists():
+            return []
+        try:
+            return json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            return []

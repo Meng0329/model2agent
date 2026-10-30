@@ -53,15 +53,21 @@ class PreviewManager:
         except (ProcessLookupError, PermissionError):
             return False
 
-    def start(self, task_id: str, entry: str, env: dict | None = None) -> PreviewState:
-        """Launch the generated agent as an independent process. Real port, real process."""
+    def start(self, task_id: str, entry: str, device: str = "cuda:0", env: dict | None = None) -> PreviewState:
+        """Launch the generated agent as an independent process on the SAVED device.
+
+        `device` is e.g. "cuda:0" or "cpu" — we derive the CUDA_VISIBLE_DEVICES index
+        so the preview runs on the device the user actually selected (no hardcoded GPU 0).
+        """
         self.stop(task_id)
         port = free_port()
         st = PreviewState(task_id, pid=None, port=port,
                           url=f"http://127.0.0.1:{port}", status="starting")
         self._previews[task_id] = st
         e = dict(os.environ)
-        e.setdefault("CUDA_VISIBLE_DEVICES", "0")
+        cuda_idx = device.split(":")[-1] if device.startswith("cuda:") else "-1"
+        e["CUDA_VISIBLE_DEVICES"] = cuda_idx
+        e["M2A_PREVIEW_DEVICE"] = device
         e["M2A_PREVIEW_PORT"] = str(port)
         if env:
             e.update(env)
@@ -120,3 +126,6 @@ class PreviewManager:
         for tid in list(self._previews):
             if tid != keep_task_id:
                 self.stop(tid)
+
+
+PREVIEWS = PreviewManager()

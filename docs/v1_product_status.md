@@ -42,9 +42,12 @@ Gradio 6.31：左任务历史 / 中真实流式 Agent 对话 + 工具卡片 + �
   少量动效仍为默认。
 
 ## 验收测试（scripts/v1_acceptance.py）
-`PASS 10/10`：设备检测、设备保存、创建任务、工作空间、文件可见、
-CNN 生成 Agent 真实推理、XGBoost 生成 Agent 真实推理、预览生命周期、ZIP 导出、
-真实 SDK 流式+工具。
+`PASS 11/11`（V1.1，T10 Docker 需 `V1_DOCKER=1` 重建后生效）：
+T1 单次发送（num_turns==1）、T2 真实 ToolUse+ToolResult（Write/Read 完成+落盘）、
+T3 SDK session_id+chat 持久化、T4 历史点击恢复、T5 工作空间文件同步、
+T6 CNN+XGB 生成 Agent 真实推理（predict=9 / predict=1）、
+T7 生成 Agent 自身 SDK 多轮、T8 Builder Agent 驱动预览+停止、T9 ZIP 含权重且无密钥、
+T10 Docker 容器内真实推理（`V1_DOCKER=1` 时运行）。
 
 ## 已知技术要点 / 边界
 - 密钥仅 `.env`（gitignore）；生成项目 `.env.example` 不含真实 key。

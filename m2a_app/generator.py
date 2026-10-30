@@ -26,7 +26,7 @@ def _detect_input_type(manifest: dict, examples: dict, capabilities: list) -> st
             args = recs[0].get("args", {})
             feats = args.get("features")
             if isinstance(feats, list) and len(feats) > 0:
-                return "vector64" if len(feats) > 10 else "vector"
+                return "vector64" if len(feats) == 64 else "vector"
             if "image" in args or "image_path" in args or "filepath" in args:
                 return "image"
             if "text" in args:
@@ -37,6 +37,17 @@ def _detect_input_type(manifest: dict, examples: dict, capabilities: list) -> st
     if "image" in tf or "vision" in tf:
         return "image"
     return "tabular"
+
+
+def _vector_len(examples: dict, capabilities: list) -> int | None:
+    """Real feature-vector length from a grounded example, if any."""
+    for cap in capabilities:
+        recs = examples.get(cap, [])
+        if recs:
+            feats = recs[0].get("args", {}).get("features")
+            if isinstance(feats, list) and len(feats) > 0:
+                return len(feats)
+    return None
 
 
 def generate(task_id: str, asset_dir: str | Path) -> Path:
@@ -92,6 +103,7 @@ def generate(task_id: str, asset_dir: str | Path) -> Path:
         "framework": manifest.get("framework", ""),
         "task_family": manifest.get("task_family", ""),
         "input_type": input_type,
+        "vector_len": _vector_len(examples, caps),
         "capabilities": caps,
         "default_capability": default_cap,
         "capability_map": {c: c for c in caps},

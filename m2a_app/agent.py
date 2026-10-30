@@ -4,20 +4,24 @@ This is the ONLY agent runtime. It spawns a Claude Code CLI subprocess pointed a
 the Anthropic-compatible DeepSeek endpoint and streams genuine events:
  - StreamEvent text_delta            -> incremental assistant text
  - StreamEvent content_block_start   -> a real tool/exec card begins (running)
- - AssistantMessage ToolResultBlock  -> the card's real result (done/error)
+ - UserMessage ToolResultBlock       -> the card's real result (done/error)
 No self-written agent loop, no OpenAI fallback, no fabricated tool calls.
+
+The Builder Agent also exposes `start_preview` / `stop_preview` MCP tools so the
+agent itself (not the UI) drives the preview lifecycle, per spec.
 """
 from __future__ import annotations
 import asyncio
 import time
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 from claude_agent_sdk import (
     ClaudeSDKClient, ClaudeAgentOptions,
     StreamEvent, AssistantMessage, ToolUseBlock, ToolResultBlock,
     ResultMessage, SystemMessage, TextBlock, UserMessage,
+    tool, create_sdk_mcp_server,
 )
 
 from . import config
@@ -33,48 +37,78 @@ class ToolCard:
     started_at: float = 0.0
 
 
+def _make_builder_tools():
+    """MCP tools that let the Builder Agent drive the preview lifecycle."""
+    from .preview import PREVIEWS
+    from .store import Store
+    from .workspace import Workspace
+
+    @tool("start_preview",
+          "启动当前任务的生成项目预览（独立进程，使用任务选定设备），返回运行状态与 URL",
+          {"type": "object",
+           "properties": {"task_id": {"type": "string"}, "device": {"type": "string"}},
+           "required": ["task_id"]})
+    async def start_preview(args):
+        task_id = args.get("task_id")
+        device = args.get("device") or Store().get_device() or "cuda:0"
+        entry = Workspace(task_id).project / "run.py"
+        st = PREVIEWS.start(task_id, str(entry), device=device)
+        msg = f"preview {st.status}" + (f" at {st.url}" if st.url else "") + (f" err={st.error}" if st.error else "")
+        return {"content": [{"type": "text", "text": msg}]}
+
+    @tool("stop_preview",
+          "停止当前任务正在运行的预览进程",
+          {"type": "object", "properties": {"task_id": {"type": "string"}}, "required": ["task_id"]})
+    async def stop_preview(args):
+        task_id = args.get("task_id")
+        from .preview import PREVIEWS
+        PREVIEWS.stop(task_id)
+        return {"content": [{"type": "text", "text": "preview stopped"}]}
+
+    return create_sdk_mcp_server("m2a_builder", tools=[start_preview, stop_preview])
+
+
 class AgentSession:
     """One continuous Claude Agent SDK session bound to one task/workspace."""
 
-    def __init__(self, cwd: str | Path, allowed_tools=None, first_prompt: str | None = None):
+    def __init__(self, cwd: str | Path, allowed_tools=None,
+                 resume_session_id: str | None = None, with_builder_tools: bool = False):
         self.cwd = str(cwd)
         self.allowed_tools = allowed_tools or config.MAIN_TOOLS
-        self.first_prompt = first_prompt
+        self.resume_session_id = resume_session_id
+        self.with_builder_tools = with_builder_tools
         self.client: ClaudeSDKClient | None = None
-        self.session_id = uuid.uuid4().hex[:16]
+        self.session_id: str | None = resume_session_id
         self._cards: dict[str, ToolCard] = {}
         self.connected = False
 
     async def connect(self) -> None:
         if self.connected:
             return
-        opts = ClaudeAgentOptions(
+        opts = dict(
             model=config.DEEPSEEK_MODEL,
             cwd=self.cwd,
             permission_mode="bypassPermissions",
             include_partial_messages=True,
             allowed_tools=self.allowed_tools,
-            # Only load the *project* skill/config, never the user's global
-            # ~/.claude/CLAUDE.md — keeps the product's output clean and isolated.
             setting_sources=["project"],
             env=config.agent_env(),
         )
-        self.client = ClaudeSDKClient(options=opts)
-        # Only pass a real first prompt; connect() with an empty string sends a
-        # blank user message the model treats as "empty input".
-        await self.client.connect(self.first_prompt if self.first_prompt else None)
+        if self.resume_session_id:
+            opts["resume"] = self.resume_session_id
+        if self.with_builder_tools:
+            opts["mcp_servers"] = {"m2a_builder": _make_builder_tools()}
+        self.client = ClaudeSDKClient(options=ClaudeAgentOptions(**opts))
+        # connect() WITHOUT a prompt: the SDK would send an empty/None prompt as a
+        # user message. All messages are delivered exactly once via query() in respond().
+        await self.client.connect()
         self.connected = True
 
     def _ev(self, kind: str, **kw) -> dict:
         return {"type": kind, **kw}
 
     async def respond(self, prompt: str):
-        """Async generator of real events for one user turn.
-
-        Yields {"type":"text","text":...} for incremental deltas,
-                {"type":"tool",...} for tool-card lifecycle,
-                {"type":"result", "text":..., "is_error":...} once at the end.
-        """
+        """Async generator of real events for one user turn (prompt sent exactly once)."""
         await self.connect()
         await self.client.query(prompt)
 
@@ -118,8 +152,6 @@ class AgentSession:
                         if e:
                             yield e
             elif isinstance(m, UserMessage):
-                # Built-in tools return their result as a UserMessage with a
-                # ToolResultBlock. Mark the matching card done with real output.
                 content = m.content if isinstance(m.content, list) else []
                 for b in content:
                     if isinstance(b, ToolResultBlock):
@@ -127,7 +159,6 @@ class AgentSession:
                         cid = b.tool_use_id
                         card = self._cards.get(cid) if cid in self._cards else None
                         if card is None:
-                            # attach to the latest running card
                             running = [c for c in self._cards.values() if c.status == "running"]
                             card = running[-1] if running else None
                         if card is not None:
@@ -136,14 +167,13 @@ class AgentSession:
                             yield self._ev("tool", card_id=card.id, name=card.name,
                                            status="done", input=card.input, result=res)
             elif isinstance(m, ResultMessage):
+                # Capture the SDK's REAL session id for later resume/restore.
+                if m.session_id:
+                    self.session_id = m.session_id
                 yield self._ev("result", text="".join(stream_parts), is_error=bool(m.is_error),
-                               stop_reason=m.stop_reason, cost=m.total_cost_usd)
+                               stop_reason=m.stop_reason, cost=m.total_cost_usd,
+                               session_id=m.session_id, num_turns=m.num_turns)
                 return
-
-    def _last_running_id(self) -> str | None:
-        for cid, c in list(self._cards.items())[::-1]:
-            return cid
-        return None
 
     async def interrupt(self) -> None:
         if self.client and self.connected:
@@ -168,13 +198,18 @@ class SessionManager:
     def has(self, task_id: str) -> bool:
         return task_id in self._sessions and self._sessions[task_id].connected
 
-    async def get_or_create(self, task_id: str, cwd, first_prompt: str | None = None) -> AgentSession:
+    async def get_or_create(self, task_id: str, cwd, resume_session_id: str | None = None,
+                            with_builder_tools: bool = False) -> AgentSession:
         async with self._lock:
             if task_id in self._sessions:
                 return self._sessions[task_id]
-            s = AgentSession(cwd=cwd, first_prompt=first_prompt)
+            s = AgentSession(cwd=cwd, resume_session_id=resume_session_id,
+                             with_builder_tools=with_builder_tools)
             self._sessions[task_id] = s
             return s
+
+    def get(self, task_id: str) -> AgentSession | None:
+        return self._sessions.get(task_id)
 
     async def interrupt(self, task_id: str) -> None:
         if task_id in self._sessions:
