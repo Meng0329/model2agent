@@ -1,0 +1,11 @@
+.env
+.env.local
+__pycache__/
+*.pyc
+web/node_modules/
+web/dist/
+*.pt
+*.joblib
+*.pth
+!assets/**/*.pt
+!assets/**/*.joblib

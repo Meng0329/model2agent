@@ -12,6 +12,7 @@ agent itself (not the UI) drives the preview lifecycle, per spec.
 """
 from __future__ import annotations
 import asyncio
+import json
 import time
 import uuid
 from dataclasses import dataclass
@@ -38,9 +39,45 @@ class ToolCard:
 
 
 def _make_builder_tools():
-    """MCP tools that let the Builder Agent drive the preview lifecycle."""
+    """MCP tools that let the Builder Agent drive generation + preview lifecycle."""
     from .preview import PREVIEWS
     from .workspace import Workspace
+    from . import db
+
+    @tool("generate_agent",
+          "在任务工作区生成可独立运行的 Agent 项目（React+FastAPI+真实权重+config.json），返回项目摘要。确定性程序执行，非 LLM 文本。",
+          {"type": "object",
+           "properties": {"task_id": {"type": "string"}, "asset_dir": {"type": "string"}},
+           "required": ["task_id"]})
+    async def generate_agent(args):
+        from .generator import generate
+        try:
+            proj = generate(args["task_id"], args.get("asset_dir") or f"inputs/{args['task_id']}")
+            cfg = json.loads((proj / "config.json").read_text(encoding="utf-8"))
+            db.update_task(args["task_id"], has_generated=1, status="ready")
+            from .routers import chat as chat_router
+            chat_router._publish(args["task_id"], {"type": "workspace_changed"})
+            return {"content": [{"type": "text", "text": json.dumps({
+                "ok": True, "project": str(proj), "slug": cfg["slug"],
+                "input_type": cfg["input_type"], "capabilities": cfg["capabilities"],
+                "vector_len": cfg["vector_len"],
+            }, ensure_ascii=False)}]}
+        except Exception as e:
+            db.update_task(args["task_id"], status="error")
+            return {"content": [{"type": "text", "text": f"ERROR: {type(e).__name__}: {e}"}]}
+
+    @tool("verify_agent",
+          "启动生成的 Agent、探活、运行真实权重自检（model_exec.selfcheck），返回真实推理结果。失败必须如实报告。",
+          {"type": "object", "properties": {"task_id": {"type": "string"}}, "required": ["task_id"]})
+    async def verify_agent(args):
+        from .gen_cli import cmd_verify
+        import types
+        try:
+            a = types.SimpleNamespace(task_id=args["task_id"])
+            rc = cmd_verify(a)
+            return {"content": [{"type": "text", "text": "VERIFY_OK" if rc == 0 else f"VERIFY_FAILED rc={rc}"}]}
+        except Exception as e:
+            return {"content": [{"type": "text", "text": f"ERROR: {type(e).__name__}: {e}"}]}
 
     @tool("start_preview",
           "启动当前任务的生成项目预览（独立进程，使用任务选定设备），返回运行状态与 URL",

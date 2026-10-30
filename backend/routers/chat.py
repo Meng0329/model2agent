@@ -122,6 +122,15 @@ async def _run(task_id: str, prompt: str):
         db.update_task(task_id, status="error")
     finally:
         await SESSIONS.close(task_id)
+        # detect generation outcome from the filesystem (works whether the agent
+        # used the generate_agent MCP tool or ran gen_cli via Bash)
+        try:
+            from ..workspace import Workspace
+            cfg = Workspace(task_id).project / "config.json"
+            if cfg.exists():
+                db.update_task(task_id, has_generated=1, status="ready")
+        except Exception:
+            pass
 
 
 def is_err_global(cards: list[dict]) -> bool:

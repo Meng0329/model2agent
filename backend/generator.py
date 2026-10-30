@@ -1,7 +1,7 @@
 """Deterministic scaffold: generate a standalone Model Agent project from an
-asset bundle. Copies the model-agnostic template, copies the real weights, and
-writes config.json (model info, input type, capabilities) derived from the
-asset's actual manifest + examples — never guessed from the model name.
+asset bundle. Copies the React+FastAPI template, copies the real weights, and
+writes config.json (model info, input type, capabilities, adapters) derived
+from the asset's actual manifest + examples — never guessed from the model name.
 
 The main Agent chooses *when* to call this (via the agent-generation skill);
 the execution here is deterministic Python (real tool work), per the spec.
@@ -14,29 +14,33 @@ from pathlib import Path
 from . import config
 from .workspace import Workspace
 
-TEMPLATE = Path(__file__).resolve().parent / "templates" / "generated_agent"
+TEMPLATE = config.ROOT / "generated_agent_template"
 
 
 def _detect_input_type(manifest: dict, examples: dict, capabilities: list) -> str:
-    """Infer the direct-prediction input type from grounded examples."""
-    # Grounded detection from real examples first (never from the model name).
+    """Infer the natural input type from task_family first, then grounded examples."""
+    tf = (manifest.get("task_family") or "").lower()
+    if "image" in tf or "vision" in tf:
+        return "image"
+    if "tabular" in tf or "table" in tf:
+        return "tabular"
+    if (manifest.get("framework") or "").lower() in ("transformers", "huggingface"):
+        return "text"
+    # grounded detection from real examples
     for cap in capabilities:
         recs = examples.get(cap, [])
         if recs:
             args = recs[0].get("args", {})
-            feats = args.get("features")
-            if isinstance(feats, list) and len(feats) > 0:
-                return "vector64" if len(feats) == 64 else "vector"
             if "image" in args or "image_path" in args or "filepath" in args:
                 return "image"
             if "text" in args:
                 return "text"
+            feats = args.get("features")
+            if isinstance(feats, list) and len(feats) > 0:
+                return "vector"
             if "data" in args or "X" in args:
                 return "tabular"
-    tf = (manifest.get("task_family") or "").lower()
-    if "image" in tf or "vision" in tf:
-        return "image"
-    return "tabular"
+    return "text"
 
 
 def _vector_len(examples: dict, capabilities: list) -> int | None:
@@ -48,6 +52,24 @@ def _vector_len(examples: dict, capabilities: list) -> int | None:
             if isinstance(feats, list) and len(feats) > 0:
                 return len(feats)
     return None
+
+
+def _feature_names(asset: Path, manifest: dict) -> list[str] | None:
+    """Real feature names from metrics.json (tabular) if present."""
+    m = asset / "metrics.json"
+    if m.exists():
+        try:
+            j = json.loads(m.read_text(encoding="utf-8"))
+            names = j.get("feature_names")
+            if isinstance(names, list) and names:
+                return [str(n) for n in names]
+        except Exception:
+            pass
+    return None
+
+
+def _adapter(input_type: str) -> str:
+    return {"image": "image", "tabular": "tabular"}.get(input_type, "raw")
 
 
 def generate(task_id: str, asset_dir: str | Path) -> Path:
@@ -78,12 +100,13 @@ def generate(task_id: str, asset_dir: str | Path) -> Path:
 
     ws = Workspace(task_id)
     proj = ws.project
-    # start from a clean project (only the scaffold, not stale agent scratch)
     if proj.exists():
         shutil.rmtree(proj)
     proj.mkdir(parents=True, exist_ok=True)
-    # copy template
+    # copy template (React web build + backend)
     for item in TEMPLATE.rglob("*"):
+        if any(part.startswith("node_modules") or part.startswith("dist") or part == "__pycache__" for part in item.relative_to(TEMPLATE).parts):
+            continue
         rel = item.relative_to(TEMPLATE)
         dst = proj / rel
         if item.is_dir():
@@ -97,13 +120,57 @@ def generate(task_id: str, asset_dir: str | Path) -> Path:
     shutil.copytree(asset, asset_dst, dirs_exist_ok=True,
                     ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
 
+    # class labels for display: explicit > manifest/metrics "labels" > scalar classes() result
+    labels = []
+    def _scalar_labels(v) -> list:
+        if isinstance(v, list) and v and all(not isinstance(x, (dict, list)) for x in v):
+            return [str(x) for x in v]
+        if isinstance(v, dict):
+            for k in ("labels", "classes", "result"):
+                if isinstance(v.get(k), list):
+                    return [str(x) for x in v[k] if not isinstance(x, (dict, list))]
+        return []
+    classes_rec = examples.get("classes")
+    if isinstance(classes_rec, list):
+        for rec in classes_rec:
+            if isinstance(rec, dict) and "result" in rec:
+                labels = _scalar_labels(rec["result"])
+                if labels:
+                    break
+        if not labels:
+            labels = _scalar_labels(classes_rec)
+    if not labels:
+        labels = _scalar_labels(manifest.get("labels"))
+    if not labels:
+        try:
+            m = json.loads((asset / "metrics.json").read_text(encoding="utf-8"))
+            labels = _scalar_labels(m.get("labels"))
+        except Exception:
+            pass
+    if not labels:
+        # fallback: distinct true_label values seen in examples
+        seen = []
+        for cap in caps:
+            for rec in examples.get(cap, []):
+                tl = rec.get("true_label")
+                if tl is not None and str(tl) not in seen:
+                    seen.append(str(tl))
+        try:
+            seen.sort(key=lambda x: float(x))
+        except Exception:
+            pass
+        labels = seen
+
     cfg = {
         "slug": slug,
         "model_id": manifest.get("model_id", slug),
         "framework": manifest.get("framework", ""),
         "task_family": manifest.get("task_family", ""),
         "input_type": input_type,
+        "adapter": _adapter(input_type),
         "vector_len": _vector_len(examples, caps),
+        "feature_names": _feature_names(asset, manifest),
+        "labels": labels,
         "capabilities": caps,
         "default_capability": default_cap,
         "capability_map": {c: c for c in caps},

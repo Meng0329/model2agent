@@ -1,0 +1,16 @@
+# Model2Agent generated agent — Python runtime
+claude-agent-sdk>=0.2.170
+anthropic>=0.85.0
+openai>=1.0
+fastapi>=0.115
+uvicorn>=0.30
+python-multipart
+python-dotenv
+torch>=2.10
+numpy
+pandas>=2.3
+scikit-learn>=1.9
+xgboost
+joblib>=1.6
+pillow>=10.0
+# transformers>=4.57  # uncomment for text/transformers assets (e.g. bert_zh)

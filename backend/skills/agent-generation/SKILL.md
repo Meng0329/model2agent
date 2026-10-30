@@ -1,28 +1,19 @@
 ---
 name: agent-generation
-description: Generate a standalone Model Agent project (its own SDK runtime + DeepSeek + Gradio UI + skills + Dockerfile) in the task workspace using the shared generator. Use after the model is inspected and executed.
+description: 生成独立 Model Agent 项目（独立 SDK 运行时 + DeepSeek + React UI + 模型推理 + Dockerfile）。在模型被检查并真实执行后使用。
 ---
-# Agent Generation
+# Agent 生成
 
-To produce a complete, independently-runnable Agent project in `project/`, call the
-deterministic generator (real tool work, not LLM text). The repo root is 3 levels up
-from the task workspace (`m2a_data/workspaces/<TASK_ID>/`), so use a RELATIVE import
-that works on any machine:
+用确定性生成工具在 `project/` 产出完整、可独立运行的 Agent 项目。
 
-```python
-import sys
-from pathlib import Path
-repo = Path.cwd().resolve().parents[2]      # .../model2agent  (portable, no hardcoded host path)
-sys.path.insert(0, str(repo))
-from m2a_app.generator import generate
-asset_dir = [p for p in Path("inputs").iterdir() if p.is_dir()][0]   # uploaded bundle
-proj = generate(Path.cwd().name, str(asset_dir))
-```
+## 步骤
+1. 确定资产目录：上传的 bundle 在 `inputs/` 下（若为 ZIP 已解压到 `inputs/<slug>/`）。
+2. 调用 MCP 工具 **`generate_agent`**，参数：`{"task_id": "<当前任务ID>", "asset_dir": "inputs/<slug>"}`。
+   该工具在 Builder 进程内执行确定性生成（非 LLM 文本）：复制 React+FastAPI 模板、把**真实权重**复制进
+   `project/assets/<slug>/`、依据资产 manifest+examples 写出 `project/config.json`
+   （input_type / capabilities / adapters / feature_names / labels）。
 
-- The generator copies the model-agnostic template, copies the REAL weights into
-  `project/assets/<slug>/`, and writes `project/config.json` derived from the asset's
-  manifest + examples (input type, capabilities). Never guess capabilities from the name.
-- The generated Agent has its OWN Claude Agent SDK session — it never depends on the
-  Builder's in-memory objects.
-
-Then verify with model-execution / agent-testing skills.
+## 规则
+- **绝不允许凭模型名猜测能力**——一切来自 manifest + examples + 真实入口。
+- 若 `generate_agent` 返回 ERROR，必须如实报告，不得标记成功。
+- 生成后调用 `verify_agent`（真实权重加载 + 每个能力真实执行 + 启动探活）。
