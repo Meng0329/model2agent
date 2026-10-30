@@ -31,8 +31,13 @@ export function WorkspacePanel({ task }: { task: Task }) {
     } catch { /* ignore */ }
   };
 
-  // initial load + live refresh when the tab is open and files change
-  useEffect(() => { loadFiles(); /* eslint-disable-next-line */ }, [taskId]);
+  // initial load + reset selection when switching tasks (avoid stale paths → 404)
+  useEffect(() => {
+    setSel(null);
+    setContent(null);
+    loadFiles();
+    // eslint-disable-next-line
+  }, [taskId]);
   useEffect(() => {
     if (tab !== "files") return;
     const t = setInterval(() => loadFiles(), 2500);
@@ -40,6 +45,7 @@ export function WorkspacePanel({ task }: { task: Task }) {
   }, [tab, taskId]);
 
   const openFile = async (path: string) => {
+    if (!path) return;
     setSel(path); setLoading("content");
     try {
       const r = await fetch(`/api/tasks/${taskId}/files/content?path=${encodeURIComponent(path)}`).then((r) => r.json());
@@ -127,37 +133,41 @@ export function WorkspacePanel({ task }: { task: Task }) {
 }
 
 function FileTree({ files, sel, onOpen }: { files: FileItem[]; sel: string | null; onOpen: (p: string) => void }) {
-  const [open, setOpen] = useState<Record<string, boolean>>({});
-  const dirs = useMemo(() => files.filter((f) => f.is_dir), [files]);
-  const leaves = useMemo(() => files.filter((f) => !f.is_dir), [files]);
-  const topDirs = dirs.filter((d) => !d.path.includes("/"));
-  const topFiles = leaves.filter((f) => !f.path.includes("/"));
-
+  // build a recursive view: directories expand, files open content. A directory is
+  // never passed to onOpen (that would 404 the content endpoint on a dir path).
+  const build = (prefix: string): React.ReactNode[] => {
+    const children = files.filter((f) => {
+      if (prefix && !f.path.startsWith(prefix + "/")) return false;
+      const rest = prefix ? f.path.slice(prefix.length + 1) : f.path;
+      return rest.length > 0 && !rest.includes("/");
+    });
+    return children.map((c) => <TreeNode key={c.path} f={c} files={files} sel={sel} onOpen={onOpen} depth={0} />);
+  };
   return (
-    <div className="w-60 shrink-0 bg-surface/60 p-2">
-      {topDirs.map((d) => {
-        const isOpen = open[d.path] !== false;
-        const children = files.filter((f) => f.path.startsWith(d.path + "/") && f.path.slice(d.path.length + 1).split("/").length === 1);
-        return (
-          <div key={d.path}>
-            <button onClick={() => setOpen((o) => ({ ...o, [d.path]: !isOpen }))} className="flex w-full items-center gap-1 rounded-md px-2 py-1 text-left text-sm text-ink hover:bg-white">
-              <ChevronRight size={13} className={cn("shrink-0 text-subink transition", isOpen && "rotate-90")} />
-              <Folder size={14} className="shrink-0 text-amber-500" /> <span className="truncate">{d.name}</span>
-            </button>
-            {isOpen && children.map((c) => <Leaf key={c.path} f={c} sel={sel} onOpen={onOpen} indent />)}
-          </div>
-        );
-      })}
-      {topFiles.map((f) => <Leaf key={f.path} f={f} sel={sel} onOpen={onOpen} />)}
+    <div className="w-60 shrink-0 overflow-auto bg-surface/60 p-2">
+      {build("")}
       {files.length === 0 && <div className="px-2 py-6 text-center text-xs text-subink">工作区还没有文件</div>}
     </div>
   );
 }
 
-function Leaf({ f, sel, onOpen, indent }: { f: FileItem; sel: string | null; onOpen: (p: string) => void; indent?: boolean }) {
+function TreeNode({ f, files, sel, onOpen, depth }: { f: FileItem; files: FileItem[]; sel: string | null; onOpen: (p: string) => void; depth: number }) {
+  const [isOpen, setIsOpen] = useState(depth < 1);
+  if (f.is_dir) {
+    const kids = files.filter((x) => x.path.startsWith(f.path + "/") && x.path.slice(f.path.length + 1).split("/").length === 1);
+    return (
+      <div>
+        <button onClick={() => setIsOpen((o) => !o)} className="flex w-full items-center gap-1 rounded-md px-2 py-1 text-left text-sm text-ink hover:bg-white" style={{ paddingLeft: 8 + depth * 14 }}>
+          <ChevronRight size={13} className={cn("shrink-0 text-subink transition", isOpen && "rotate-90")} />
+          <Folder size={14} className="shrink-0 text-amber-500" /> <span className="truncate">{f.name}</span>
+        </button>
+        {isOpen && kids.map((c) => <TreeNode key={c.path} f={c} files={files} sel={sel} onOpen={onOpen} depth={depth + 1} />)}
+      </div>
+    );
+  }
   const active = sel === f.path;
   return (
-    <button onClick={() => onOpen(f.path)} className={cn("flex w-full items-center gap-1.5 rounded-md px-2 py-1 text-left text-sm", indent && "pl-6", active ? "bg-accent/10 text-accent" : "text-ink hover:bg-white")}>
+    <button onClick={() => onOpen(f.path)} className={cn("flex w-full items-center gap-1.5 rounded-md px-2 py-1 text-left text-sm", active ? "bg-accent/10 text-accent" : "text-ink hover:bg-white")} style={{ paddingLeft: 22 + depth * 14 }}>
       <FileCode size={13} className={cn("shrink-0", active ? "text-accent" : "text-subink")} />
       <span className="truncate">{f.name}</span>
     </button>

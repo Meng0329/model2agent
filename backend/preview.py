@@ -53,16 +53,21 @@ class PreviewManager:
         except (ProcessLookupError, PermissionError):
             return False
 
-    def start(self, task_id: str, entry: str, device: str = "cuda:0", env: dict | None = None) -> PreviewState:
+    def start(self, task_id: str, entry: str, device: str = "cuda:0", env: dict | None = None,
+              host: str = "127.0.0.1") -> PreviewState:
         """Launch the generated agent as an independent process on the SAVED device.
 
         `device` is e.g. "cuda:0" or "cpu" — we derive the CUDA_VISIBLE_DEVICES index
         so the preview runs on the device the user actually selected (no hardcoded GPU 0).
+
+        `host` is the host the BROWSER used to reach the dashboard; the preview binds
+        to 0.0.0.0, so the iframe must be served from that same host (not 127.0.0.1,
+        which would point at the user's own machine for a remote browser).
         """
         self.stop(task_id)
         port = free_port()
         st = PreviewState(task_id, pid=None, port=port,
-                          url=f"http://127.0.0.1:{port}", status="starting")
+                          url=f"http://{host}:{port}", status="starting")
         self._previews[task_id] = st
         e = dict(os.environ)
         cuda_idx = device.split(":")[-1] if device.startswith("cuda:") else "-1"
@@ -83,14 +88,15 @@ class PreviewManager:
             st.status = "failed"
             st.error = f"{type(ex).__name__}: {ex}"
             return st
-        # wait for the app to actually answer (real check, not a fake)
+        # wait for the app to actually answer (real check, not a fake) — always via
+        # loopback, independent of the public host the iframe will use
         deadline = time.time() + 30
         while time.time() < deadline:
             if proc.poll() is not None:
                 st.status = "failed"
                 st.error = f"process exited rc={proc.returncode}"
                 return st
-            if self._http_ok(st.url):
+            if self._http_ok(f"http://127.0.0.1:{port}/api/health"):
                 st.status = "running"
                 st.started_at = time.time()
                 return st
