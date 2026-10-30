@@ -23,6 +23,7 @@ from pydantic import BaseModel
 
 import model_exec
 import adapters
+import agent_core
 from agent_core import SESSIONS
 
 HERE = Path(__file__).resolve().parent
@@ -71,21 +72,26 @@ def model_run(body: RunIn):
 
 
 @app.post("/api/upload")
-async def upload(file: UploadFile = File(...)):
+async def upload(file: UploadFile = File(...), sid: str = ""):
     data = await file.read()
     it = CFG.get("input_type")
     if it == "image":
         feats = adapters.image_to_features(data)
-        return {"input_type": "image", "features": feats, "vector_len": len(feats)}
-    if it == "tabular":
+        out = {"input_type": "image", "features": feats, "vector_len": len(feats)}
+    elif it == "tabular":
         rows = adapters.tabular_rows_to_features(data)
-        return {"input_type": "tabular", "rows": rows}
-    return {"input_type": it, "note": "no adapter for this input type"}
+        out = {"input_type": "tabular", "rows": rows}
+    else:
+        return {"input_type": it, "note": "no adapter for this input type"}
+    if sid:
+        agent_core.ATTACHMENTS[sid] = out
+    return out
 
 
 class ChatIn(BaseModel):
     sid: str
     content: str
+    attachment: dict | None = None
 
 
 @app.post("/api/chat")
@@ -97,24 +103,46 @@ async def chat(body: ChatIn, request: Request):
         _SUB[sid].add(q)
         _pub(sid, {"type": "run_started"})
         sess = await SESSIONS.get(sid)
+        finished: asyncio.Event = asyncio.Event()
+
+        async def pump():
+            try:
+                async for ev in sess.respond(body.content, body.attachment):
+                    if ev.get("type") == "text":
+                        _pub(sid, {"type": "text_delta", "text": ev["text"]})
+                    elif ev.get("type") == "tool":
+                        st = ev.get("status")
+                        _pub(sid, {"type": ("tool_started" if st == "running" else
+                                            ("tool_failed" if st == "error" else "tool_completed")),
+                                   "card_id": ev.get("card_id"), "name": ev.get("name"),
+                                   "status": st, "input": ev.get("input", ""),
+                                   "result": ev.get("result", "")})
+                    elif ev.get("type") == "result":
+                        _pub(sid, {"type": "run_completed", "text": ev.get("text", ""),
+                                   "is_error": bool(ev.get("is_error"))})
+            finally:
+                finished.set()
+
+        pump_task = asyncio.create_task(pump())
         try:
-            async for ev in sess.respond(body.content):
-                if ev.get("type") == "text":
-                    _pub(sid, {"type": "text_delta", "text": ev["text"]})
-                elif ev.get("type") == "result":
-                    _pub(sid, {"type": "run_completed", "text": ev.get("text", ""),
-                               "is_error": bool(ev.get("is_error"))})
-            while True:
-                if await request.is_disconnected():
-                    break
+            # stream frames while the agent runs; then drain remaining and close
+            while not finished.is_set():
                 try:
-                    e = await asyncio.wait_for(q.get(), timeout=15)
+                    e = await asyncio.wait_for(q.get(), timeout=1)
                     yield f"data: {json.dumps(e, ensure_ascii=False)}\n\n"
                 except asyncio.TimeoutError:
+                    if await request.is_disconnected():
+                        break
                     yield ": keepalive\n\n"
+            while not q.empty():
+                e = q.get_nowait()
+                yield f"data: {json.dumps(e, ensure_ascii=False)}\n\n"
         finally:
             _SUB[sid].discard(q)
-            await SESSIONS.close(sid)
+            # keep the SDK session alive between turns (multi-turn context);
+            # it is only torn down by /api/interrupt (explicit stop) or shutdown.
+            if not finished.is_set():
+                pump_task.cancel()
 
     return StreamingResponse(gen(), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
@@ -123,6 +151,8 @@ async def chat(body: ChatIn, request: Request):
 @app.post("/api/interrupt")
 async def interrupt(sid: str = ""):
     if sid:
+        sess = await SESSIONS.get(sid)
+        await sess.interrupt()
         await SESSIONS.close(sid)
     return {"ok": True}
 

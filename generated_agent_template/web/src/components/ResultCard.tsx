@@ -1,0 +1,144 @@
+import { useMemo } from "react";
+import { Activity, BarChart3, Lightbulb, List, Hash } from "lucide-react";
+import type { AgentConfig, RunResult } from "../types";
+
+/** Renders the REAL output of /api/model/run without fabricating anything. */
+export default function ResultCard({ run, cfg }: { run: RunResult; cfg: AgentConfig }) {
+  const r = run.result;
+
+  const labelName = (k: string) => {
+    const i = Number(k);
+    if (Number.isFinite(i) && cfg.labels && cfg.labels[i] !== undefined) return `${cfg.labels[i]}`;
+    return k;
+  };
+
+  if (run.capability === "predict") {
+    const val = typeof r === "number" ? r : Number((r as { [k: string]: unknown })?.predict ?? r);
+    const name = cfg.labels && Number.isFinite(Number(val)) && cfg.labels[Number(val)] !== undefined
+      ? cfg.labels[Number(val)]
+      : null;
+    return (
+      <Card icon={<Hash size={15} />} title={`预测结果 · ${run.capability}`}>
+        <div className="flex items-end gap-2">
+          <span className="text-3xl font-bold" style={{ color: "var(--color-accent)" }}>
+            {Number.isFinite(Number(val)) ? Number(val) : String(val)}
+          </span>
+          {name != null && <span className="pb-1 text-sm text-[var(--color-subink)]">＝ {name}</span>}
+        </div>
+      </Card>
+    );
+  }
+
+  if (run.capability === "predict_proba" && r && typeof r === "object") {
+    const entries = Object.entries(r as Record<string, number>).sort((a, b) => b[1] - a[1]);
+    return (
+      <Card icon={<BarChart3 size={15} />} title={`类别概率 · ${run.capability}`}>
+        <div className="space-y-1.5">
+          {entries.map(([k, p]) => (
+            <Bar key={k} label={`${labelName(k)}`} value={p} />
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  if (run.capability === "saliency" && Array.isArray(r)) {
+    const rows = r as { pixel: number; grad: number }[];
+    const max = Math.max(1e-9, ...rows.map((x) => Math.abs(x.grad)));
+    return (
+      <Card icon={<Activity size={15} />} title={`像素显著性 Top-${rows.length}`}>
+        <div className="space-y-1">
+          {rows.map((x) => (
+            <div key={x.pixel} className="flex items-center gap-2 text-xs">
+              <span className="w-16 shrink-0 font-mono text-[var(--color-subink)]">px #{x.pixel}</span>
+              <div className="h-3 flex-1 rounded bg-[var(--color-surface-2)]">
+                <div
+                  className="h-3 rounded"
+                  style={{
+                    width: `${(Math.abs(x.grad) / max) * 100}%`,
+                    background: x.grad >= 0 ? "var(--color-accent)" : "var(--color-err)",
+                  }}
+                />
+              </div>
+              <span className="w-16 shrink-0 text-right font-mono">{x.grad.toFixed(3)}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  if (run.capability === "explain" && Array.isArray(r)) {
+    const rows = r as { feature: string; gain: number }[];
+    const max = Math.max(1e-9, ...rows.map((x) => x.gain));
+    return (
+      <Card icon={<Lightbulb size={15} />} title={`特征重要性 Top-${rows.length}`}>
+        <div className="space-y-1">
+          {rows.map((x) => (
+            <div key={x.feature} className="flex items-center gap-2 text-xs">
+              <span className="w-36 shrink-0 truncate text-[var(--color-subink)]" title={x.feature}>
+                {x.feature}
+              </span>
+              <div className="h-3 flex-1 rounded bg-[var(--color-surface-2)]">
+                <div
+                  className="h-3 rounded"
+                  style={{ width: `${(x.gain / max) * 100}%`, background: "var(--color-accent)" }}
+                />
+              </div>
+              <span className="w-20 shrink-0 text-right font-mono">{x.gain.toFixed(3)}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  if (run.capability === "classes" && Array.isArray(r)) {
+    return (
+      <Card icon={<List size={15} />} title={`类别 · ${run.capability}`}>
+        <div className="flex flex-wrap gap-1.5">
+          {(r as unknown[]).map((c, i) => (
+            <span key={i} className="rounded-md bg-[var(--color-surface-2)] px-2 py-0.5 text-xs font-medium">
+              {String(c)}
+            </span>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  return (
+    <Card icon={<Activity size={15} />} title={`结果 · ${run.capability}`}>
+      <pre className="m-0 max-h-72 overflow-auto whitespace-pre-wrap text-xs">
+        {JSON.stringify(r, null, 2)}
+      </pre>
+    </Card>
+  );
+}
+
+function Card({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+  return (
+    <div className="m2a-fade mt-2 rounded-xl border bg-[var(--color-surface)] p-3" style={{ borderColor: "var(--color-border)" }}>
+      <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-[var(--color-subink)]">
+        {icon}
+        {title}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function Bar({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex items-center gap-2 text-xs">
+      <span className="w-14 shrink-0 font-medium">{label}</span>
+      <div className="h-3 flex-1 rounded bg-[var(--color-surface-2)]">
+        <div
+          className="h-3 rounded"
+          style={{ width: `${Math.min(100, value * 100)}%`, background: "var(--color-accent)" }}
+        />
+      </div>
+      <span className="w-12 shrink-0 text-right font-mono">{(value * 100).toFixed(1)}%</span>
+    </div>
+  );
+}

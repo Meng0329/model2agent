@@ -17,3 +17,9 @@ frontend/dist/
 frontend/playwright-report/
 frontend/test-results/
 m2a_data/v2.db
+
+# Generated Agent template web build deps (dist/ is committed — it's the standalone product UI)
+generated_agent_template/web/node_modules/
+generated_agent_template/web/test-results/
+generated_agent_template/web/playwright-report/
+*.tsbuildinfo
