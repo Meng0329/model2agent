@@ -8,7 +8,9 @@ export default defineConfig({
     port: 5173,
     host: true,
     proxy: {
-      "/api": "http://127.0.0.1:8100",
+      // changeOrigin:false keeps the browser's real Host (e.g. LAN-IP:5173) so the
+      // backend can build a host-aware preview iframe URL (not 127.0.0.1) for remote browsers.
+      "/api": { target: "http://127.0.0.1:8100", changeOrigin: false },
     },
   },
   build: {
