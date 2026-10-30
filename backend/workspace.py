@@ -1,7 +1,9 @@
 """Per-task workspace: isolated dirs, safe path resolution, asset intake, zip export."""
 from __future__ import annotations
+import asyncio
 import json
 import shutil
+import time
 import zipfile
 from pathlib import Path
 
@@ -134,3 +136,60 @@ class Workspace:
             return json.loads(p.read_text(encoding="utf-8"))
         except Exception:
             return []
+
+
+# --- workspace watcher: publish workspace_changed on project/ changes ---------
+_watcher_task: asyncio.Task | None = None
+
+
+def _watch_loop():
+    """Watch every workspace's project/ dir and publish a change event (debounced).
+
+    Returns a poll generator so it can run in asyncio without a thread.
+    Implemented as a simple polling loop (500ms) since watchdog may not be
+    installed; change detection is hash-based on project/ file mtimes+sizes.
+    """
+    import hashlib
+    _cache: dict[str, str] = {}
+
+    def snapshot() -> dict[str, str]:
+        snap = {}
+        for ws_dir in config.WORKSPACES_DIR.iterdir() if config.WORKSPACES_DIR.exists() else []:
+            proj = ws_dir / "project"
+            if not proj.exists():
+                continue
+            h = hashlib.sha256()
+            for p in sorted(proj.rglob("*")):
+                if p.is_file() and not any(part.startswith(".") for part in p.relative_to(proj).parts):
+                    h.update(f"{p.relative_to(proj)}|{p.stat().st_mtime_ns}|{p.stat().st_size}".encode())
+            snap[ws_dir.name] = h.hexdigest()
+        return snap
+
+    while True:
+        try:
+            snap = snapshot()
+            for tid, digest in snap.items():
+                if tid in _cache and _cache[tid] != digest:
+                    from .routers import chat as chat_router
+                    chat_router._publish(tid, {"type": "workspace_changed"})
+                _cache[tid] = digest
+            for tid in list(_cache):
+                if tid not in snap:
+                    _cache.pop(tid, None)
+        except Exception:
+            pass
+        time.sleep(0.5)
+
+
+def start_watcher() -> None:
+    global _watcher_task
+    if _watcher_task is not None and not _watcher_task.done():
+        return
+    _watcher_task = asyncio.get_event_loop().run_in_executor(None, _watch_loop)
+
+
+def stop_watcher() -> None:
+    global _watcher_task
+    if _watcher_task is not None:
+        _watcher_task.cancel()
+        _watcher_task = None
