@@ -190,7 +190,7 @@ function FileViewer({ path, data, loading }: { path: string; data: { content: st
 
 function PreviewTab({ task, state, zoom, setZoom, onStart, onStop, busy, onRefresh }: {
   task: Task;
-  state: { state: string; url?: string; error?: string };
+  state: { state: string; url?: string; proxy_url?: string; error?: string };
   zoom: boolean;
   setZoom: (z: boolean) => void;
   onStart: () => void;
@@ -199,6 +199,10 @@ function PreviewTab({ task, state, zoom, setZoom, onStart, onStop, busy, onRefre
   onRefresh: () => void;
 }) {
   const running = state.state === "running";
+  // Default to the same-origin proxy: works through SSH tunnels / remote access
+  // without forwarding the random preview port. 直连 is offered for LAN users.
+  const [useProxy, setUseProxy] = useState(true);
+  const src = useProxy && state.proxy_url ? state.proxy_url : state.url;
   return (
     <div className="relative flex h-full flex-col">
       {/* toolbar stays above the zoomed iframe (z-50) so 放大/还原 remain clickable */}
@@ -213,12 +217,17 @@ function PreviewTab({ task, state, zoom, setZoom, onStart, onStop, busy, onRefre
             {busy ? "启动中…" : "启动预览"}
           </button>
         )}
-        <button onClick={onRefresh} className="ml-auto rounded-lg px-2 py-1 text-xs text-subink hover:bg-surface">刷新</button>
+        {running && state.proxy_url && state.url && (
+          <button onClick={() => setUseProxy(!useProxy)} className="rounded-lg border border-border px-2 py-1 text-xs text-subink hover:bg-surface" title="切换同源代理 / 局域网直连">
+            {useProxy ? "同源代理" : "直连"}
+          </button>
+        )}
+        <button onClick={onRefresh} className="rounded-lg px-2 py-1 text-xs text-subink hover:bg-surface">刷新</button>
         <button onClick={() => setZoom(!zoom)} className="rounded-lg px-2 py-1 text-xs text-subink hover:bg-surface">{zoom ? "还原" : "放大"}</button>
       </div>
       <div className="scroll-thin flex-1 overflow-auto bg-surface">
-        {state.url ? (
-          <iframe src={state.url} className={cn("border-0 bg-white", zoom ? "absolute inset-0 z-40 h-full w-full" : "h-full w-full")} title="generated-agent-preview" />
+        {src ? (
+          <iframe src={src} className={cn("border-0 bg-white", zoom ? "absolute inset-0 z-40 h-full w-full" : "h-full w-full")} title="generated-agent-preview" />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-2 text-subink">
             <PlayCircle size={26} className="text-subink/40" />
