@@ -97,7 +97,7 @@ export function WorkspacePanel({ task }: { task: Task }) {
   }, [tab, taskId]);
 
   return (
-    <div className="flex h-full flex-col bg-white">
+    <div className="flex h-full min-w-0 flex-col bg-white">
       <div className="flex items-center gap-1 border-b border-border-soft px-2 py-2">
         <TabBtn active={tab === "files"} onClick={() => setTab("files")} icon={<Files size={14} />} label="文件" />
         <TabBtn active={tab === "preview"} onClick={() => setTab("preview")} icon={<PlayCircle size={14} />} label="预览" />
@@ -144,7 +144,7 @@ function FileTree({ files, sel, onOpen }: { files: FileItem[]; sel: string | nul
     return children.map((c) => <TreeNode key={c.path} f={c} files={files} sel={sel} onOpen={onOpen} depth={0} />);
   };
   return (
-    <div className="scroll-thin w-60 shrink-0 overflow-auto border-r border-border-soft bg-[#FAF9F8] p-2">
+    <div className="scroll-thin w-60 shrink-0 overflow-y-auto overflow-x-hidden border-r border-border-soft bg-[#FAF9F8] p-2">
       {build("")}
       {files.length === 0 && <div className="px-2 py-6 text-center text-xs text-subink">工作区还没有文件</div>}
     </div>
@@ -180,12 +180,12 @@ function FileViewer({ path, data, loading }: { path: string; data: { content: st
   const isJson = ext === "json";
   if (loading) return <div className="p-4 text-sm text-subink">加载中…</div>;
   if (data.is_binary) return <div className="p-4 text-sm text-subink">二进制文件（{data.size} 字节），暂不支持内联预览</div>;
-  if (isMd) return <div className="prose max-w-none p-4 text-sm"><ReactMarkdown remarkPlugins={[remarkGfm]}>{data.content}</ReactMarkdown></div>;
+  if (isMd) return <div className="prose max-w-none break-words overflow-x-hidden p-4 text-sm"><ReactMarkdown remarkPlugins={[remarkGfm]}>{data.content}</ReactMarkdown></div>;
   if (isJson) {
-    try { return <pre className="scroll-thin h-full overflow-auto p-4 text-xs text-ink">{JSON.stringify(JSON.parse(data.content), null, 2)}</pre>; }
+    try { return <pre className="scroll-thin h-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap break-words p-4 text-xs text-ink">{JSON.stringify(JSON.parse(data.content), null, 2)}</pre>; }
     catch { /* fall through */ }
   }
-  return <pre className="scroll-thin h-full overflow-auto p-4 text-xs leading-relaxed text-ink">{data.content}</pre>;
+  return <pre className="scroll-thin h-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap break-words p-4 text-xs leading-relaxed text-ink">{data.content}</pre>;
 }
 
 function PreviewTab({ task, state, zoom, setZoom, onStart, onStop, busy, onRefresh }: {
@@ -206,7 +206,7 @@ function PreviewTab({ task, state, zoom, setZoom, onStart, onStop, busy, onRefre
   return (
     <div className="relative flex h-full flex-col">
       {/* toolbar stays above the zoomed iframe (z-50) so 放大/还原 remain clickable */}
-      <div className="relative z-50 flex items-center gap-2 border-b border-border-soft bg-white px-3 py-2 text-sm">
+      <div className="relative z-50 flex flex-wrap items-center gap-2 border-b border-border-soft bg-white px-3 py-2 text-sm">
         <PlayCircle size={15} className="text-subink" />
         <span className="text-subink">预览状态</span>
         <Badge tone={running ? "ok" : state.state === "error" ? "err" : "neutral"}>{state.state}</Badge>

@@ -22,7 +22,18 @@ export function Workbench({ task }: { task: Task }) {
   const [err, setErr] = useState("");
   const streamRef = useRef<EventStream | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const taskId = task.id;
+
+  // auto-grow the composer with its content (capped), so it floats over a
+  // unified background instead of using a fixed-height input bar.
+  const autoGrow = () => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
+  };
+  useEffect(() => { autoGrow(); }, [value]);
 
   // load persisted messages on task switch
   useEffect(() => {
@@ -106,7 +117,7 @@ export function Workbench({ task }: { task: Task }) {
 
   return (
     <div className="flex h-full flex-col bg-bg">
-      <div ref={scrollRef} className="scroll-thin flex-1 overflow-y-auto px-6 py-5">
+      <div ref={scrollRef} className="scroll-thin flex-1 overflow-y-auto overflow-x-hidden px-6 py-5">
         <div className="mx-auto flex max-w-2xl flex-col gap-4">
           <AssistantBubble>
             我是 Builder 智能体。已收到资产 <Badge tone="accent">{task.asset_slug || "custom"}</Badge>。描述你希望生成的 Agent 具备的能力，或直接让我开始分析资产并构建。
@@ -119,15 +130,17 @@ export function Workbench({ task }: { task: Task }) {
 
       {err && <div className="mx-auto w-full max-w-2xl px-6"><div className="mb-2 rounded-xl border border-err/20 bg-err-weak px-3 py-2 text-sm text-err">{err}</div></div>}
 
-      <div className="border-t border-border-soft bg-surface-2 px-4 py-3">
-        <div className="mx-auto flex max-w-2xl items-end gap-2 rounded-xl border border-border-soft bg-white p-2 shadow-soft-sm">
+      {/* Floating composer over the unified center background */}
+      <div className="shrink-0 bg-bg px-4 pb-4 pt-2">
+        <div className="mx-auto flex max-w-2xl items-end gap-2 rounded-2xl border border-border-soft bg-white p-2 shadow-soft">
           <textarea
+            ref={inputRef}
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
             placeholder="描述你的需求，Enter 发送，Shift+Enter 换行"
             rows={1}
-            className="scroll-thin max-h-40 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-ink outline-none placeholder:text-subink"
+            className="scroll-thin max-h-40 flex-1 resize-none overflow-y-auto overflow-x-hidden bg-transparent px-2 py-1.5 text-sm text-ink outline-none placeholder:text-subink"
           />
           {running ? (
             <button onClick={stop} className="flex items-center gap-1.5 rounded-lg border border-border-soft px-3 py-2 text-sm text-subink transition hover:bg-surface-2">
@@ -148,7 +161,7 @@ function AssistantBubble({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-start gap-3">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-ok text-white shadow-soft-sm"><Robot size={16} weight="fill" /></div>
-      <div className="rounded-2xl rounded-tl-none bg-surface-2 px-4 py-3 text-sm leading-relaxed text-ink">{children}</div>
+      <div className="break-words rounded-2xl rounded-tl-none bg-surface-2 px-4 py-3 text-sm leading-relaxed text-ink">{children}</div>
     </div>
   );
 }
@@ -157,7 +170,7 @@ function MsgBubble({ m }: { m: UiMessage }) {
   if (m.role === "user") {
     return (
       <div className="flex items-start justify-end gap-3">
-        <div className="rounded-2xl rounded-tr-none bg-primary px-4 py-3 text-sm leading-relaxed text-white">{m.content}</div>
+        <div className="break-words rounded-2xl rounded-tr-none bg-primary px-4 py-3 text-sm leading-relaxed text-white">{m.content}</div>
       </div>
     );
   }
@@ -165,7 +178,7 @@ function MsgBubble({ m }: { m: UiMessage }) {
     <div className="flex items-start gap-3">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-ok text-white shadow-soft-sm"><Robot size={16} weight="fill" /></div>
       <div className="min-w-0 flex-1">
-        {m.content && <div className="whitespace-pre-wrap rounded-2xl rounded-tl-none bg-surface-2 px-4 py-3 text-sm leading-relaxed text-ink">{m.content}</div>}
+        {m.content && <div className="whitespace-pre-wrap break-words rounded-2xl rounded-tl-none bg-surface-2 px-4 py-3 text-sm leading-relaxed text-ink">{m.content}</div>}
         {m.tool_cards.length > 0 && (
           <div className="mt-2 space-y-2">
             {m.tool_cards.map((c) => <ToolCardView key={c.id} card={c} />)}
@@ -193,8 +206,8 @@ function ToolCardView({ card }: { card: ToolCard }) {
       </button>
       {open && (
         <div className="border-t border-border-soft px-3 py-2 text-xs text-subink">
-          {card.input && <div className="mb-1"><span className="font-medium text-ink">输入</span><pre className="mt-1 overflow-x-auto whitespace-pre-wrap rounded-lg bg-[#FAF9F8] p-2">{card.input}</pre></div>}
-          {card.result && <div><span className="font-medium text-ink">结果</span><pre className="mt-1 max-h-60 overflow-y-auto whitespace-pre-wrap rounded-lg bg-[#FAF9F8] p-2">{card.result}</pre></div>}
+          {card.input && <div className="mb-1"><span className="font-medium text-ink">输入</span><pre className="mt-1 overflow-x-hidden whitespace-pre-wrap break-words rounded-lg bg-[#FAF9F8] p-2">{card.input}</pre></div>}
+          {card.result && <div><span className="font-medium text-ink">结果</span><pre className="mt-1 max-h-60 overflow-y-auto overflow-x-hidden whitespace-pre-wrap break-words rounded-lg bg-[#FAF9F8] p-2">{card.result}</pre></div>}
         </div>
       )}
     </div>

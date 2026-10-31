@@ -1,9 +1,9 @@
 // Left column: task history + new-task entry.
-import { Plus, ChatCircle, Trash, Cpu, CheckCircle, WarningCircle, Hexagon } from "@phosphor-icons/react";
+import { Plus, ChatCircle, Trash, Cpu, CheckCircle, WarningCircle, Hexagon, SidebarSimple } from "@phosphor-icons/react";
 import { useTasks } from "../state/TasksProvider";
 import { cn } from "./ui";
 
-export function TaskList({ onNewTask }: { onNewTask: () => void }) {
+export function TaskList({ onNewTask, onCollapse }: { onNewTask: () => void; onCollapse: () => void }) {
   const { tasks, currentTask, setCurrent, deleteTask } = useTasks();
 
   return (
@@ -15,6 +15,13 @@ export function TaskList({ onNewTask }: { onNewTask: () => void }) {
           </span>
           <span>Model2Agent</span>
         </div>
+        <button
+          onClick={onCollapse}
+          className="rounded-lg p-1.5 text-subink transition hover:bg-white"
+          title="折叠任务栏"
+        >
+          <SidebarSimple size={17} />
+        </button>
       </div>
 
       <div className="p-3">

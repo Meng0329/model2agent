@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import { useTasks } from "./state/TasksProvider";
 import { TaskList } from "./components/TaskList";
 import { NewTaskPage } from "./components/NewTaskPage";
@@ -8,18 +9,38 @@ import { WorkspacePanel } from "./components/WorkspacePanel";
 import { Sliders, SidebarSimple, Sidebar, Plus } from "@phosphor-icons/react";
 import { cn } from "./components/ui";
 
+const RIGHT_MIN = 320;
+const RIGHT_MAX = 760;
+
 export default function App() {
   const { loading, currentTask, deviceConfigured, device, setCurrent } = useTasks();
   const [newTask, setNewTask] = useState(false);
   const [deviceOpen, setDeviceOpen] = useState(false);
   const [leftOpen, setLeftOpen] = useState(true);
   const [rightOpen, setRightOpen] = useState(true);
+  const [rightW, setRightW] = useState(440);
 
   // first-run device gate: only open once devices finished loading AND none configured
   const [deviceGate, setDeviceGate] = useState(false);
   useEffect(() => {
     if (!loading && !deviceConfigured) setDeviceGate(true);
   }, [loading, deviceConfigured]);
+
+  const dragRef = useRef<{ x: number; w: number } | null>(null);
+  const onResizeDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    dragRef.current = { x: e.clientX, w: rightW };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onResizeMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current) return;
+    const dx = e.clientX - dragRef.current.x;
+    const max = Math.min(RIGHT_MAX, Math.max(RIGHT_MIN, window.innerWidth - 480));
+    setRightW(Math.max(RIGHT_MIN, Math.min(max, dragRef.current.w - dx)));
+  };
+  const onResizeUp = (e: ReactPointerEvent<HTMLDivElement>) => {
+    dragRef.current = null;
+    try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* ignore */ }
+  };
 
   const openNewTask = () => {
     if (!deviceConfigured) { setDeviceOpen(true); return; }
@@ -31,11 +52,11 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-full w-full overflow-hidden bg-bg">
+    <div className="flex h-full w-full overflow-hidden overflow-x-hidden bg-bg">
       {/* Left */}
       <div className={cn("shrink-0 transition-all", leftOpen ? "w-72" : "w-12")}>
         {leftOpen ? (
-          <TaskList onNewTask={openNewTask} />
+          <TaskList onNewTask={openNewTask} onCollapse={() => setLeftOpen(false)} />
         ) : (
           <div className="flex h-full flex-col items-center gap-3 border-r border-border-soft bg-surface-2 py-3">
             <button onClick={() => setLeftOpen(true)} className="rounded-lg p-2 text-subink hover:bg-white" title="展开任务栏"><Sidebar size={18} /></button>
@@ -45,7 +66,7 @@ export default function App() {
       </div>
 
       {/* Center */}
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col bg-bg">
         {!leftOpen && (
           <button onClick={() => setLeftOpen(true)} className="border-b border-border-soft bg-surface-2 px-3 py-2 text-left text-sm text-subink hover:bg-white">展开任务栏</button>
         )}
@@ -77,10 +98,29 @@ export default function App() {
         </div>
       </div>
 
-      {/* Right */}
-      {rightOpen && (
+      {/* Right (draggable width) */}
+      {rightOpen && currentTask && (
+        <>
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            onPointerDown={onResizeDown}
+            onPointerMove={onResizeMove}
+            onPointerUp={onResizeUp}
+            onPointerCancel={onResizeUp}
+            className="group relative w-1 shrink-0 cursor-col-resize touch-none bg-border-soft transition hover:bg-accent"
+            title="拖拽调整宽度"
+          >
+            <span className="absolute inset-y-0 -left-1 -right-1 z-10" />
+          </div>
+          <div className="min-w-0 shrink-0 border-l border-border-soft bg-white" style={{ width: rightW }}>
+            <WorkspacePanel task={currentTask} />
+          </div>
+        </>
+      )}
+      {rightOpen && !currentTask && (
         <div className="w-[34%] min-w-[320px] max-w-[560px] shrink-0 border-l border-border-soft">
-          {currentTask ? <WorkspacePanel task={currentTask} /> : <div className="flex h-full items-center justify-center text-sm text-subink">选择任务查看工作区</div>}
+          <div className="flex h-full items-center justify-center text-sm text-subink">选择任务查看工作区</div>
         </div>
       )}
 
