@@ -1,6 +1,6 @@
 // New-task form: name, goal, asset upload (ZIP or multi-file). Asset required.
 import { useState } from "react";
-import { UploadCloud, File as FileIcon, X, Cpu, AlertCircle } from "lucide-react";
+import { UploadSimple, File as FileIcon, X, Cpu, WarningCircle } from "@phosphor-icons/react";
 import { useTasks } from "../state/TasksProvider";
 import { cn, Spinner } from "./ui";
 
@@ -39,8 +39,8 @@ export function NewTaskPage({ onCreated, onCancel }: { onCreated: () => void; on
   };
 
   return (
-    <div className="flex h-full items-center justify-center overflow-y-auto bg-surface p-6">
-      <div className="w-full max-w-xl rounded-2xl border border-border bg-white p-7 m2a-fade">
+    <div className="flex h-full items-center justify-center overflow-y-auto bg-bg p-6">
+      <div className="m2a-fade w-full max-w-xl rounded-2xl border border-border-soft bg-white p-7 shadow-soft">
         <h2 className="text-lg font-semibold text-ink">新建任务</h2>
         <p className="mt-1 text-sm text-subink">上传训练好的模型资产，Builder 智能体将自主分析并生成专属 Agent。</p>
 
@@ -50,7 +50,7 @@ export function NewTaskPage({ onCreated, onCancel }: { onCreated: () => void; on
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="例如：手写数字图片分类 Agent"
-              className="w-full rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-accent"
+              className="w-full rounded-xl border border-border bg-[#FAF9F8] px-3 py-2 text-sm outline-none transition focus:border-accent focus:bg-white focus:ring-1 focus:ring-accent"
             />
           </Field>
 
@@ -60,25 +60,25 @@ export function NewTaskPage({ onCreated, onCancel }: { onCreated: () => void; on
               onChange={(e) => setGoal(e.target.value)}
               placeholder="希望生成的 Agent 能做什么？例如：上传一张图片，返回数字分类与置信度。"
               rows={3}
-              className="w-full resize-none rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-accent"
+              className="w-full resize-none rounded-xl border border-border bg-[#FAF9F8] px-3 py-2 text-sm outline-none transition focus:border-accent focus:bg-white focus:ring-1 focus:ring-accent"
             />
           </Field>
 
           <Field label="模型资产" required>
-            <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-surface px-4 py-6 text-center transition hover:border-accent">
-              <UploadCloud size={26} className="text-accent" />
-              <span className="text-sm text-ink">点击或拖入 ZIP / 多文件</span>
+            <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border-soft bg-[#FAF9F8] px-4 py-6 text-center transition hover:border-accent hover:bg-accent-soft">
+              <UploadSimple size={26} className="text-accent" weight="duotone" />
+              <span className="text-sm font-medium text-ink">点击或拖入 ZIP / 多文件</span>
               <span className="text-xs text-subink">支持 .zip 压缩包或分开的 manifest.json / infer.py / 权重 / 示例</span>
               <input type="file" multiple className="hidden" onChange={(e) => addFiles(e.target.files)} />
             </label>
             {files.length > 0 && (
               <div className="mt-2 space-y-1.5">
                 {files.map((f, i) => (
-                  <div key={f.name} className="flex items-center gap-2 rounded-md border border-border bg-white px-2.5 py-1.5 text-sm">
-                    <FileIcon size={14} className="shrink-0 text-subink" />
-                    <span className="min-w-0 flex-1 truncate">{f.name}</span>
+                  <div key={f.name} className="flex items-center gap-2 rounded-xl border border-border-soft bg-surface-2 px-2.5 py-1.5 text-sm">
+                    <FileIcon size={14} className="shrink-0 text-accent" />
+                    <span className="min-w-0 flex-1 truncate text-ink">{f.name}</span>
                     <span className="shrink-0 text-xs text-subink">{(f.size / 1024).toFixed(1)} KB</span>
-                    <button onClick={() => setFiles((p) => p.filter((_, j) => j !== i))} className="shrink-0 rounded p-0.5 text-subink hover:text-err">
+                    <button onClick={() => setFiles((p) => p.filter((_, j) => j !== i))} className="shrink-0 rounded p-0.5 text-subink transition hover:text-err">
                       <X size={14} />
                     </button>
                   </div>
@@ -87,24 +87,24 @@ export function NewTaskPage({ onCreated, onCancel }: { onCreated: () => void; on
             )}
           </Field>
 
-          <div className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-sm">
+          <div className="flex items-center gap-2 rounded-xl border border-border-soft bg-surface-2 px-3 py-2 text-sm">
             <Cpu size={15} className="text-accent" />
             <span className="text-subink">运行设备</span>
             <span className="ml-auto font-medium text-ink">{device || "未配置"}</span>
           </div>
 
           {err && (
-            <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-err">
-              <AlertCircle size={15} /> {err}
+            <div className="flex items-center gap-2 rounded-xl border border-err/20 bg-err-weak px-3 py-2 text-sm text-err">
+              <WarningCircle size={15} /> {err}
             </div>
           )}
 
           <div className="flex justify-end gap-2 pt-1">
-            <button onClick={onCancel} className="rounded-lg border border-border px-4 py-2 text-sm text-subink hover:bg-surface">取消</button>
+            <button onClick={onCancel} className="rounded-lg border border-border-soft px-4 py-2 text-sm text-subink transition hover:bg-surface-2">取消</button>
             <button
               onClick={submit}
               disabled={busy}
-              className={cn("flex items-center gap-2 rounded-lg bg-accent px-5 py-2 text-sm font-medium text-white transition hover:bg-teal-700", busy && "opacity-70")}
+              className={cn("flex items-center gap-2 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-white shadow-soft-sm transition hover:opacity-90", busy && "opacity-70")}
             >
               {busy && <Spinner />} 创建并开始
             </button>
@@ -119,7 +119,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
   return (
     <div>
       <label className="mb-1.5 block text-sm font-medium text-ink">
-        {label} {required && <span className="text-err">*</span>}
+        {label} {required && <span className="text-accent">*</span>}
       </label>
       {children}
     </div>

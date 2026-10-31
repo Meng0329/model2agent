@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Bot, SendHorizontal, Square, Sparkles, User } from "lucide-react";
+import { Robot, PaperPlaneRight, Stop, Hexagon, User } from "@phosphor-icons/react";
 import type { AgentConfig, ChatMessage, RunResult, ToolCard, Uploaded } from "./types";
 import { fetchConfig, interrupt, newSid, streamChat } from "./api";
 import UploadPanel from "./components/UploadPanel";
@@ -96,8 +96,8 @@ export default function App() {
 
   if (!cfg) {
     return (
-      <div className="flex h-full items-center justify-center text-sm text-[var(--color-subink)]">
-        {err ? <span className="text-[var(--color-err)]">{err}</span> : "加载模型配置…"}
+      <div className="flex h-full items-center justify-center text-sm text-subink">
+        {err ? <span className="text-err">{err}</span> : "加载模型配置…"}
       </div>
     );
   }
@@ -106,7 +106,7 @@ export default function App() {
     <div className="flex h-full flex-col" style={{ background: "var(--color-bg)" }}>
       <Header cfg={cfg} />
       <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col overflow-hidden px-4">
-        <div className="flex shrink-0 items-center gap-1 border-b pb-2 pt-2" style={{ borderColor: "var(--color-border)" }}>
+        <div className="flex shrink-0 items-center gap-1 border-b pb-2 pt-2" style={{ borderColor: "var(--color-border-soft)" }}>
           <TabBtn active={tab === "chat"} onClick={() => setTab("chat")}>对话</TabBtn>
           <TabBtn active={tab === "result"} onClick={() => setTab("result")}>
             推理结果{results.length ? ` (${results.length})` : ""}
@@ -125,7 +125,7 @@ export default function App() {
         ) : (
           <div ref={scrollRef} className="flex-1 overflow-auto py-3">
             {results.length === 0 ? (
-              <div className="py-16 text-center text-sm text-[var(--color-subink)]">还没有推理结果。上传图片/CSV 后点击「预测」。</div>
+              <div className="py-16 text-center text-sm text-subink">还没有推理结果。上传图片/CSV 后点击「预测」。</div>
             ) : (
               results.map((r) => (
                 <div key={r.id} className="mb-2">
@@ -136,8 +136,8 @@ export default function App() {
           </div>
         )}
 
-        <div className="shrink-0 border-t py-3" style={{ borderColor: "var(--color-border)" }}>
-          {err && <div className="mb-2 rounded-md bg-[#fef2f2] px-2 py-1 text-xs text-[var(--color-err)]">{err}</div>}
+        <div className="shrink-0 border-t py-3" style={{ borderColor: "var(--color-border-soft)" }}>
+          {err && <div className="mb-2 rounded-md border border-err/20 bg-err-weak px-2 py-1 text-xs text-err">{err}</div>}
           <UploadPanel cfg={cfg} sid={sid} onUploaded={setAttachment} onResult={onResult} />
           <div className="flex items-end gap-2">
             <textarea
@@ -156,29 +156,28 @@ export default function App() {
               }
               rows={1}
               data-testid="gen-chat-input"
-              className="max-h-32 min-h-[42px] flex-1 resize-none rounded-xl border px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
-              style={{ borderColor: "var(--color-border)" }}
+              className="max-h-32 min-h-[42px] flex-1 resize-none rounded-xl border border-border bg-white px-3 py-2 text-sm text-ink outline-none transition placeholder:text-subink focus:border-accent"
             />
             {running ? (
               <button
                 onClick={stop}
-                className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl text-white"
+                className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl text-white shadow-soft-sm transition hover:opacity-90"
                 style={{ background: "var(--color-err)" }}
                 title="停止"
                 data-testid="gen-stop"
               >
-                <Square size={16} />
+                <Stop size={16} weight="fill" />
               </button>
             ) : (
               <button
                 onClick={send}
                 disabled={!input.trim()}
-                className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl text-white disabled:opacity-40"
-                style={{ background: "var(--color-accent)" }}
+                className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl text-white shadow-soft-sm transition hover:opacity-90 disabled:opacity-40"
+                style={{ background: "var(--color-primary)" }}
                 title="发送"
                 data-testid="gen-send"
               >
-                <SendHorizontal size={17} />
+                <PaperPlaneRight size={17} weight="fill" />
               </button>
             )}
           </div>
@@ -190,20 +189,20 @@ export default function App() {
 
 function Header({ cfg }: { cfg: AgentConfig }) {
   return (
-    <div className="shrink-0 border-b" style={{ borderColor: "var(--color-border)" }}>
+    <div className="shrink-0 border-b" style={{ borderColor: "var(--color-border-soft)" }}>
       <div className="mx-auto flex w-full max-w-3xl items-center gap-2.5 px-4 py-2.5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: "var(--color-accent)" }}>
-          <Sparkles size={16} color="#fff" />
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ok text-white shadow-soft-sm">
+          <Hexagon size={17} weight="fill" />
         </div>
         <div className="min-w-0">
           <div className="truncate text-sm font-semibold" data-testid="gen-slug">{cfg.slug}</div>
-          <div className="truncate text-[11px] text-[var(--color-subink)]">
+          <div className="truncate text-[11px] text-subink">
             {cfg.model_id} · {cfg.framework} · {cfg.input_type}
           </div>
         </div>
         <div className="ml-auto flex flex-wrap justify-end gap-1">
           {cfg.capabilities.map((c) => (
-            <span key={c} className="rounded bg-[var(--color-surface-2)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--color-subink)]">
+            <span key={c} className="rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-medium text-subink">
               {c}
             </span>
           ))}
@@ -217,7 +216,7 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
   return (
     <button
       onClick={onClick}
-      className="rounded-lg px-3 py-1 text-sm font-medium"
+      className="rounded-lg px-3 py-1 text-sm font-medium transition"
       style={active ? { background: "var(--color-accent-weak)", color: "var(--color-accent)" } : { color: "var(--color-subink)" }}
     >
       {children}
@@ -246,11 +245,11 @@ function ChatArea({
     <div ref={scrollRef} className="flex-1 overflow-auto py-3">
       {empty && (
         <div className="m2a-fade py-10 text-center">
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: "var(--color-accent-weak)" }}>
-            <Bot size={26} style={{ color: "var(--color-accent)" }} />
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-weak text-accent">
+            <Robot size={26} />
           </div>
-          <div className="text-base font-semibold">{cfg.slug} 模型 Agent</div>
-          <div className="mt-1 text-sm text-[var(--color-subink)]">
+          <div className="text-base font-semibold text-ink">{cfg.slug} 模型 Agent</div>
+          <div className="mt-1 text-sm text-subink">
             真实权重推理 · 能力：{cfg.capabilities.join(" / ")}
           </div>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
@@ -258,8 +257,7 @@ function ChatArea({
               <button
                 key={s}
                 onClick={() => onSuggestion(s)}
-                className="rounded-full border px-3 py-1.5 text-xs text-[var(--color-subink)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
-                style={{ borderColor: "var(--color-border)" }}
+                className="rounded-full border border-border-soft bg-white px-3 py-1.5 text-xs text-subink shadow-soft-sm transition hover:border-accent hover:text-accent"
               >
                 {s}
               </button>
@@ -271,7 +269,7 @@ function ChatArea({
         <MessageRow key={m.id} m={m} cfg={cfg} />
       ))}
       {running && messages[messages.length - 1]?.content === "" && !(messages[messages.length - 1]?.cards?.length) && (
-        <div className="flex items-center gap-1 px-1 text-xs text-[var(--color-subink)]">
+        <div className="flex items-center gap-1 px-1 text-xs text-subink">
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:-0.2s]" />
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:-0.1s]" />
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current" />
@@ -299,7 +297,7 @@ function MessageRow({ m, cfg }: { m: ChatMessage; cfg: AgentConfig }) {
         className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
         style={{ background: isUser ? "var(--color-surface-2)" : "var(--color-accent-weak)" }}
       >
-        {isUser ? <User size={14} color="#475569" /> : <Bot size={14} style={{ color: "var(--color-accent)" }} />}
+        {isUser ? <User size={14} color="#8E8E8E" /> : <Robot size={14} style={{ color: "var(--color-accent)" }} />}
       </div>
       <div className={`min-w-0 max-w-[85%] ${isUser ? "text-right" : ""}`}>
         <div
@@ -307,13 +305,13 @@ function MessageRow({ m, cfg }: { m: ChatMessage; cfg: AgentConfig }) {
           style={isUser ? { background: "var(--color-surface-2)" } : { background: "transparent" }}
         >
           {m.content ? (
-            <div className="md break-words text-left">
+            <div className="md break-words text-left text-ink">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
             </div>
           ) : m.streaming ? (
-            <span className="text-xs text-[var(--color-subink)]">思考中…</span>
+            <span className="text-xs text-subink">思考中…</span>
           ) : null}
-          {m.error && <div className="mt-1 text-xs text-[var(--color-err)]">（本轮出错）</div>}
+          {m.error && <div className="mt-1 text-xs text-err">（本轮出错）</div>}
           {m.cards && m.cards.length > 0 && <ToolCards cards={m.cards} />}
         </div>
       </div>

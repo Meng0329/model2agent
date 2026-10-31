@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Image as ImageIcon, FileSpreadsheet, Type, SlidersHorizontal, Play, Loader2, X, Upload } from "lucide-react";
+import { Image as ImageIcon, Table, Sliders, Play, CircleNotch, UploadSimple } from "@phosphor-icons/react";
 import type { AgentConfig, RunResult, Uploaded } from "../types";
 import { runModel, upload } from "../api";
 
@@ -26,8 +26,8 @@ function useUploader() {
 
 function PanelWrap({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="mb-2 rounded-xl border bg-[var(--color-surface)] p-3" style={{ borderColor: "var(--color-border)" }}>
-      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-subink)]">{title}</div>
+    <div className="mb-2 rounded-xl border border-border-soft bg-white p-3 shadow-soft-sm">
+      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-subink">{title}</div>
       {children}
     </div>
   );
@@ -78,34 +78,32 @@ function ImageUpload({ cfg, sid, onUploaded, onResult }: Props) {
       <div className="flex items-center gap-3">
         <button
           onClick={() => fileRef.current?.click()}
-          className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-dashed text-[var(--color-subink)]"
-          style={{ borderColor: "var(--color-border)" }}
+          className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-border-soft bg-[#FAF9F8] text-subink transition hover:border-accent"
           data-testid="gen-upload"
         >
           {preview ? <img src={preview} alt="preview" className="h-full w-full object-contain" /> : <ImageIcon size={22} />}
         </button>
-        <div className="min-w-0 flex-1 text-xs text-[var(--color-subink)]">
+        <div className="min-w-0 flex-1 text-xs text-subink">
           {fileName ? (
             <div className="flex items-center gap-2">
-              <span className="truncate">{fileName}</span>
-              <span className="rounded bg-[var(--color-accent-weak)] px-1.5 py-0.5 font-medium text-[var(--color-accent)]">
+              <span className="truncate text-ink">{fileName}</span>
+              <span className="rounded-full bg-ok-weak px-2 py-0.5 font-medium text-ok">
                 {feats ? `${vlen} 维特征就绪` : "解析中…"}
               </span>
             </div>
           ) : (
             <div>点击或拖拽上传图片，模型将缩放到 {cfg.vector_len ?? 64} 维特征输入。</div>
           )}
-          {err && <div className="mt-1 text-[var(--color-err)]">{err}</div>}
+          {err && <div className="mt-1 text-err">{err}</div>}
         </div>
         {feats && (
           <button
             onClick={predict}
             disabled={busy}
-            className="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
-            style={{ background: "var(--color-accent)" }}
+            className="flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-white shadow-soft-sm transition hover:opacity-90 disabled:opacity-50"
             data-testid="gen-run"
           >
-            {busy ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
+            {busy ? <CircleNotch size={14} className="animate-spin" /> : <Play size={14} weight="fill" />}
             预测
           </button>
         )}
@@ -171,17 +169,16 @@ function CsvUpload({ cfg, sid, onUploaded, onResult }: Props) {
       <div className="flex items-center gap-3">
         <button
           onClick={() => fileRef.current?.click()}
-          className="flex h-12 shrink-0 items-center gap-2 rounded-lg border-2 border-dashed px-3 text-xs text-[var(--color-subink)]"
-          style={{ borderColor: "var(--color-border)" }}
+          className="flex h-12 shrink-0 items-center gap-2 rounded-xl border-2 border-dashed border-border-soft bg-[#FAF9F8] px-3 text-xs text-subink transition hover:border-accent"
           data-testid="gen-upload"
         >
-          <FileSpreadsheet size={16} />
+          <Table size={16} />
           {fileName || "选择 CSV"}
         </button>
-        <div className="min-w-0 flex-1 text-xs text-[var(--color-subink)]">
+        <div className="min-w-0 flex-1 text-xs text-subink">
           {rows ? (
             <span>
-              <span className="rounded bg-[var(--color-accent-weak)] px-1.5 py-0.5 font-medium text-[var(--color-accent)]">
+              <span className="rounded-full bg-ok-weak px-2 py-0.5 font-medium text-ok">
                 {rows.length} 行 × {ncols} 列
               </span>{" "}
               · 按 feature_names 排序列
@@ -189,35 +186,34 @@ function CsvUpload({ cfg, sid, onUploaded, onResult }: Props) {
           ) : (
             <span>上传 CSV，每行为一个样本。</span>
           )}
-          {err && <div className="mt-1 text-[var(--color-err)]">{err}</div>}
+          {err && <div className="mt-1 text-err">{err}</div>}
         </div>
         {rows && (
           <button
             onClick={batchPredict}
             disabled={busy}
-            className="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
-            style={{ background: "var(--color-accent)" }}
+            className="flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-white shadow-soft-sm transition hover:opacity-90 disabled:opacity-50"
             data-testid="gen-run"
           >
-            {busy ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
+            {busy ? <CircleNotch size={14} className="animate-spin" /> : <Play size={14} weight="fill" />}
             批量预测
           </button>
         )}
       </div>
       {batch && (
-        <div className="mt-2 max-h-40 overflow-auto rounded-lg border text-xs" style={{ borderColor: "var(--color-border)" }}>
+        <div className="mt-2 max-h-40 overflow-auto rounded-lg border border-border-soft text-xs">
           <table className="w-full">
-            <thead className="sticky top-0 bg-[var(--color-surface-2)]">
+            <thead className="sticky top-0 bg-surface-2">
               <tr>
-                <th className="px-2 py-1 text-left">行</th>
-                <th className="px-2 py-1 text-left">预测</th>
+                <th className="px-2 py-1 text-left font-semibold text-ink">行</th>
+                <th className="px-2 py-1 text-left font-semibold text-ink">预测</th>
               </tr>
             </thead>
             <tbody>
               {batch.map((b) => (
-                <tr key={b.row}>
-                  <td className="px-2 py-1">{b.row}</td>
-                  <td className="px-2 py-1 font-mono">{b.pred}</td>
+                <tr key={b.row} className="border-t border-border-soft">
+                  <td className="px-2 py-1 text-ink">{b.row}</td>
+                  <td className="px-2 py-1 font-mono text-ink">{b.pred}</td>
                 </tr>
               ))}
             </tbody>
@@ -247,8 +243,7 @@ function TextInput({ onUploaded }: { onUploaded: (u: Uploaded) => void }) {
         }}
         placeholder="输入文本…"
         rows={2}
-        className="w-full resize-none rounded-lg border p-2 text-sm outline-none focus:border-[var(--color-accent)]"
-        style={{ borderColor: "var(--color-border)" }}
+        className="w-full resize-none rounded-xl border border-border bg-[#FAF9F8] p-2 text-sm text-ink outline-none transition focus:border-accent focus:bg-white"
         data-testid="gen-text"
       />
     </PanelWrap>
@@ -291,9 +286,9 @@ function VectorInput({ cfg, onUploaded, onResult }: Props) {
       <PanelWrap title="输入 · 向量">
         <button
           onClick={() => setOpen(true)}
-          className="flex items-center gap-1.5 text-xs text-[var(--color-accent)] hover:underline"
+          className="flex items-center gap-1.5 text-xs text-accent hover:underline"
         >
-          <SlidersHorizontal size={13} /> 高级：直接输入 {cfg.vector_len} 维特征向量
+          <Sliders size={13} /> 高级：直接输入 {cfg.vector_len} 维特征向量
         </button>
       </PanelWrap>
     );
@@ -307,24 +302,22 @@ function VectorInput({ cfg, onUploaded, onResult }: Props) {
           onChange={(e) => setText(e.target.value)}
           placeholder={`${cfg.vector_len} 个逗号/空格分隔的数字`}
           rows={2}
-          className="w-full resize-none rounded-lg border p-2 font-mono text-xs outline-none focus:border-[var(--color-accent)]"
-          style={{ borderColor: "var(--color-border)" }}
+          className="w-full resize-none rounded-xl border border-border bg-[#FAF9F8] p-2 font-mono text-xs text-ink outline-none transition focus:border-accent focus:bg-white"
         />
         <button
           onClick={parse}
-          className="rounded-lg px-3 py-1.5 text-sm font-medium text-white"
-          style={{ background: "var(--color-accent)" }}
+          className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-white shadow-soft-sm transition hover:opacity-90"
         >
           应用
         </button>
         {feats && (
-          <button onClick={predict} disabled={busy} className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50" style={{ background: "var(--color-accent)" }} data-testid="gen-run">
-            {busy ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
+          <button onClick={predict} disabled={busy} className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-white shadow-soft-sm transition hover:opacity-90 disabled:opacity-50" data-testid="gen-run">
+            {busy ? <CircleNotch size={14} className="animate-spin" /> : <Play size={14} weight="fill" />}
             预测
           </button>
         )}
       </div>
-      {err && <div className="mt-1 text-xs text-[var(--color-err)]">{err}</div>}
+      {err && <div className="mt-1 text-xs text-err">{err}</div>}
     </PanelWrap>
   );
 }

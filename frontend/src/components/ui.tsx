@@ -22,10 +22,10 @@ export function Spinner({ className }: { className?: string }) {
 
 export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: "neutral" | "ok" | "err" | "accent" }) {
   const map: Record<string, string> = {
-    neutral: "bg-surface text-subink border-border",
-    ok: "bg-green-50 text-ok border-green-200",
-    err: "bg-red-50 text-err border-red-200",
-    accent: "bg-teal-50 text-accent border-teal-200",
+    neutral: "bg-surface-2 text-subink border-border-soft",
+    ok: "bg-ok-weak text-ok border-ok/30",
+    err: "bg-err-weak text-err border-err/30",
+    accent: "bg-accent-weak text-accent border-accent-border",
   };
   return (
     <span className={cn("inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium", map[tone])}>

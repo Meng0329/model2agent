@@ -1,18 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #ffffff;
-  --color-surface: #f8fafc;
-  --color-surface-2: #f1f5f9;
-  --color-border: #e5e7eb;
-  --color-ink: #111827;
-  --color-subink: #64748b;
-  --color-accent: #0d9488;
-  --color-accent-weak: #ccfbf1;
-  --color-ok: #16a34a;
-  --color-err: #dc2626;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* Warm minimalist palette — aligned with docs design reference */
+  --color-bg: #FDFCFB;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #F9F8F7;
+  --color-border: #E5E1DE;
+  --color-border-soft: #EEEAE7;
+  --color-ink: #2D2D2D;
+  --color-subink: #8E8E8E;
+  --color-primary: #1A1A1A;
+  --color-accent: #D6A292;
+  --color-accent-weak: #F3E9E5;
+  --color-accent-soft: #FAF6F4;
+  --color-accent-border: #E5D5CF;
+  --color-ok: #4A6741;
+  --color-ok-weak: #EBF4E9;
+  --color-err: #C2453D;
+  --color-err-weak: #F7E7E3;
+  --font-sans: "Plus Jakarta Sans", "PingFang SC", "Microsoft YaHei", ui-sans-serif,
+    system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --radius-2xl: 1.25rem;
+  --shadow-soft: 0 10px 30px -5px rgb(0 0 0 / 0.04), 0 4px 10px -2px rgb(0 0 0 / 0.02);
+  --shadow-soft-sm: 0 2px 8px -2px rgb(0 0 0 / 0.05), 0 1px 3px -1px rgb(0 0 0 / 0.03);
 }
 
 * {
@@ -33,15 +44,16 @@ body {
   font-size: 15px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* thin scrollbars */
+/* thin warm scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #ddd6d0;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-track {
@@ -53,8 +65,8 @@ body {
   margin: 0.4em 0;
 }
 .md pre {
-  background: #0f172a;
-  color: #e2e8f0;
+  background: #1a1a1a;
+  color: #e8e4e1;
   padding: 12px 14px;
   border-radius: 10px;
   overflow: auto;

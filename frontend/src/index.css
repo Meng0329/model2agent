@@ -1,14 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #FFFFFF;
-  --color-surface: #F8FAFC;
-  --color-border: #E5E7EB;
-  --color-ink: #111827;
-  --color-subink: #64748B;
-  --color-accent: #0D9488;
-  --color-ok: #16A34A;
-  --color-err: #DC2626;
+  /* Warm minimalist palette — aligned with docs design reference */
+  --color-bg: #FDFCFB;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #F9F8F7;
+  --color-border: #E5E1DE;
+  --color-border-soft: #EEEAE7;
+  --color-ink: #2D2D2D;
+  --color-subink: #8E8E8E;
+  --color-primary: #1A1A1A;
+  --color-accent: #D6A292;
+  --color-accent-weak: #F3E9E5;
+  --color-accent-soft: #FAF6F4;
+  --color-accent-border: #E5D5CF;
+  --color-ok: #4A6741;
+  --color-ok-weak: #EBF4E9;
+  --color-err: #C2453D;
+  --color-err-weak: #F7E7E3;
+  --font-sans: "Plus Jakarta Sans", "PingFang SC", "Microsoft YaHei", ui-sans-serif,
+    system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius-2xl: 1.25rem;
+  --shadow-soft: 0 10px 30px -5px rgb(0 0 0 / 0.04), 0 4px 10px -2px rgb(0 0 0 / 0.02);
+  --shadow-soft-sm: 0 2px 8px -2px rgb(0 0 0 / 0.05), 0 1px 3px -1px rgb(0 0 0 / 0.03);
 }
 
 :root {
@@ -19,32 +33,62 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-    "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   color: var(--color-ink);
   background: var(--color-bg);
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* thin scrollbars for panels */
-.scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
-.scroll-thin::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 8px; }
-.scroll-thin::-webkit-scrollbar-track { background: transparent; }
+/* thin warm scrollbars for panels */
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: #ddd6d0;
+  border-radius: 8px;
+}
+.scroll-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-@keyframes m2a-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-.m2a-fade { animation: m2a-fade 160ms ease-out; }
+@keyframes m2a-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.m2a-fade {
+  animation: m2a-fade 160ms ease-out;
+}
 
-@keyframes m2a-spin { to { transform: rotate(360deg); } }
-.m2a-spin { animation: m2a-spin 700ms linear infinite; }
+@keyframes m2a-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.m2a-spin {
+  animation: m2a-spin 700ms linear infinite;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }

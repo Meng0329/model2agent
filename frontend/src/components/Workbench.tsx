@@ -1,6 +1,6 @@
 // Center panel: multi-turn chat with the Builder Agent (real SSE stream).
 import { useEffect, useRef, useState } from "react";
-import { Send, Square, Bot, Terminal, CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { PaperPlaneRight, Stop, Robot, TerminalWindow, CheckCircle, XCircle, CircleNotch } from "@phosphor-icons/react";
 import type { Task, ToolCard, SseEvent } from "../types";
 import { api } from "../lib/api";
 import { EventStream } from "../lib/sse";
@@ -105,7 +105,7 @@ export function Workbench({ task }: { task: Task }) {
   useEffect(() => () => stopStream(), [taskId]);
 
   return (
-    <div className="flex h-full flex-col bg-white">
+    <div className="flex h-full flex-col bg-bg">
       <div ref={scrollRef} className="scroll-thin flex-1 overflow-y-auto px-6 py-5">
         <div className="mx-auto flex max-w-2xl flex-col gap-4">
           <AssistantBubble>
@@ -117,25 +117,25 @@ export function Workbench({ task }: { task: Task }) {
         </div>
       </div>
 
-      {err && <div className="mx-auto w-full max-w-2xl px-6"><div className="mb-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-err">{err}</div></div>}
+      {err && <div className="mx-auto w-full max-w-2xl px-6"><div className="mb-2 rounded-xl border border-err/20 bg-err-weak px-3 py-2 text-sm text-err">{err}</div></div>}
 
-      <div className="border-t border-border bg-surface px-4 py-3">
-        <div className="mx-auto flex max-w-2xl items-end gap-2 rounded-xl border border-border bg-white p-2">
+      <div className="border-t border-border-soft bg-surface-2 px-4 py-3">
+        <div className="mx-auto flex max-w-2xl items-end gap-2 rounded-xl border border-border-soft bg-white p-2 shadow-soft-sm">
           <textarea
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
             placeholder="描述你的需求，Enter 发送，Shift+Enter 换行"
             rows={1}
-            className="scroll-thin max-h-40 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none"
+            className="scroll-thin max-h-40 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-ink outline-none placeholder:text-subink"
           />
           {running ? (
-            <button onClick={stop} className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm text-subink hover:bg-surface">
-              <Square size={14} /> 停止
+            <button onClick={stop} className="flex items-center gap-1.5 rounded-lg border border-border-soft px-3 py-2 text-sm text-subink transition hover:bg-surface-2">
+              <Stop size={14} weight="fill" /> 停止
             </button>
           ) : (
-            <button onClick={send} disabled={!value.trim()} className="flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-700 disabled:opacity-40">
-              <Send size={14} /> 发送
+            <button onClick={send} disabled={!value.trim()} className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white shadow-soft-sm transition hover:opacity-90 disabled:opacity-40">
+              <PaperPlaneRight size={14} weight="fill" /> 发送
             </button>
           )}
         </div>
@@ -147,8 +147,8 @@ export function Workbench({ task }: { task: Task }) {
 function AssistantBubble({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent text-white"><Bot size={16} /></div>
-      <div className="rounded-xl rounded-tl-sm bg-surface px-4 py-3 text-sm text-ink">{children}</div>
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-ok text-white shadow-soft-sm"><Robot size={16} weight="fill" /></div>
+      <div className="rounded-2xl rounded-tl-none bg-surface-2 px-4 py-3 text-sm leading-relaxed text-ink">{children}</div>
     </div>
   );
 }
@@ -157,15 +157,15 @@ function MsgBubble({ m }: { m: UiMessage }) {
   if (m.role === "user") {
     return (
       <div className="flex items-start justify-end gap-3">
-        <div className="rounded-xl rounded-tr-sm bg-accent px-4 py-3 text-sm text-white">{m.content}</div>
+        <div className="rounded-2xl rounded-tr-none bg-primary px-4 py-3 text-sm leading-relaxed text-white">{m.content}</div>
       </div>
     );
   }
   return (
     <div className="flex items-start gap-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent text-white"><Bot size={16} /></div>
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-ok text-white shadow-soft-sm"><Robot size={16} weight="fill" /></div>
       <div className="min-w-0 flex-1">
-        {m.content && <div className="whitespace-pre-wrap rounded-xl rounded-tl-sm bg-surface px-4 py-3 text-sm text-ink">{m.content}</div>}
+        {m.content && <div className="whitespace-pre-wrap rounded-2xl rounded-tl-none bg-surface-2 px-4 py-3 text-sm leading-relaxed text-ink">{m.content}</div>}
         {m.tool_cards.length > 0 && (
           <div className="mt-2 space-y-2">
             {m.tool_cards.map((c) => <ToolCardView key={c.id} card={c} />)}
@@ -180,21 +180,21 @@ function ToolCardView({ card }: { card: ToolCard }) {
   const [open, setOpen] = useState(false);
   const tone = card.status === "running" ? "accent" : card.status === "error" ? "err" : "ok";
   return (
-    <div className="rounded-lg border border-border bg-white">
+    <div className="rounded-xl border border-border-soft bg-white shadow-soft-sm">
       <button onClick={() => setOpen((v) => !v)} className="flex w-full items-center gap-2 px-3 py-2 text-left">
-        <Terminal size={14} className="shrink-0 text-subink" />
+        <TerminalWindow size={14} className="shrink-0 text-subink" />
         <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">{card.name}</span>
-        {card.status === "running" ? <Loader2 size={14} className="shrink-0 text-accent m2a-spin" /> :
-          card.status === "error" ? <XCircle size={14} className="shrink-0 text-err" /> :
-            <CheckCircle2 size={14} className="shrink-0 text-ok" />}
-        <span className={cn("text-xs", tone === "err" ? "text-err" : tone === "ok" ? "text-ok" : "text-accent")}>
+        {card.status === "running" ? <CircleNotch size={14} className="m2a-spin shrink-0 text-accent" /> :
+          card.status === "error" ? <XCircle size={14} weight="fill" className="shrink-0 text-err" /> :
+            <CheckCircle size={14} weight="fill" className="shrink-0 text-ok" />}
+        <span className={cn("text-xs font-medium", tone === "err" ? "text-err" : tone === "ok" ? "text-ok" : "text-accent")}>
           {card.status === "running" ? "运行中" : card.status === "error" ? "失败" : "完成"}
         </span>
       </button>
       {open && (
-        <div className="border-t border-border px-3 py-2 text-xs text-subink">
-          {card.input && <div className="mb-1"><span className="font-medium text-ink">输入</span><pre className="mt-1 overflow-x-auto whitespace-pre-wrap rounded bg-surface p-2">{card.input}</pre></div>}
-          {card.result && <div><span className="font-medium text-ink">结果</span><pre className="mt-1 max-h-60 overflow-y-auto whitespace-pre-wrap rounded bg-surface p-2">{card.result}</pre></div>}
+        <div className="border-t border-border-soft px-3 py-2 text-xs text-subink">
+          {card.input && <div className="mb-1"><span className="font-medium text-ink">输入</span><pre className="mt-1 overflow-x-auto whitespace-pre-wrap rounded-lg bg-[#FAF9F8] p-2">{card.input}</pre></div>}
+          {card.result && <div><span className="font-medium text-ink">结果</span><pre className="mt-1 max-h-60 overflow-y-auto whitespace-pre-wrap rounded-lg bg-[#FAF9F8] p-2">{card.result}</pre></div>}
         </div>
       )}
     </div>
