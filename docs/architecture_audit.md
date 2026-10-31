@@ -1,7 +1,8 @@
-# Model2Agent V2.0 — 代码审计与模块处置结论
+# Model2Agent — 代码审计与模块处置结论（仓库只保留当前单一版本）
 
 > 审计时间：2026-10-30 · 审计对象：`/data/mzb/paper2agent`（main 分支）
-> 目的：为 V2.0（React + FastAPI 重建）确定哪些模块保留 / 重构 / 替换 / 删除。
+> 目的：记录 React + FastAPI 重建时各模块的保留 / 重构 / 替换 / 删除决定。
+> 说明：旧版 Gradio 实现（`m2a_app/`）与 `scripts/v1_acceptance.py` 已删除，仓库不再保留 v1/v2 双份代码。
 
 ## 一、环境审计（真实只读检查）
 
