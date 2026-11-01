@@ -1,5 +1,5 @@
 {
-  "n_runs": 19,
+  "n_runs": 20,
   "table": [
     {
       "task_id": "protein-P1-novel",
@@ -77,6 +77,17 @@
       "mean_cost_usd": 2.2482,
       "mean_latency_s": 1497.2,
       "mean_model_calls": 120
+    },
+    {
+      "task_id": "protein-P3-rediscovery",
+      "method": "B1",
+      "n": 1,
+      "sisr_rate": 0.0,
+      "oracle_ok_rate": 0.0,
+      "mean_sev": 0.0,
+      "mean_cost_usd": 2.6499,
+      "mean_latency_s": 1203.3,
+      "mean_model_calls": 65
     },
     {
       "task_id": "protein-P3-rediscovery",
@@ -227,11 +238,11 @@
       "mean_cost_usd": 0.4953
     },
     "B1": {
-      "n": 5,
-      "sisr_rate": 1.0,
-      "oracle_ok_rate": 1.0,
-      "mean_sev": 1.0,
-      "mean_cost_usd": 1.9251
+      "n": 6,
+      "sisr_rate": 0.833,
+      "oracle_ok_rate": 0.833,
+      "mean_sev": 0.833,
+      "mean_cost_usd": 2.0459
     },
     "B2": {
       "n": 2,
@@ -254,8 +265,8 @@
       "sisr_rate": 0.909
     },
     "protein_science": {
-      "n": 8,
-      "sisr_rate": 0.75
+      "n": 9,
+      "sisr_rate": 0.667
     }
   },
   "by_method_domain": {
@@ -285,8 +296,8 @@
         "sisr_rate": 1.0
       },
       "protein_science": {
-        "n": 2,
-        "sisr_rate": 1.0
+        "n": 3,
+        "sisr_rate": 0.667
       }
     },
     "B2": {
@@ -313,7 +324,7 @@
   "domain_macro_sisr_by_method": {
     "M": 0.834,
     "B0": 0.0,
-    "B1": 1.0,
+    "B1": 0.834,
     "B2": 1.0,
     "B3": 1.0
   },
@@ -349,6 +360,13 @@
     "protein-P2-closed-loop:B1": {
       "m_sisr": 1.0,
       "B1_sisr": 1.0,
+      "delta": 0.0,
+      "n_m": 1,
+      "n_b": 1
+    },
+    "protein-P3-rediscovery:B1": {
+      "m_sisr": 0.0,
+      "B1_sisr": 0.0,
       "delta": 0.0,
       "n_m": 1,
       "n_b": 1

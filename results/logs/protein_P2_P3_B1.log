@@ -6,3 +6,5 @@ To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other ope
 WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
 I0000 00:00:1793547860.200598 2738454 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
 [claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[S1] protein-P2-closed-loop B1 rep0: sisr=True oracle=True calls=101 ev=2 cost=$1.760
+[S1] protein-P3-rediscovery B1 rep0: sisr=False oracle=False calls=65 ev=0 cost=$2.650

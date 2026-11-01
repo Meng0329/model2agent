@@ -6,6 +6,7 @@ protein-P1-novel,B3,1,1.0,1.0,1.0,2.0332,1052.9
 protein-P1-novel,M,1,1.0,1.0,1.0,1.8607,1271.9
 protein-P2-closed-loop,B1,1,1.0,1.0,1.0,1.7601,463.3
 protein-P2-closed-loop,M,1,1.0,1.0,1.0,2.2482,1497.2
+protein-P3-rediscovery,B1,1,0.0,0.0,0.0,2.6499,1203.3
 protein-P3-rediscovery,M,1,0.0,0.0,1.0,1.9441,1402.4
 rice-R1-novel,B0,1,0.0,1.0,0.0,0.6575,190.6
 rice-R1-novel,B1,1,1.0,1.0,1.0,2.0208,802.9

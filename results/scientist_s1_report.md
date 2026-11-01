@@ -19,7 +19,7 @@
 | protein-P2-closed-loop | protein_science | B3 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
 | protein-P2-closed-loop | protein_science | M | 1 | True | True | 1.000 | 120 | 24 | False | 2.248 | 1497 | OBSERVED |
 | protein-P3-rediscovery | protein_science | B0 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
-| protein-P3-rediscovery | protein_science | B1 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
+| protein-P3-rediscovery | protein_science | B1 | 1 | False | False | 0.000 | 65 | 2 | False | 2.650 | 1203 | FAILED |
 | protein-P3-rediscovery | protein_science | B2 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
 | protein-P3-rediscovery | protein_science | B3 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
 | protein-P3-rediscovery | protein_science | M | 1 | False | False | 1.000 | 100 | 20 | True | 1.944 | 1402 | FAILED |
@@ -44,7 +44,7 @@
 | 方法 | n | SISR 率 | oracle 率 | 平均 SEV | 平均成本($) |
 |---|---|---|---|---|---|
 | B0 | 2 | 0.000 | 1.000 | 0.000 | 0.495 |
-| B1 | 5 | 1.000 | 1.000 | 1.000 | 1.925 |
+| B1 | 6 | 0.833 | 0.833 | 0.833 | 2.046 |
 | B2 | 2 | 1.000 | 1.000 | 1.000 | 1.416 |
 | B3 | 4 | 1.000 | 1.000 | 1.000 | 1.833 |
 | M | 6 | 0.833 | 0.833 | 1.000 | 1.867 |
@@ -54,6 +54,7 @@
 - **B0 / rice-R1-novel**：FAILED。模型调用=0，oracle 查询=0，oracle 命中=True，产物合格=False。
 - **B0 / protein-P1-novel**：FAILED。模型调用=0，oracle 查询=0，oracle 命中=True，产物合格=False。
 - **M / protein-P3-rediscovery**：FAILED。模型调用=100，oracle 查询=20，oracle 命中=False，产物合格=True。
+- **B1 / protein-P3-rediscovery**：FAILED。模型调用=65，oracle 查询=2，oracle 命中=False，产物合格=False。
 
 ### 3.1 修复前 harness 失败（不计入方法成功率）
 
@@ -67,7 +68,6 @@
 - protein-P2-closed-loop / B2
 - protein-P2-closed-loop / B3
 - protein-P3-rediscovery / B0
-- protein-P3-rediscovery / B1
 - protein-P3-rediscovery / B2
 - protein-P3-rediscovery / B3
 - rice-R2-closed-loop / B0
