@@ -1,10 +1,10 @@
-"""Model2Agent V0.3 — turn heterogeneous trained-model assets into verified,
-independently-running Agents.
+"""Model2Agent — Model-to-Scientist compilation.
 
-Pipeline: Asset-Grounded Capability Induction (AGCI) -> Model Capability Graph (MCG)
--> standalone Model Agent -> reference-execution verification -> benchmark.
+Converts ONE pretrained scientific model into a standalone, autonomous domain-scientist
+agent. The outer compiler is a single Claude Agent SDK session with specialized
+subagents; deterministic code only executes models, replays real measurements within
+a budget, persists an evidence ledger, and scores runs.
 
-This package is the single orchestrator; `skills/` is the internal routing mechanism
-(NOT claimed as a research contribution).
+There is no fixed pipeline, no keyword routing, no simulation, and no silent fallback.
 """
-__version__ = "0.3.0"
+__version__ = "0.4.0"

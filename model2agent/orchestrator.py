@@ -1,120 +1,107 @@
-"""Model2Agent Orchestrator (single, monolithic). Method M.
+"""Model2Agent — Model-to-Scientist compilation entry point.
 
-Pipeline: AGCI scan -> capability induction -> MCG -> uniform agent build ->
-reference-execution verification + repair loop. Returns a structured result the
-runner persists as raw JSONL for the statistical layer.
+ONE single Claude Agent SDK session, MULTIPLE subagents. The main agent decides
+everything: which subagent to call, in what order, and how to combine evidence.
+There is no fixed pipeline, no stage map, no keyword router, no silent fallback.
+
+Deterministic code here only: scaffold the project shell, expose grounded tools,
+run the session, and verify the produced project by real execution.
 """
 from __future__ import annotations
+
+import asyncio
 import json
-import traceback
 from pathlib import Path
 
 from . import config
-from .agci.asset_scanner import scan_bundle
-from .agci.capability_inducer import induce_capabilities
-from .mcg.graph import build_mcg, save_mcg
-from .builder.agent_builder import build_agent
-from .verification.reference_exec import run_reference, load_infer, compare
-from .llm import LLMClient, scrub
+from .scientist.sdk_session import build_options, run_session, sdk_version
+from .scientist.subagents import BUILDER_AGENTS
+from .scientist.synthesis import project_ready, scaffold_project, selfcheck
+from .scientist.tools import make_builder_tools
+
+_BUILDER_SYSTEM = """You are Model2Agent's Model-to-Scientist compiler, a single session with
+specialized subagents. You convert ONE pretrained scientific model into a standalone,
+autonomous domain-scientist agent.
+
+Mission (delegate as you see fit; there is no prescribed order):
+- Understand the model from REAL evidence (files, imports, executions, weights hash).
+- Discover which scientific operations it can really execute.
+- Build a capability graph with real dependencies only.
+- Author a runnable scientist project in the target directory: one main research agent,
+  scientific Skills, and MCP tools run_model / plan_experiment / record_evidence /
+  query_evidence_oracle / revise_hypothesis. The project must run headless via run_research.py.
+- Independently verify the result.
+
+Non-negotiable rules:
+* Never invent capabilities, values, measurements, or scientific facts. Ground every claim.
+* If something cannot be verified, report UNVERIFIED and say what would verify it.
+* Do NOT simulate results, do not add fallbacks, do not weaken the task.
+* The scientist must form falsifiable hypotheses, execute the REAL model, query only
+  real historical measurements within budget, revise on contradicting evidence, and
+  conclude with explicit limitations. E1 predictions are never reported as E3/E4.
+* When you finish, ensure the project passes a real selfcheck (run the model on its
+  first real example for every declared capability)."""
 
 
-def run_method_m(bundle_dir, *, llm=None, repair: bool = True, verify: bool = True,
-                 build: bool = True, oracle_dir=None):
-    """Full Model2Agent conversion of one asset. Returns a structured dict (success + evidence).
+def _mission_prompt(bundle_dir: Path, project_dir: Path, task: dict) -> str:
+    return (
+        "Compile the scientific model in this bundle into a scientist agent.\n"
+        f"bundle_dir: {bundle_dir}\n"
+        f"project_dir (write the standalone project here): {project_dir}\n"
+        f"research task (the scientist must be able to pursue this):\n"
+        f"{json.dumps(task, ensure_ascii=False, indent=2)}\n\n"
+        "Use the inspect_model and execution_check tools. Write real files. "
+        "Finish by running the project's selfcheck and reporting its real output."
+    )
 
-    oracle_dir: optional path to a CLEAN asset bundle. When provided (fault-injection mode),
-    verification compares the converted agent's output against the clean oracle instead of
-    the possibly-corrupted bundle itself — this is what makes silent semantic faults
-    (e.g. preprocessing drift) detectable rather than self-consistent.
-    """
-    bundle_dir = Path(bundle_dir)
-    llm = llm or LLMClient("M")
-    res = {"method": "M", "slug": bundle_dir.name, "steps": {}, "success": False}
 
-    # 1. AGCI scan (asset-grounded, no LLM)
-    try:
-        desc = scan_bundle(bundle_dir)
-        res["steps"]["scan"] = {
-            "framework": desc.framework, "task_family": desc.task_family,
-            "functions": [f["name"] for f in desc.functions if f.get("is_callable")],
-            "weights_sha256": (desc.evidence.get("weights_sha256") or "")[:32],
-            "import_error": desc.evidence.get("import_error"),
-            "ast_vs_manifest": desc.evidence.get("manifest_vs_ast"),
-        }
-        res["descriptor"] = {k: getattr(desc, k) for k in ("slug", "name", "framework", "task_family", "model_id", "revision", "license")}
-    except Exception as e:
-        res["steps"]["scan"] = {"error": f"{type(e).__name__}: {e}"}
-        return res
+async def _run_smsc_async(bundle_dir: Path, task: dict, project_dir: Path,
+                          max_turns: int, max_budget_usd: float) -> dict:
+    scaffold_project(project_dir)
+    server = make_builder_tools()
+    options = build_options(
+        cwd=config.ROOT, agents=BUILDER_AGENTS, system_prompt=_BUILDER_SYSTEM,
+        mcp_servers={"m2a_builder_tools": server},
+        max_turns=max_turns, max_budget_usd=max_budget_usd)
+    result = await run_session(_mission_prompt(bundle_dir, project_dir, task), options)
 
-    if desc.evidence.get("import_error"):
-        res["steps"]["scan_error"] = desc.evidence["import_error"]
-        return res
-
-    # 2. Capability induction (LLM, grounded in discovered functions)
-    try:
-        caps = induce_capabilities(desc, llm)
-        res["steps"]["induction"] = {
-            "n_capabilities": len(caps),
-            "capabilities": [{"name": c.name, "entry": c.entry_function, "depends_on": c.depends_on} for c in caps],
-        }
-    except Exception as e:
-        res["steps"]["induction"] = {"error": f"{type(e).__name__}: {e}"}
-        res["steps"]["induction_error"] = scrub(f"{traceback.format_exc()}"[:500])
-        return res
-
-    # 3. MCG
-    mcg = build_mcg(desc.slug, caps)
-    (config.GENERATED_AGENTS_DIR / desc.slug).mkdir(parents=True, exist_ok=True)
-    save_mcg(mcg, config.GENERATED_AGENTS_DIR / desc.slug / "mcg.json")
-    res["steps"]["mcg"] = {"nodes": len(mcg.nodes), "edges": len(mcg.edges),
-                           "root_capabilities": mcg.root_capabilities}
-
-    # 4. Build standalone agent (uniform template)
-    if build:
+    ready, problems = project_ready(project_dir)
+    check = {"ok": False, "error": "project not ready"}
+    if ready:
         try:
-            out = build_agent(desc, mcg)
-            res["steps"]["build"] = {"agent_dir": str(out), "module": "agent.py"}
-        except Exception as e:
-            res["steps"]["build"] = {"error": f"{type(e).__name__}: {e}"}
-            if not repair:
-                return res
+            check = {"ok": True, "output": selfcheck(project_dir)}
+        except Exception as e:  # surfaced, not hidden
+            check = {"ok": False, "error": f"{type(e).__name__}: {e}"}
 
-    # 5. Verification against reference execution (real weights)
-    if verify:
-        verified = 0
-        checks = []
-        unverified = []
-        mod = load_infer(bundle_dir)
-        oracle = Path(oracle_dir) if oracle_dir else bundle_dir
-        import json as _j
-        examples = _j.loads(Path(bundle_dir).joinpath(desc.manifest.get("examples", "examples.json")).read_text(encoding="utf-8"))
-        for c in caps:
-            # Only capabilities with a grounded example are *verifiable*; the rest are
-            # recorded as unverified (not counted as failures).
-            ex = examples.get(c.entry_function)
-            if not ex:
-                unverified.append(c.name)
-                checks.append({"capability": c.name, "verified": None, "reason": "no_example"})
-                continue
-            sample = ex[0]
-            try:
-                a = sample.get("args", {"_value": sample.get("input", sample)}) or {}
-                # Reference comes from the CLEAN oracle bundle (fault-injection mode), never
-                # from the corrupted bundle itself.
-                ref = run_reference(oracle, c.entry_function, a)
-                got = getattr(mod, c.entry_function)(**a)
-                ok = compare(c.entry_function, ref, got)
-                verified += int(ok)
-                checks.append({"capability": c.name, "verified": ok, "ref": str(ref)[:120], "got": str(got)[:120]})
-            except Exception as e:
-                checks.append({"capability": c.name, "verified": False, "reason": f"{type(e).__name__}: {e}"})
-        n_verifiable = sum(1 for c in checks if c.get("verified") is not None)
-        res["steps"]["verification"] = {"verified": verified, "n_verifiable": n_verifiable,
-                                        "unverified_no_example": unverified, "checks": checks}
-        res["capability_verification_rate"] = (verified / n_verifiable) if n_verifiable else 0.0
-        res["success"] = n_verifiable > 0 and verified == n_verifiable
-        res["capability_verification_rate_all"] = (verified / len(checks)) if checks else 0.0
-    else:
-        res["success"] = True  # build-only success if verify disabled
+    return {
+        "method": "M",
+        "sdk_version": sdk_version(),
+        "session": {
+            "is_error": result.is_error,
+            "stop_reason": result.stop_reason,
+            "num_turns": result.num_turns,
+            "session_id": result.session_id,
+            "cost_usd": result.cost_usd,
+            "latency_ms": result.latency_ms,
+            "tools": [{"name": t.name, "status": t.status, "is_error": t.is_error}
+                      for t in result.tool_events],
+        },
+        "project": str(project_dir),
+        "project_ready": ready,
+        "problems": problems,
+        "selfcheck": check,
+        "success": bool(ready and check.get("ok")),
+        "text": result.text,
+    }
 
-    return res
+
+def run_smsc(bundle_dir: str | Path, task: dict, *, project_dir: str | Path | None = None,
+             max_turns: int | None = None, max_budget_usd: float | None = None) -> dict:
+    """Compile one scientific model into a scientist agent (single session, multi-agent)."""
+    config.assert_secrets()
+    bundle_dir = Path(bundle_dir)
+    project_dir = Path(project_dir or (config.SCIENTIST_PROJECTS_DIR / bundle_dir.name))
+    return asyncio.run(_run_smsc_async(
+        bundle_dir, task, project_dir,
+        max_turns or config.SCIENTIST_MAX_TURNS,
+        max_budget_usd if max_budget_usd is not None else config.SCIENTIST_MAX_BUDGET_USD))

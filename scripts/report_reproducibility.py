@@ -65,6 +65,15 @@ def _gpu() -> dict:
     return {"visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"), "name": "cpu"}
 
 
+def _sdk_version() -> str:
+    """Probe the installed SDK — no hard-coded availability flag."""
+    try:
+        import claude_agent_sdk
+        return getattr(claude_agent_sdk, "__version__", "installed")
+    except ImportError as e:
+        return f"NOT_INSTALLED: {e}"
+
+
 def build():
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -75,7 +84,7 @@ def build():
         "platform": platform.platform(),
         "deepseek_model_id": config.DEEPSEEK_MODEL,
         "deepseek_base_url": config.DEEPSEEK_BASE_URL,
-        "claude_sdk_available": config.CLAUDE_SDK_AVAILABLE,
+        "claude_sdk_version": _sdk_version(),
         "dependencies": _deps(),
         "gpu": _gpu(),
         "models": _model_revisions(),
