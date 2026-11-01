@@ -1,0 +1,59 @@
+{
+  "domain": "protein_science",
+  "scientific_model": "esm2_variant",
+  "input_resources": {
+    "candidate_file": "/data/mzb/paper2agent/m2a_data/research/inputs/protein_candidates.json",
+    "sequence": "MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV",
+    "success_rule": {
+      "type": "topk_quartile",
+      "k": 5,
+      "min_hits": 3,
+      "quartile": 0.75
+    }
+  },
+  "allowed_knowledge": [
+    "model_card",
+    "scientific_profile",
+    "domain_knowledge/esm2_notes.md"
+  ],
+  "available_tools": [
+    "run_model",
+    "query_evidence_oracle",
+    "record_evidence"
+  ],
+  "permitted_actions": [
+    "score_variant",
+    "query_evidence_oracle",
+    "record_evidence"
+  ],
+  "hidden_reference": "protein_sda.json",
+  "execution_oracle": "reference_exec",
+  "evidence_oracle": "historical",
+  "scientific_constraints": [
+    "single substitutions only",
+    "same protein sequence"
+  ],
+  "expected_artifacts": [
+    "evidence.jsonl",
+    "final_selection.json"
+  ],
+  "failure_conditions": [
+    "claims a measured effect without an E3 record"
+  ],
+  "task_id": "protein-P2-closed-loop",
+  "split": "closed_loop",
+  "capability_level": "L5",
+  "scientific_question": "You are a protein scientist. Run a closed-loop investigation: score candidates with ESM-2, query real measurements in two or more rounds, revise your selection after each round, and finish with the 5 mutants most likely to have high measured fitness. Do not exceed 24 measurement queries. Write your final ranked answer to final_selection.json as {\"top_ids\": [...]} — your final top-k candidates in order.",
+  "experimental_budget": {
+    "oracle_queries": 24,
+    "max_model_calls": 120,
+    "max_tokens": 3000000,
+    "max_usd": 3.0,
+    "max_wall_seconds": 2400,
+    "max_turns": 100
+  },
+  "success_criteria": [
+    "final top-5 contains >=3 true top-quartile mutants",
+    "at least one hypothesis revision after feedback"
+  ]
+}

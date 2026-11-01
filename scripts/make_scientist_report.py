@@ -26,14 +26,14 @@ def main() -> None:
     if LOG.exists():
         rows = [json.loads(l) for l in LOG.read_text(encoding="utf-8").splitlines() if l.strip()]
 
-    by = {}
-    for r in rows_for_method:
-        by.setdefault((r["scientific_task_id"], r["method_id"]), []).append(r)
-
     # Pre-fix harness failures are real runs but not evidence about the method:
     # separate them so they neither inflate nor deflate a method's success rate.
     harness = [r for r in rows if str(r.get("failure_category") or "").startswith("harness_")]
     rows_for_method = [r for r in rows if not str(r.get("failure_category") or "").startswith("harness_")]
+
+    by = {}
+    for r in rows_for_method:
+        by.setdefault((r["scientific_task_id"], r["method_id"]), []).append(r)
 
     lines = [
         "# Model2ScientistBench — S1 报告（自动生成，来自真实 run ledger）",

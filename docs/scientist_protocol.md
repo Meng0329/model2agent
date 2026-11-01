@@ -70,7 +70,13 @@ this on every build.
   model calls > 0 **and** valid evidence records **and** required artifacts.
   Generation failure counts in the denominator.
 - **SEV** = supported conclusions / concluded evidence; always reported together
-  with `unsupported_claim_rate`.
+  with `unsupported_claim_rate`. A conclusion is supported only when every cited
+  evidence id resolves in the ledger (and declared types match). Because each
+  generated scientist authors its own conclusion file, the evaluator accepts the
+  unambiguous citation keys `supporting_evidence` / `supporting_records` /
+  `evidence_ids` / `evidence` and statement keys `statement` / `claim` /
+  `conclusion`. Alias acceptance never skips resolution — an unresolved citation
+  still counts as unsupported.
 - **ASIG** = adaptive minus fixed utility under equal budget (domain-normalized).
 - **HDSS** = held-out-domain macro average (NOT_TESTED this round).
 - Auxiliary: model calls, oracle queries, cost, latency, revisions, malformed records.

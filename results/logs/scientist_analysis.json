@@ -1,6 +1,72 @@
 {
-  "n_runs": 5,
+  "n_runs": 13,
   "table": [
+    {
+      "task_id": "protein-P1-novel",
+      "method": "B0",
+      "n": 1,
+      "sisr_rate": 0.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 0.0,
+      "mean_cost_usd": 0.3331,
+      "mean_latency_s": 154.4,
+      "mean_model_calls": 0
+    },
+    {
+      "task_id": "protein-P1-novel",
+      "method": "B1",
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 2.0396,
+      "mean_latency_s": 658.4,
+      "mean_model_calls": 79
+    },
+    {
+      "task_id": "protein-P1-novel",
+      "method": "B2",
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 1.2274,
+      "mean_latency_s": 577.9,
+      "mean_model_calls": 3
+    },
+    {
+      "task_id": "protein-P1-novel",
+      "method": "B3",
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 2.0332,
+      "mean_latency_s": 1052.9,
+      "mean_model_calls": 57
+    },
+    {
+      "task_id": "protein-P1-novel",
+      "method": "M",
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 1.8607,
+      "mean_latency_s": 1271.9,
+      "mean_model_calls": 44
+    },
+    {
+      "task_id": "protein-P2-closed-loop",
+      "method": "M",
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 2.2482,
+      "mean_latency_s": 1497.2,
+      "mean_model_calls": 120
+    },
     {
       "task_id": "rice-R1-novel",
       "method": "B0",
@@ -55,60 +121,94 @@
       "mean_cost_usd": 1.3215,
       "mean_latency_s": 409.3,
       "mean_model_calls": 2
+    },
+    {
+      "task_id": "rice-R2-closed-loop",
+      "method": "M",
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 1.9602,
+      "mean_latency_s": 865.8,
+      "mean_model_calls": 1
+    },
+    {
+      "task_id": "rice-R3-rediscovery",
+      "method": "M",
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 1.8657,
+      "mean_latency_s": 789.7,
+      "mean_model_calls": 1
     }
   ],
   "by_method": {
     "M": {
-      "n": 1,
+      "n": 5,
       "sisr_rate": 1.0,
       "oracle_ok_rate": 1.0,
       "mean_sev": 1.0,
-      "mean_cost_usd": 1.3215
+      "mean_cost_usd": 1.8513
     },
     "B0": {
-      "n": 1,
+      "n": 2,
       "sisr_rate": 0.0,
       "oracle_ok_rate": 1.0,
       "mean_sev": 0.0,
-      "mean_cost_usd": 0.6575
+      "mean_cost_usd": 0.4953
     },
     "B1": {
-      "n": 1,
+      "n": 2,
       "sisr_rate": 1.0,
       "oracle_ok_rate": 1.0,
       "mean_sev": 1.0,
-      "mean_cost_usd": 2.0208
+      "mean_cost_usd": 2.0302
     },
     "B2": {
-      "n": 1,
+      "n": 2,
       "sisr_rate": 1.0,
       "oracle_ok_rate": 1.0,
       "mean_sev": 1.0,
-      "mean_cost_usd": 1.6053
+      "mean_cost_usd": 1.4163
     },
     "B3": {
-      "n": 1,
+      "n": 2,
       "sisr_rate": 1.0,
       "oracle_ok_rate": 1.0,
       "mean_sev": 1.0,
-      "mean_cost_usd": 1.5741
+      "mean_cost_usd": 1.8036
     }
   },
   "by_domain_pooled": {
     "agriculture": {
-      "n": 5,
-      "sisr_rate": 0.8
+      "n": 7,
+      "sisr_rate": 0.857
+    },
+    "protein_science": {
+      "n": 6,
+      "sisr_rate": 0.833
     }
   },
   "by_method_domain": {
     "M": {
       "agriculture": {
-        "n": 1,
+        "n": 3,
+        "sisr_rate": 1.0
+      },
+      "protein_science": {
+        "n": 2,
         "sisr_rate": 1.0
       }
     },
     "B0": {
       "agriculture": {
+        "n": 1,
+        "sisr_rate": 0.0
+      },
+      "protein_science": {
         "n": 1,
         "sisr_rate": 0.0
       }
@@ -117,16 +217,28 @@
       "agriculture": {
         "n": 1,
         "sisr_rate": 1.0
+      },
+      "protein_science": {
+        "n": 1,
+        "sisr_rate": 1.0
       }
     },
     "B2": {
       "agriculture": {
         "n": 1,
         "sisr_rate": 1.0
+      },
+      "protein_science": {
+        "n": 1,
+        "sisr_rate": 1.0
       }
     },
     "B3": {
       "agriculture": {
+        "n": 1,
+        "sisr_rate": 1.0
+      },
+      "protein_science": {
         "n": 1,
         "sisr_rate": 1.0
       }
@@ -140,6 +252,34 @@
     "B3": 1.0
   },
   "paired": {
+    "protein-P1-novel:B0": {
+      "m_sisr": 1.0,
+      "B0_sisr": 0.0,
+      "delta": 1.0,
+      "n_m": 1,
+      "n_b": 1
+    },
+    "protein-P1-novel:B1": {
+      "m_sisr": 1.0,
+      "B1_sisr": 1.0,
+      "delta": 0.0,
+      "n_m": 1,
+      "n_b": 1
+    },
+    "protein-P1-novel:B2": {
+      "m_sisr": 1.0,
+      "B2_sisr": 1.0,
+      "delta": 0.0,
+      "n_m": 1,
+      "n_b": 1
+    },
+    "protein-P1-novel:B3": {
+      "m_sisr": 1.0,
+      "B3_sisr": 1.0,
+      "delta": 0.0,
+      "n_m": 1,
+      "n_b": 1
+    },
     "rice-R1-novel:B0": {
       "m_sisr": 1.0,
       "B0_sisr": 0.0,

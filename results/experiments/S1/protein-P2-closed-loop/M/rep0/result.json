@@ -1,0 +1,17 @@
+{
+  "run_id": "S1:M:protein-P2-closed-loop:r0:f5e0755a",
+  "status": "OBSERVED",
+  "text": "Investigation complete. Both required artifacts are written and valid.\n\n## Summary\n\n**Research question:** Which 5 single mutants of the 44-residue protein (`MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV`, ProteinGym `SDA_BACSU_Tsuboyama_2023_1PV0`) most likely have the highest **measured** fitness? Existing tooling: ESM-2 zero-shot scoring is a noisy prioritizer, not a measurement.\n\n**Budget used:** 120/120 model calls, 24/24 oracle queries, 6 evidence records (E1/E3/E4).\n\n**Key findings from the closed loop:**\n1. **H0 (additivity)** — *falsified*: batching mutations is **not** exactly additive (mask-pattern changes context, Δ≈0.04). So I scored all candidates individually — a design correction worth the 4 test calls.\n2. **H1 (ESM-2 ranking)** — only weakly predictive: of the top-10 E1 candidates, 6 had positive measured fitness but high-E1 picks R2K, R23K, F14L, H40R all measured **negative**.\n3. **H2 (conservation prior)** — *supported*: conservative substitutions at mutation-tolerant positions were the reliable signal; high-E1 but charge/size-disruptive variants (N22E, G39N, F14I, H40Q) all failed despite E1 > 1.0.\n4. **Round 3**: Position 12 turned out to be the dominant high-fitness locus (S→T +0.513, S→V +0.484, S→A +0.467).\n\n**Final answer** (`final_selection.json`): E3-measured top-5 = **S12T (+0.513), S12V (+0.484), S12A (+0.467), I41L (+0.313), T17V (+0.289)** — all measured, all strongly positive.\n\n**Limitations stated explicitly:** only 24/834 candidates measured (biased high-E1-first), no unbiased estimate of the true top-quartile threshold, 810 candidates remain UNOBSERVED, and all E1 values are model predictions — never reported as measurements.",
+  "cost_usd": 2.2482384,
+  "num_turns": 168,
+  "session_id": "a3844c26-e30b-4271-bc8e-ae646331c01a",
+  "error": null,
+  "budget": {
+    "model_calls": 120,
+    "experiments": 24,
+    "tokens_used": 0,
+    "cost_usd": 0.0,
+    "elapsed_s": 1497.216
+  },
+  "latency_s": 1497.215
+}

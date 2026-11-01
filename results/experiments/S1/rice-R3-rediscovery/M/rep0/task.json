@@ -34,7 +34,6 @@
   ],
   "expected_artifacts": [
     "evidence.jsonl",
-    "conclusions.jsonl",
     "final_selection.json"
   ],
   "failure_conditions": [
@@ -49,7 +48,8 @@
     "max_model_calls": 100,
     "max_tokens": 2500000,
     "max_usd": 2.5,
-    "max_wall_seconds": 2400
+    "max_wall_seconds": 2400,
+    "max_turns": 100
   },
   "success_criteria": [
     "final top-1 equals the true highest-GRWT100 line"

@@ -1,6 +1,14 @@
 task_id,method,n,sisr_rate,oracle_ok_rate,mean_sev,mean_cost_usd,mean_latency_s
+protein-P1-novel,B0,1,0.0,1.0,0.0,0.3331,154.4
+protein-P1-novel,B1,1,1.0,1.0,1.0,2.0396,658.4
+protein-P1-novel,B2,1,1.0,1.0,1.0,1.2274,577.9
+protein-P1-novel,B3,1,1.0,1.0,1.0,2.0332,1052.9
+protein-P1-novel,M,1,1.0,1.0,1.0,1.8607,1271.9
+protein-P2-closed-loop,M,1,1.0,1.0,1.0,2.2482,1497.2
 rice-R1-novel,B0,1,0.0,1.0,0.0,0.6575,190.6
 rice-R1-novel,B1,1,1.0,1.0,1.0,2.0208,802.9
 rice-R1-novel,B2,1,1.0,1.0,1.0,1.6053,438.8
 rice-R1-novel,B3,1,1.0,1.0,1.0,1.5741,508.8
 rice-R1-novel,M,1,1.0,1.0,1.0,1.3215,409.3
+rice-R2-closed-loop,M,1,1.0,1.0,1.0,1.9602,865.8
+rice-R3-rediscovery,M,1,1.0,1.0,1.0,1.8657,789.7

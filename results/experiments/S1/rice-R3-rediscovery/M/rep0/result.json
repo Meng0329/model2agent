@@ -1,0 +1,17 @@
+{
+  "run_id": "S1:M:rice-R3-rediscovery:r0:82ffd264",
+  "status": "OBSERVED",
+  "text": "## Research complete\n\n**Research question.** Among 904 candidate rice lines, which single line has the highest measured 100-grain weight (GRWT100)? Use the Ridge genomic-prediction model plus ≤20 real phenotype measurements to rediscover it.\n\n**Design.**\n1. **E1 model run** — scored all 904 candidates with `rank_candidates` (1 of 100 model calls). Predictions ranged 1.50–3.66 g, mean 2.48, sd 0.30.\n2. **Optimal query allocation** — under a Gaussian error model calibrated to the documented held-out Spearman (r = 0.454), the posterior \"probability this line is the true max\" is *monotone* in the model prediction, so the coverage-optimal 20-line set is exactly the top-20 predicted lines (≈43% prior mass). I queried precisely those 20 (all 20 oracle queries used; no UNOBSERVABLE).\n3. **E3 measurements obtained** — measured values turned out higher and more spread than predictions.\n\n**Key observation.** Among the 20 phenotyped lines, the highest measured GRWT100 is **IRIS_313.12254 = 5.0 g/100 grains**, which is *also* the model's rank-1 prediction. Next-highest measured: IRIS_313.12349 = 4.7, IRIS_313.12344 = 4.6, IRIS_313.12242 = 4.5 — a clear margin below the top.\n\n**Uncertainty (stated explicitly).**\n- Within-sample Spearman(pred, measured) = 0.386, consistent with the documented held-out r = 0.454 → the model is informative but noisy.\n- The model *compresses* the trait: predictions 2.5–3.66 g vs measured 2.8–5.0 g, so E1 values must not be read as measured phenotypes.\n- Calibrated posterior: **≈0.82** that no unmeasured candidate exceeds 5.0; **≈0.18** that the true maximum lies among the 884 unqueried lines (expected ~0.19 unmeasured lines above 5.0; highest-risk are IRIS_313.11705/12251/12049 at P≈0.004 each). The residual uncertainty is irreducible given the 20-measurement cap.\n\n**Conclusion.** Top-1 answer: **IRIS_313.12254**.\n\n**Artifacts written.**\n- `/data/mzb/paper2agent/results/experiments/S1/rice-R3-rediscovery/M/rep0/final_selection.json` → `{\"top_ids\": [...]}` with IRIS_313.12254 first, remaining 19 measured lines ordered by measured value.\n- `/data/mzb/paper2agent/results/experiments/S1/rice-R3-rediscovery/M/rep0/conclusions.jsonl` → 5 conclusions (C1–C5), each citing evidence records ev-11 (E1), ev-12 (E3 measurements), ev-13 (E2 derived posterior).\n\n**Limitations.** Only 20/904 lines phenotyped; single environment; linear additive ridge (no GxE, epistasis, dominance); unmeasured candidates cannot be verified. No E3/E4 claim is made for any model prediction.",
+  "cost_usd": 1.8657424000000002,
+  "num_turns": 56,
+  "session_id": "0011fe4a-f9b4-44c3-bb33-d94d5af27ddc",
+  "error": null,
+  "budget": {
+    "model_calls": 1,
+    "experiments": 20,
+    "tokens_used": 0,
+    "cost_usd": 0.0,
+    "elapsed_s": 789.737
+  },
+  "latency_s": 789.736
+}

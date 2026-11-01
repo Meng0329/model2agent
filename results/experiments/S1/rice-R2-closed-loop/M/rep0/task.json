@@ -36,7 +36,6 @@
   ],
   "expected_artifacts": [
     "evidence.jsonl",
-    "conclusions.jsonl",
     "final_selection.json"
   ],
   "failure_conditions": [
@@ -51,7 +50,8 @@
     "max_model_calls": 120,
     "max_tokens": 3000000,
     "max_usd": 3.0,
-    "max_wall_seconds": 2400
+    "max_wall_seconds": 2400,
+    "max_turns": 100
   },
   "success_criteria": [
     "final top-10 contains >=6 true top-quartile lines",
