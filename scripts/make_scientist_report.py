@@ -94,7 +94,7 @@ def main() -> None:
         lines.append(
             f"- **{r['method_id']} / {r['scientific_task_id']}**："
             f"`{r.get('failure_category')}` — {r.get('notes', '')}。"
-            "该 run 的真实产物已保留在 `rep0_prebug/`，修复后另行重跑。")
+            "该 run 的真实产物已保留在对应的 `rep0_prebug/` / `rep0_budgetcap/` 目录，修复后另行重跑。")
 
     tested = {(r["scientific_task_id"], r["method_id"]) for r in rows_for_method}
     missing = [(t["task_id"], m) for t in tasks for m in METHODS if (t["task_id"], m) not in tested]

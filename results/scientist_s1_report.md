@@ -58,9 +58,9 @@
 
 ### 3.1 修复前 harness 失败（不计入方法成功率）
 
-- **M / rice-R2-closed-loop**：`harness_output_path_bug` — pre-fix run: scientist wrote final_selection.json to the project cwd; evaluator reads the run out dir。该 run 的真实产物已保留在 `rep0_prebug/`，修复后另行重跑。
-- **M / rice-R3-rediscovery**：`harness_output_path_bug` — pre-fix run: scientist wrote final_selection.json to the project cwd; evaluator reads the run out dir。该 run 的真实产物已保留在 `rep0_prebug/`，修复后另行重跑。
-- **M / rice-R2-closed-loop**：`harness_budget_cap` — runner applied the global $2.0 cap instead of the task's $3.0 budget; session was cut at $2.019 before writing final_selection。该 run 的真实产物已保留在 `rep0_prebug/`，修复后另行重跑。
+- **M / rice-R2-closed-loop**：`harness_output_path_bug` — pre-fix run: scientist wrote final_selection.json to the project cwd; evaluator reads the run out dir。该 run 的真实产物已保留在对应的 `rep0_prebug/` / `rep0_budgetcap/` 目录，修复后另行重跑。
+- **M / rice-R3-rediscovery**：`harness_output_path_bug` — pre-fix run: scientist wrote final_selection.json to the project cwd; evaluator reads the run out dir。该 run 的真实产物已保留在对应的 `rep0_prebug/` / `rep0_budgetcap/` 目录，修复后另行重跑。
+- **M / rice-R2-closed-loop**：`harness_budget_cap` — runner applied the global $2.0 cap instead of the task's $3.0 budget; session was cut at $2.019 before writing final_selection。该 run 的真实产物已保留在对应的 `rep0_prebug/` / `rep0_budgetcap/` 目录，修复后另行重跑。
 
 ## 4. NOT_TESTED（本轮未运行）
 
