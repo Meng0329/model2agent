@@ -35,6 +35,26 @@ _RUN_LOCK: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
 
 MAX_EVENTS_PER_FRAME = 50
 
+# Real Builder tool -> production stage. Stages are driven by actual tool calls;
+# anything not invoked is simply absent (never fabricated).
+_STAGE_MAP = {
+    "generate_agent": "生成",
+    "verify_agent": "验证",
+    "get_verify_report": "验证证据",
+    "rebuild_ui": "重建前端",
+    "start_preview": "预览",
+    "stop_preview": "停止预览",
+    "Read": "资产分析", "Grep": "资产分析", "Glob": "资产分析",
+    "Bash": "资产分析", "Write": "改写产物", "Edit": "改写产物",
+}
+
+
+def _stage_name(tool_name: str) -> str:
+    for k, v in _STAGE_MAP.items():
+        if tool_name == k or tool_name.endswith("__" + k) or tool_name.endswith(k):
+            return v
+    return "执行"
+
 
 def _publish(task_id: str, event: dict) -> None:
     _SEQ[task_id] += 1
@@ -70,6 +90,7 @@ async def _run(task_id: str, prompt: str):
     tool_cards: list[dict] = []
     card_index: dict[str, dict] = {}
     full_text = ""
+    stage_rounds: dict[str, int] = {}
 
     try:
         # ensure a workspace exists (inside try so any failure is reported & run finished)
@@ -97,6 +118,18 @@ async def _run(task_id: str, prompt: str):
                     "run_id": run_id, "card_id": cid, "name": card["name"],
                     "status": card["status"], "input": card["input"], "result": card.get("result", ""),
                 })
+                stage = _stage_name(card["name"])
+                if card["status"] == "running":
+                    stage_rounds[stage] = stage_rounds.get(stage, 0) + 1
+                _publish(task_id, {
+                    "type": "run_stage", "run_id": run_id, "stage": stage,
+                    "status": card["status"], "tool": card["name"],
+                    "round": stage_rounds.get(stage, 0),
+                    "evidence": (card.get("result") or "")[:1200],
+                })
+            elif kind == "thinking":
+                # real reasoning text from the SDK; live-only, never persisted
+                _publish(task_id, {"type": "thinking_delta", "run_id": run_id, "text": ev.get("text", "")})
             elif kind == "result":
                 is_err = bool(ev.get("is_error"))
                 if ev.get("session_id"):

@@ -106,6 +106,20 @@ def g_selfcheck():
     return f"task={tid} slug={cfg.get('slug')} capabilities={list(out.keys())}"
 
 
+def g_usability():
+    """Run the SAME evidence-based verification the outer agent must pass."""
+    tid, _ = _pick_generated_task()
+    sys.path.insert(0, str(REPO))
+    from backend.gen_cli import build_verify_report
+    rep = build_verify_report(tid)
+    checks = {c["name"]: c["status"] for c in rep.get("checks", [])}
+    for required in ("boot", "real_inference", "conversations_crud", "apidocs"):
+        assert checks.get(required) == "pass", f"{required} failed: {rep}"
+    assert rep.get("ok"), f"verify report not ok: {checks}"
+    adapter = checks.get("input_adapter_fixture", "n/a")
+    return f"task={tid} adapter={adapter} checks={checks}"
+
+
 def g_preview():
     tid, _ = _pick_generated_task()
     _post(f"/api/tasks/{tid}/preview/stop", {}, 60)  # ensure clean start
@@ -180,6 +194,7 @@ def main():
         ("A  backend health", g_health),
         ("B  real device detection", g_devices),
         ("C  generated project real selfcheck", g_selfcheck),
+        ("C2 generated agent usability (evidence report)", g_usability),
         ("D  preview real process + reachability", g_preview),
         ("E  export ZIP (secret-free, complete)", g_export_zip),
         ("F  Docker verify (gated)", g_docker),

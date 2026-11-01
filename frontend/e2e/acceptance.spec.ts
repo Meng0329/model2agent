@@ -3,9 +3,13 @@
 //   preview embeds Generated Agent → upload test image → real inference → chat →
 //   download Docker ZIP.
 import { test, expect } from "@playwright/test";
+import * as path from "path";
+import { fileURLToPath } from "url";
 
+const HERE = path.dirname(fileURLToPath(import.meta.url));
 const API = "http://127.0.0.1:8100/api";
 const TID = process.env.P7_TASK_ID!;
+const IMG = path.resolve(HERE, "../../model_assets/cnn_digits/test/fixture_9.png");
 test.skip(!TID, "set P7_TASK_ID to a task with an uploaded cnn asset");
 
 test.describe("P7 full journey", () => {
@@ -33,27 +37,34 @@ test.describe("P7 full journey", () => {
     await expect(page.getByTestId("export-zip")).toBeVisible({ timeout: 20_000 });
     await expect(page.getByText(/unverified|verified/).first()).toBeVisible({ timeout: 20_000 });
 
-    // --- 4. Preview: real Generated Agent embedded ---
+    // --- 4. Preview: real Generated Agent embedded (start only if not already running) ---
     await page.getByRole("button", { name: /预览/ }).click();
-    const stopBtn = page.getByRole("button", { name: "停止" });
-    if (await stopBtn.count()) await stopBtn.click();
-    await page.getByTestId("preview-start").click();
+    const st0 = await page.request.get(`${API}/tasks/${TID}/preview/status`).then(r => r.json()).catch(() => ({ state: "stopped" }));
+    if (st0.state !== "running") {
+      await page.request.post(`${API}/tasks/${TID}/preview/start`).catch(() => {});
+    }
     const frame = page.frameLocator('iframe[title="generated-agent-preview"]');
-    await expect(frame.locator('[data-testid="gen-slug"]')).toContainText("cnn_digits", { timeout: 60_000 });
+    await expect(frame.locator('[data-testid="gen-slug"]')).toContainText("cnn_digits", { timeout: 90_000 });
+    // The embedded preview pane is narrow; zoom it to full width so the real
+    // three-pane layout (presets, results, API docs tabs) is reachable.
+    await page.getByRole("button", { name: "放大" }).click();
+    await expect(page.getByRole("button", { name: "还原" }).first()).toBeVisible({ timeout: 10_000 });
 
-    // --- 5. upload test image in the Generated Agent, run real inference ---
-    await frame.locator('input[type="file"]').first().setInputFiles("/tmp/digit9.png");
-    await expect(frame.getByText("64 维特征就绪")).toBeVisible({ timeout: 20_000 });
-    await frame.getByTestId("gen-run").click();
-    await frame.getByRole("button", { name: /推理结果/ }).click();
-    await expect(frame.locator("text=预测结果 · predict").first()).toBeVisible({ timeout: 30_000 });
-    await expect(frame.getByText("＝ 9").first()).toBeVisible({ timeout: 20_000 });
-
-    // --- 6. real chat turn in the Generated Agent (its own SDK session) ---
-    await frame.getByRole("button", { name: /对话/ }).click();
-    await frame.getByTestId("gen-chat-input").fill("这是什么数字？请用 run_model 推理。");
+    // --- 5. upload the REAL black-ink-on-white fixture, pick a preset, run inference ---
+    await frame.locator('input[type="file"]').first().setInputFiles(IMG);
+    await expect(frame.getByText(/维就绪/)).toBeVisible({ timeout: 20_000 });
+    const preset = frame.getByRole("button", { name: "这是什么数字？" });
+    await preset.waitFor({ timeout: 20_000 });
+    await preset.click();
+    await expect(frame.getByTestId("gen-chat-input")).toHaveValue("这是什么数字？");
     await frame.getByTestId("gen-send").click();
     await expect(frame.locator("text=/run_model/").first()).toBeVisible({ timeout: 90_000 });
-    await expect(frame.locator("text=完成").first()).toBeVisible({ timeout: 90_000 });
+    await frame.getByRole("button", { name: /结果/ }).first().click();
+    await expect(frame.getByText("预测结果").first()).toBeVisible({ timeout: 30_000 });
+    await expect(frame.getByText("＝ 9").first()).toBeVisible({ timeout: 20_000 });
+
+    // --- 6. API docs tab reflects the externally callable API ---
+    await frame.getByRole("button", { name: /API 文档/ }).click();
+    await expect(frame.getByText("/api/model/run").first()).toBeVisible({ timeout: 20_000 });
   });
 });

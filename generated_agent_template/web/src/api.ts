@@ -1,4 +1,4 @@
-import type { AgentConfig, RunResult, ToolCard, Uploaded } from "./types";
+import type { AgentConfig, ApiDoc, Conversation, RunResult, ToolCard, Uploaded } from "./types";
 
 // Relative base so the UI works both standalone (document at "/") and embedded
 // behind the dashboard's same-origin preview proxy ("/api/tasks/<id>/preview/proxy/").
@@ -20,44 +20,72 @@ export async function fetchHealth(): Promise<{ ok: boolean; slug: string; input_
   return j(await fetch(`${BASE}/api/health`));
 }
 
-export async function runModel(capability: string, args: Record<string, unknown>): Promise<RunResult> {
-  return j<RunResult>(
-    await fetch(`${BASE}/api/model/run`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ capability, args }),
-    }),
-  );
+export async function fetchApiDocs(): Promise<ApiDoc> {
+  return j<ApiDoc>(await fetch(`${BASE}/api/apidocs`));
 }
 
-export async function upload(file: File, sid: string): Promise<Uploaded> {
+// ---- conversations -------------------------------------------------------
+export async function listConversations(): Promise<Conversation[]> {
+  const r = await j<{ conversations: Conversation[] }>(await fetch(`${BASE}/api/conversations`));
+  return r.conversations;
+}
+
+export async function createConversation(title?: string): Promise<Conversation> {
+  return j<Conversation>(await fetch(`${BASE}/api/conversations`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title: title ?? null }),
+  }));
+}
+
+export async function conversationMessages(cid: string): Promise<{ conversation_id: string; messages: ChatMessage[] }> {
+  return j(await fetch(`${BASE}/api/conversations/${encodeURIComponent(cid)}/messages`));
+}
+
+export async function deleteConversation(cid: string): Promise<void> {
+  await fetch(`${BASE}/api/conversations/${encodeURIComponent(cid)}`, { method: "DELETE" });
+}
+
+// ---- inference -----------------------------------------------------------
+export async function runModel(capability: string, args: Record<string, unknown>, trace = false): Promise<RunResult> {
+  return j<RunResult>(await fetch(`${BASE}/api/model/run`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ capability, args, trace }),
+  }));
+}
+
+export async function upload(file: File, conversationId: string): Promise<Uploaded> {
   const fd = new FormData();
   fd.append("file", file);
-  return j<Uploaded>(await fetch(`${BASE}/api/upload?sid=${encodeURIComponent(sid)}`, { method: "POST", body: fd }));
+  return j<Uploaded>(await fetch(`${BASE}/api/upload?conversation_id=${encodeURIComponent(conversationId)}`, {
+    method: "POST", body: fd,
+  }));
 }
 
-export async function interrupt(sid: string): Promise<void> {
-  await fetch(`${BASE}/api/interrupt?sid=${encodeURIComponent(sid)}`, { method: "POST" });
+export async function interrupt(conversationId: string): Promise<void> {
+  await fetch(`${BASE}/api/interrupt?conversation_id=${encodeURIComponent(conversationId)}`, { method: "POST" });
 }
 
+// ---- chat SSE ------------------------------------------------------------
 export interface ChatEvent {
-  type: "run_started" | "text_delta" | "tool_started" | "tool_completed" | "tool_failed" | "run_completed" | "run_failed";
+  type: "run_started" | "text_delta" | "tool_started" | "tool_completed" | "tool_failed"
+      | "model_run" | "run_completed" | "run_failed";
   text?: string;
   card_id?: string;
   name?: string;
   status?: string;
   input?: string;
-  result?: string;
+  result?: unknown;
+  trace?: unknown;
+  capability?: string;
   is_error?: boolean;
+  conversation_id?: string;
   seq?: number;
 }
 
-/**
- * POST /api/chat and consume the SSE response with a real streaming reader.
- * Requires the server to actually flush frames as they happen.
- */
 export async function streamChat(
-  sid: string,
+  conversationId: string,
   content: string,
   attachment: Uploaded | null,
   onEvent: (ev: ChatEvent) => void,
@@ -66,7 +94,7 @@ export async function streamChat(
   const res = await fetch(`${BASE}/api/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ sid, content, attachment }),
+    body: JSON.stringify({ conversation_id: conversationId, content, attachment }),
     signal,
   });
   if (!res.ok || !res.body) {
@@ -98,31 +126,5 @@ export async function streamChat(
   }
 }
 
-function randomId(): string {
-  // crypto.randomUUID() only exists in a SECURE CONTEXT (HTTPS or localhost).
-  // This agent is typically opened over plain HTTP on a LAN IP, where it is
-  // undefined — fall back to getRandomValues (works in insecure contexts too)
-  // and finally Math.random for old WebViews.
-  const c: Crypto | undefined = (globalThis as any).crypto;
-  if (c && typeof c.randomUUID === "function") return c.randomUUID().replace(/-/g, "");
-  const bytes = new Uint8Array(16);
-  if (c && typeof c.getRandomValues === "function") c.getRandomValues(bytes);
-  else for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
-  bytes[6] = (bytes[6] & 0x0f) | 0x40; // version 4
-  bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant 10
-  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
-  return hex;
-}
-
-export function newSid(): string {
-  // one browser session id per tab (per-browser-session isolation)
-  const k = "m2a_sid";
-  let v = sessionStorage.getItem(k);
-  if (!v) {
-    v = randomId();
-    sessionStorage.setItem(k, v);
-  }
-  return v;
-}
-
-export type { ToolCard, Uploaded };
+export type { ToolCard, Uploaded, ChatMessage };
+import type { ChatMessage } from "./types";

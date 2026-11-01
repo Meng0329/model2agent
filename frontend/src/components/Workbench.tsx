@@ -1,16 +1,22 @@
 // Center panel: multi-turn chat with the Builder Agent (real SSE stream).
 import { useEffect, useRef, useState } from "react";
-import { PaperPlaneRight, Stop, Robot, TerminalWindow, CheckCircle, XCircle, CircleNotch } from "@phosphor-icons/react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { PaperPlaneRight, Stop, Robot, TerminalWindow, CheckCircle, XCircle, CircleNotch, CaretRight } from "@phosphor-icons/react";
 import type { Task, ToolCard, SseEvent } from "../types";
 import { api } from "../lib/api";
 import { EventStream } from "../lib/sse";
 import { cn, Badge } from "./ui";
+import { RunTimeline, type StageRow } from "./RunTimeline";
 
 interface UiMessage {
   id: string;
   role: "user" | "assistant";
-  content: string;
+  content: string;       // final answer (text after the last tool call; or the whole text when no tools)
+  process_text: string;  // execution narration frozen at tool boundaries
+  thinking: string;      // real thinking blocks (ephemeral, not persisted)
   tool_cards: ToolCard[];
+  stages: StageRow[];
   streaming: boolean;
 }
 
@@ -44,7 +50,8 @@ export function Workbench({ task }: { task: Task }) {
         if (!alive) return;
         const msgs: UiMessage[] = (r.messages as any[]).map((m) => ({
           id: m.id, role: m.role, content: m.content,
-          tool_cards: m.tool_cards || [], streaming: false,
+          process_text: "", thinking: "",
+          tool_cards: m.tool_cards || [], stages: [], streaming: false,
         }));
         setMessages(msgs);
       } catch { /* ignore */ }
@@ -61,26 +68,58 @@ export function Workbench({ task }: { task: Task }) {
 
   const onEvent = (e: SseEvent) => {
     setRunSeq(e.seq);
+    const mid = `a-${e.run_id}`;
     if (e.type === "run_started") {
       setRunning(true); setErr("");
-      setMessages((prev) => [...prev, { id: `a-${e.run_id}`, role: "assistant", content: "", tool_cards: [], streaming: true }]);
+      setMessages((prev) => [...prev, { id: mid, role: "assistant", content: "", process_text: "", thinking: "", tool_cards: [], stages: [], streaming: true }]);
+    } else if (e.type === "thinking_delta") {
+      setMessages((prev) => prev.map((m) => (m.id === mid ? { ...m, thinking: m.thinking + e.text } : m)));
     } else if (e.type === "text_delta") {
-      setMessages((prev) => prev.map((m) => (m.id === `a-${e.run_id}` ? { ...m, content: m.content + e.text } : m)));
+      setMessages((prev) => prev.map((m) => (m.id === mid ? { ...m, content: m.content + e.text } : m)));
     } else if (e.type === "tool_started" || e.type === "tool_completed" || e.type === "tool_failed") {
       setMessages((prev) => prev.map((m) => {
-        if (m.id !== `a-${e.run_id}`) return m;
+        if (m.id !== mid) return m;
         const cards = [...m.tool_cards];
         const i = cards.findIndex((c) => c.id === e.card_id);
         const card: ToolCard = { id: e.card_id, name: e.name, status: e.status as ToolCard["status"], input: e.input, result: (e as any).result ?? "" };
         if (i >= 0) cards[i] = card; else cards.push(card);
-        return { ...m, tool_cards: cards };
+        // First sighting of a tool: any text streamed so far is execution
+        // narration, so freeze it into process_text and start a fresh answer.
+        const firstSeen = e.type === "tool_started" && i < 0;
+        return {
+          ...m, tool_cards: cards,
+          process_text: firstSeen ? m.process_text + m.content : m.process_text,
+          content: firstSeen ? "" : m.content,
+        };
+      }));
+    } else if (e.type === "run_stage") {
+      setMessages((prev) => prev.map((m) => {
+        if (m.id !== mid) return m;
+        const rows = [...m.stages];
+        const row: StageRow = { stage: e.stage, status: e.status, tool: e.tool, round: e.round, evidence: e.evidence };
+        const i = rows.findIndex((r) => r.stage === e.stage && r.round === e.round);
+        if (i >= 0) rows[i] = row; else rows.push(row);
+        return { ...m, stages: rows };
       }));
     } else if (e.type === "run_completed" || e.type === "run_failed") {
       setRunning(false);
-      setMessages((prev) => prev.map((m) => (m.id === `a-${e.run_id}` ? { ...m, streaming: false } : m)));
+      setMessages((prev) => prev.map((m) => {
+        if (m.id !== mid) return m;
+        // If the run ended right after a tool with no trailing answer text, fall
+        // back to the narration so the final reply is never blank.
+        const fallback = !m.content.trim() && m.process_text.trim() !== "";
+        return { ...m, streaming: false, content: fallback ? m.process_text : m.content, process_text: fallback ? "" : m.process_text };
+      }));
       stopStream();
     } else if (e.type === "run_cancelled") {
       setRunning(false);
+      setMessages((prev) => prev.map((m) => {
+        if (m.id !== mid) return m;
+        return {
+          ...m, streaming: false,
+          tool_cards: m.tool_cards.map((c) => (c.status === "running" ? { ...c, status: "error", result: "运行已取消" } : c)),
+        };
+      }));
       stopStream();
     }
   };
@@ -89,7 +128,7 @@ export function Workbench({ task }: { task: Task }) {
     if (!value.trim() || running) return;
     const text = value.trim();
     setValue("");
-    setMessages((prev) => [...prev, { id: `u-${Date.now()}`, role: "user", content: text, tool_cards: [], streaming: false }]);
+    setMessages((prev) => [...prev, { id: `u-${Date.now()}`, role: "user", content: text, process_text: "", thinking: "", tool_cards: [], stages: [], streaming: false }]);
     // (re)open SSE subscription for reconnect-safety
     stopStream();
     streamRef.current = new EventStream(taskId, onEvent, undefined, runSeq);
@@ -178,13 +217,78 @@ function MsgBubble({ m }: { m: UiMessage }) {
     <div className="flex items-start gap-3">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-ok text-white shadow-soft-sm"><Robot size={16} weight="fill" /></div>
       <div className="min-w-0 flex-1">
-        {m.content && <div className="whitespace-pre-wrap break-words rounded-2xl rounded-tl-none bg-surface-2 px-4 py-3 text-sm leading-relaxed text-ink">{m.content}</div>}
-        {m.tool_cards.length > 0 && (
-          <div className="mt-2 space-y-2">
-            {m.tool_cards.map((c) => <ToolCardView key={c.id} card={c} />)}
+        {m.content && (
+          <div className="md break-words rounded-2xl rounded-tl-none bg-surface-2 px-4 py-3 text-sm leading-relaxed text-ink">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
           </div>
         )}
+        <ProcessPanel cards={m.tool_cards} stages={m.stages} thinking={m.thinking} processText={m.process_text} streaming={m.streaming} />
       </div>
+    </div>
+  );
+}
+
+// One collapsible panel gathering the agent's execution (tool calls) + thinking
+// for this assistant turn. Expanded while streaming, auto-collapsed once the run
+// ends; the final answer stays in the bubble above.
+function ProcessPanel({ cards, stages, thinking, processText, streaming }: {
+  cards: ToolCard[]; stages: StageRow[]; thinking: string; processText: string; streaming: boolean;
+}) {
+  // Hooks must run before any early return.
+  const [open, setOpen] = useState(streaming);
+  const prevStreaming = useRef(streaming);
+  useEffect(() => {
+    // Collapse only on the live true -> false transition, never on every render,
+    // so a manual toggle is not overridden.
+    if (prevStreaming.current && !streaming) setOpen(false);
+    prevStreaming.current = streaming;
+  }, [streaming]);
+
+  const hasThinking = thinking.trim().length > 0;
+  const hasProcess = processText.trim().length > 0;
+  if (cards.length === 0 && !hasThinking && !hasProcess && stages.length === 0) return null;
+
+  const failed = cards.filter((c) => c.status === "error").length;
+  const active = streaming || cards.some((c) => c.status === "running");
+  const statusLabel = failed > 0 ? `${failed} 失败` : active ? "运行中" : "已完成";
+  const statusTone = failed > 0 ? "text-err" : active ? "text-accent" : "text-ok";
+
+  return (
+    <div className="mt-2 rounded-2xl border border-border-soft bg-white shadow-soft-sm">
+      <button onClick={() => setOpen((v) => !v)} className="flex w-full items-center gap-2 px-3 py-2 text-left">
+        <TerminalWindow size={14} className="shrink-0 text-subink" />
+        <span className="text-sm font-medium text-ink">执行过程</span>
+        {cards.length > 0 && <span className="text-xs text-subink">· {cards.length} 步</span>}
+        {active ? <CircleNotch size={14} className="m2a-spin shrink-0 text-accent" /> :
+          failed > 0 ? <XCircle size={14} weight="fill" className="shrink-0 text-err" /> :
+            <CheckCircle size={14} weight="fill" className="shrink-0 text-ok" />}
+        <span className={cn("text-xs font-medium", statusTone)}>{statusLabel}</span>
+        <CaretRight size={14} className={cn("ml-auto shrink-0 text-subink transition", open && "rotate-90")} />
+      </button>
+      {open && (
+        <div className="border-t border-border-soft px-3 py-2">
+          {hasThinking && (
+            <div className="mb-2">
+              <div className="mb-1 text-xs font-medium text-ink">思考</div>
+              <pre className="max-h-60 overflow-y-auto overflow-x-hidden whitespace-pre-wrap break-words rounded-lg bg-[#FAF9F8] p-2 text-xs text-subink">{thinking}</pre>
+            </div>
+          )}
+          {hasProcess && (
+            <div className="mb-2 whitespace-pre-wrap break-words text-xs text-subink">{processText}</div>
+          )}
+          {stages.length > 0 && (
+            <div className="mb-2">
+              <div className="mb-1 text-xs font-medium text-ink">执行轨迹</div>
+              <RunTimeline stages={stages} />
+            </div>
+          )}
+          {cards.length > 0 && (
+            <div className="space-y-2">
+              {cards.map((c) => <ToolCardView key={c.id} card={c} />)}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

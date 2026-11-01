@@ -1,0 +1,5 @@
+{
+  "fixture": "fixture.csv",
+  "capability": "predict",
+  "expected": 1
+}

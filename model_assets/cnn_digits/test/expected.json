@@ -1,0 +1,5 @@
+{
+  "fixture": "fixture_9.png",
+  "capability": "predict",
+  "expected": 9
+}

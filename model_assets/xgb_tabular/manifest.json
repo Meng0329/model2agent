@@ -3,6 +3,12 @@
   "slug": "xgb_tabular",
   "framework": "xgboost",
   "task_family": "tabular_classification",
+  "input_type": "tabular",
+  "preset_questions": [
+    "这张样本的预测结果是什么？",
+    "哪些特征对判断最重要？",
+    "模型有哪些类别？"
+  ],
   "model_id": "xgboost-breast-cancer-20261029",
   "revision": "trained-20261029",
   "weights_path": "model.json",

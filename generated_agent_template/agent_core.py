@@ -35,18 +35,20 @@ _MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4.1-flash")
 # positive INSTRUCTIONS + explicit OUTPUT FORMAT + one concrete example, with
 # variables filled from config.json so it adapts to each asset.
 _SYSTEM = (
-    f"你是「{CFG['slug']}」模型的专家助手，围绕这个已训练好的机器学习模型回答问题并执行真实推理。\n"
-    f"模型背景：框架={CFG.get('framework','?')}，输入类型={CFG.get('input_type','?')}，"
-    f"类别标签={json.dumps(CFG.get('labels', []), ensure_ascii=False)}，"
+    f"你是「{CFG['slug']}」这个已训练模型的专属 Agent。\n"
+    f"你的世界只有本模型资产与它的真实推理能力：框架={CFG.get('framework','?')}，"
+    f"输入类型={CFG.get('input_type','?')}，类别标签={json.dumps(CFG.get('labels', []), ensure_ascii=False)}，"
     f"能力={json.dumps(CFG['capabilities'], ensure_ascii=False)}。\n"
-    f"用户可能已上传数据（图片/CSV/向量），系统会自动把它转换成模型所需特征并暂存在本会话；"
-    f"调用 run_model 时省略 features，工具会自动使用该暂存输入。\n"
-    f"工作方式：1) 凡涉及预测/概率/重要性/类别的问题，先调用 run_model 做真实推理，再基于真实返回值回答；"
-    f"2) 用真实数值说明（预测值、概率百分比、排名）；3) 用用户提问的语言回答，结论先行再简短解释；"
-    f"4) 用户尚未上传数据而问题需要输入时，提示上传并说明所需格式。\n"
-    f"输出格式：简洁、结论先行，数值写成「预测：X」「类别 Y：62.3%」这类清晰表达。\n"
-    f"示例——用户问「这是什么数字？」：调用 run_model(capability='predict')，若返回 9，"
-    f"则回答「这是数字 9，模型置信度很高（99.9%）。」"
+    "边界：不要引用、猜测或泄露任何本模型资产之外的仓库/平台/内部文档知识；"
+    "只依据真实推理结果与用户提供的数据回答。\n"
+    "工作方式：1) 凡涉及预测/概率/重要性/类别的问题，先调用 run_model 做真实推理，再基于真实返回值回答；"
+    "2) 用真实数值说明（预测值、概率百分比、排名），不要编造；"
+    "3) 用用户提问的语言回答，结论先行、简洁解释；"
+    "4) 用户尚未提供数据而问题需要输入时，明确说明需要什么输入。\n"
+    "输出格式：Markdown；结论用 1–2 句话开头，随后用短列表给出真实数值；"
+    "不要输出装饰性分隔线或空泛的「等等」。\n"
+    "示例——用户问「这是什么数字？」：调用 run_model(capability='predict')，"
+    "若返回 9，则回答「这是数字 9。」并给出置信度。"
 )
 
 # sid -> most recent uploaded attachment (set by app.py on /api/upload + /api/chat)
@@ -142,12 +144,21 @@ class _Session:
 
         parts: list[str] = []
         announced: set[str] = set()
+        cap_by_id: dict[str, str] = {}
+        name_by_id: dict[str, str] = {}
 
         def _announce(cid, name, inp):
             if cid in announced:
                 return None
             announced.add(cid)
             return {"type": "tool", "card_id": cid, "name": name, "status": "running", "input": inp}
+
+        def _text_of(content) -> str:
+            if isinstance(content, list):
+                for blk in content:
+                    if isinstance(blk, dict) and blk.get("type") == "text":
+                        return blk.get("text", "")
+            return str(content)
 
         async for m in self.client.receive_response():
             if isinstance(m, StreamEvent):
@@ -161,22 +172,40 @@ class _Session:
                     if cb.get("type") == "tool_use":
                         cid = cb.get("id") or ev.get("id") or uuid.uuid4().hex[:8]
                         name = cb.get("name", "tool")
-                        e = _announce(cid, name, str(cb.get("input", ""))[:400])
+                        name_by_id[cid] = name
+                        inp = cb.get("input", "")
+                        if "run_model" in name and isinstance(inp, dict):
+                            cap_by_id[cid] = inp.get("capability", "")
+                        e = _announce(cid, name, str(inp)[:400])
                         if e:
                             yield e
             elif isinstance(m, AssistantMessage):
                 for b in m.content:
                     if isinstance(b, ToolUseBlock):
                         cid = b.id or uuid.uuid4().hex[:8]
+                        name_by_id[cid] = b.name
+                        if "run_model" in b.name and isinstance(b.input, dict):
+                            cap_by_id[cid] = b.input.get("capability", "")
                         e = _announce(cid, b.name, str(b.input)[:400])
                         if e:
                             yield e
             elif isinstance(m, UserMessage):
                 for b in (m.content if isinstance(m.content, list) else []):
                     if isinstance(b, ToolResultBlock):
+                        name = name_by_id.get(b.tool_use_id, "run_model")
                         yield {"type": "tool", "card_id": b.tool_use_id,
-                               "name": "run_model", "status": "error" if b.is_error else "done",
+                               "name": name, "status": "error" if b.is_error else "done",
                                "result": str(b.content)[:2000]}
+                        if "run_model" in name and not b.is_error:
+                            try:
+                                parsed = json.loads(_text_of(b.content))
+                            except Exception:
+                                parsed = None
+                            if parsed is not None:
+                                att = ATTACHMENTS.get(self.sid) or {}
+                                yield {"type": "model_run",
+                                       "capability": cap_by_id.get(b.tool_use_id) or CFG.get("default_capability"),
+                                       "result": parsed, "trace": att.get("trace")}
             elif isinstance(m, ResultMessage):
                 yield {"type": "result", "text": "".join(parts), "is_error": bool(m.is_error)}
                 return

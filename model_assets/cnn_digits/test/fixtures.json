@@ -1,0 +1,4 @@
+[
+  {"fixture": "fixture_9.png", "capability": "predict", "expected": 9},
+  {"fixture": "fixture_0_slanted.png", "capability": "predict", "expected": 0}
+]

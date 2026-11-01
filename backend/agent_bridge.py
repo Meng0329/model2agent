@@ -20,7 +20,7 @@ from pathlib import Path
 
 from claude_agent_sdk import (
     ClaudeSDKClient, ClaudeAgentOptions,
-    StreamEvent, AssistantMessage, ToolUseBlock, ToolResultBlock,
+    StreamEvent, AssistantMessage, ToolUseBlock, ToolResultBlock, ThinkingBlock,
     ResultMessage, SystemMessage, TextBlock, UserMessage,
     tool, create_sdk_mcp_server,
 )
@@ -31,21 +31,23 @@ from . import config
 # Builder instructions APPENDED to Claude Code's preset system prompt (keeps the
 # CLI's tool-use guidance intact). Structured per the Google prompt-engineering
 # whitepaper: ROLE + CONTEXT + positive INSTRUCTIONS + OUTPUT FORMAT.
-_BUILDER_APPEND = """你是 Model2Agent 的 Builder 智能体：把用户上传的已训练模型资产，变成可独立运行的 Model Agent。
+_BUILDER_APPEND = """你是 Model2Agent 的 Builder 智能体：把用户上传的已训练模型资产，变成可独立运行、可被 API 调用的 Model Agent。
 
 工作区上下文：
 - inputs/：模型资产（manifest.json、infer.py、权重、examples.json、metrics.json）。
-- project/：你将生成的独立 Agent 项目（React UI + FastAPI + 真实权重 + Dockerfile）。
+- project/：你生成的独立 Agent 项目（React UI + FastAPI + 真实权重 + Dockerfile）。
 - 可用技能：agent-generation、agent-testing、model-inspection、model-execution、docker-packaging、react-ui-generation。
 
-工作方式（按顺序）：
-1. 读取并理解资产（manifest/infer/examples），确认真实能力与输入类型。
-2. 使用 agent-generation 技能，调用 MCP 工具 generate_agent（参数 task_id、asset_dir）做确定性生成。
-3. 生成后使用 agent-testing 技能，调用 MCP 工具 verify_agent 做真实推理验证。
-4. 需要预览时，调用 start_preview 启动真实进程。
-5. 用中文向用户汇报：结论先行，列出真实证据（生成的项目、config、实测预测值）。
+工作协议（必须遵守，AI 原生、无兜底）：
+1. 读取并理解资产（manifest/infer/examples），确认真实能力、输入约定与类别来源。
+2. 调用 MCP 工具 generate_agent 生成项目；模型相关的输入方式、3 个预设提问、执行轨迹管线写在 project/agent_ui.json（必要时改写 project/adapters.py）。
+3. 生成后必须调用 verify_agent 做真实可用性验证。它会返回结构化证据（boot / 真实推理 / 输入适配 fixture / 输入不变性 / 会话 CRUD / API 文档 / chat）。其中「输入不变性」会检查同一输入在不同宽高比（图像）或不同列顺序（表格）下是否得到一致的模型输入，专门防止预处理把数字/样本形状压坏却在单个干净样例上侥幸通过。
+4. 只要有任何一项失败：读取 evidence，定位并改写 project/ 中的实现（config/agent_ui/adapters/前端源码），调用 rebuild_ui 重建前端，再调用 verify_agent。循环直到报告 ok=true。特别注意 input_invariance 失败通常意味着 adapters.py 的裁剪/缩放与资产训练数据的归一化方式不一致，应按资产事实改写适配器，而不是放宽判据。
+5. 不得用“猜一个/默认一个/静默回退”来让检查通过；无法从资产确证的事实，如实报告失败并说明缺什么。
+6. 需要预览时调用 start_preview 启动真实进程。
+7. 用中文向用户汇报：结论先行，附真实证据（生成项目、config、实测预测值、验证报告）。
 
-输出格式：简洁的 Markdown；每一步给出真实结果；验证失败时如实报告错误原文，绝不把未验证的运行标记为成功。"""
+输出格式：简洁 Markdown。每个要点一行，数值与状态用真实值；不要输出装饰性分隔线、星号堆砌或空泛的「等等」。验证未通过时绝不说成功。执行过程中每次调用工具前最多一句话说明意图，不展开长篇解释。"""
 
 
 @dataclass
@@ -59,13 +61,13 @@ class ToolCard:
 
 
 def _make_builder_tools():
-    """MCP tools that let the Builder Agent drive generation + preview lifecycle."""
+    """MCP tools that let the Builder Agent drive generation + verification + preview."""
     from .preview import PREVIEWS
     from .workspace import Workspace
     from . import db
 
     @tool("generate_agent",
-          "在任务工作区生成可独立运行的 Agent 项目（React+FastAPI+真实权重+config.json），返回项目摘要。确定性程序执行，非 LLM 文本。",
+          "在任务工作区生成可独立运行的 Agent 项目（React+FastAPI+真实权重+config.json+agent_ui.json），返回项目摘要。确定性程序执行，非 LLM 文本。",
           {"type": "object",
            "properties": {"task_id": {"type": "string"}, "asset_dir": {"type": "string"}},
            "required": ["task_id"]})
@@ -74,28 +76,54 @@ def _make_builder_tools():
         try:
             proj = generate(args["task_id"], args.get("asset_dir") or f"inputs/{args['task_id']}")
             cfg = json.loads((proj / "config.json").read_text(encoding="utf-8"))
+            ui = json.loads((proj / "agent_ui.json").read_text(encoding="utf-8"))
             db.update_task(args["task_id"], has_generated=1, status="ready")
             from .routers import chat as chat_router
             chat_router._publish(args["task_id"], {"type": "workspace_changed"})
             return {"content": [{"type": "text", "text": json.dumps({
                 "ok": True, "project": str(proj), "slug": cfg["slug"],
                 "input_type": cfg["input_type"], "capabilities": cfg["capabilities"],
-                "vector_len": cfg["vector_len"],
+                "vector_len": cfg["vector_len"], "presets": ui.get("presets", []),
             }, ensure_ascii=False)}]}
         except Exception as e:
             db.update_task(args["task_id"], status="error")
             return {"content": [{"type": "text", "text": f"ERROR: {type(e).__name__}: {e}"}]}
 
     @tool("verify_agent",
-          "启动生成的 Agent、探活、运行真实权重自检（model_exec.selfcheck），返回真实推理结果。失败必须如实报告。",
+          "启动生成的 Agent 并做真实可用性验证，返回逐项证据（boot/真实推理/输入适配 fixture/会话 CRUD/API 文档/chat）。失败时必须依据证据改写后重验。",
           {"type": "object", "properties": {"task_id": {"type": "string"}}, "required": ["task_id"]})
     async def verify_agent(args):
-        from .gen_cli import cmd_verify
-        import types
+        from .gen_cli import build_verify_report
         try:
-            a = types.SimpleNamespace(task_id=args["task_id"])
-            rc = cmd_verify(a)
-            return {"content": [{"type": "text", "text": "VERIFY_OK" if rc == 0 else f"VERIFY_FAILED rc={rc}"}]}
+            report = build_verify_report(args["task_id"])
+            return {"content": [{"type": "text", "text": json.dumps(report, ensure_ascii=False, default=str)}]}
+        except Exception as e:
+            return {"content": [{"type": "text", "text": f"ERROR: {type(e).__name__}: {e}"}]}
+
+    @tool("get_verify_report",
+          "读取最近一次 verify_agent 保存的完整证据报告（project/.m2a_verify.json）",
+          {"type": "object", "properties": {"task_id": {"type": "string"}}, "required": ["task_id"]})
+    async def get_verify_report(args):
+        p = Workspace(args["task_id"]).project / ".m2a_verify.json"
+        if not p.exists():
+            return {"content": [{"type": "text", "text": "no verification report yet"}]}
+        return {"content": [{"type": "text", "text": p.read_text(encoding="utf-8")}]}
+
+    @tool("rebuild_ui",
+          "在生成项目的 web/ 下执行 npm install + build，重建 web/dist（改写前端后必须调用）",
+          {"type": "object", "properties": {"task_id": {"type": "string"}}, "required": ["task_id"]})
+    async def rebuild_ui(args):
+        import subprocess
+        web = Workspace(args["task_id"]).project / "web"
+        if not (web / "package.json").exists():
+            return {"content": [{"type": "text", "text": "ERROR: project/web/package.json not found"}]}
+        try:
+            for cmd in (["npm", "install", "--no-audit", "--no-fund"], ["npm", "run", "build"]):
+                r = subprocess.run(cmd, cwd=str(web), capture_output=True, text=True, timeout=600)
+                if r.returncode != 0:
+                    return {"content": [{"type": "text", "text":
+                            f"BUILD_FAILED {' '.join(cmd)}\n{r.stdout[-3000:]}\n{r.stderr[-3000:]}"}]}
+            return {"content": [{"type": "text", "text": "BUILD_OK"}]}
         except Exception as e:
             return {"content": [{"type": "text", "text": f"ERROR: {type(e).__name__}: {e}"}]}
 
@@ -123,7 +151,8 @@ def _make_builder_tools():
         return {"content": [{"type": "text", "text": "preview stopped"}]}
 
     return create_sdk_mcp_server("m2a_builder",
-                                 tools=[generate_agent, verify_agent, start_preview, stop_preview])
+                                 tools=[generate_agent, verify_agent, get_verify_report,
+                                        rebuild_ui, start_preview, stop_preview])
 
 
 class AgentSession:
@@ -203,6 +232,9 @@ class AgentSession:
                 for b in m.content:
                     if isinstance(b, TextBlock):
                         pass  # full text arrives as deltas; ignore to avoid duplicate render
+                    elif isinstance(b, ThinkingBlock):
+                        # real reasoning block (SDK parses it); surface once, live only.
+                        yield self._ev("thinking", text=b.thinking)
                     elif isinstance(b, ToolUseBlock):
                         cid = b.id or uuid.uuid4().hex[:8]
                         if cid not in self._cards:

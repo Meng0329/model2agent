@@ -67,9 +67,6 @@ export default function App() {
 
       {/* Center */}
       <div className="flex min-w-0 flex-1 flex-col bg-bg">
-        {!leftOpen && (
-          <button onClick={() => setLeftOpen(true)} className="border-b border-border-soft bg-surface-2 px-3 py-2 text-left text-sm text-subink hover:bg-white">展开任务栏</button>
-        )}
         <div className="flex items-center justify-between border-b border-border-soft bg-white px-4 py-2.5">
           <div className="min-w-0 truncate text-sm font-semibold text-ink">
             {currentTask ? currentTask.name : "未选择任务"}

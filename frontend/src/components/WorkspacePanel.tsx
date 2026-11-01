@@ -227,7 +227,7 @@ function PreviewTab({ task, state, zoom, setZoom, onStart, onStop, busy, onRefre
       </div>
       <div className="scroll-thin flex-1 overflow-auto bg-surface-2">
         {src ? (
-          <iframe src={src} className={cn("border-0 bg-white", zoom ? "absolute inset-0 z-40 h-full w-full" : "h-full w-full")} title="generated-agent-preview" />
+          <iframe src={src} className={cn("border-0 bg-white", zoom ? "fixed inset-0 z-40 h-full w-full" : "h-full w-full")} title="generated-agent-preview" />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-2 text-subink">
             <PlayCircle size={26} className="text-subink/40" />

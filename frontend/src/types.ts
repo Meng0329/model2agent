@@ -51,9 +51,11 @@ export interface Message {
 export type SseEvent =
   | { type: "run_started"; task_id: string; run_id: string; seq: number }
   | { type: "text_delta"; task_id: string; run_id: string; seq: number; text: string; message_id?: string }
+  | { type: "thinking_delta"; task_id: string; run_id: string; seq: number; text: string }
   | { type: "tool_started"; task_id: string; run_id: string; seq: number; card_id: string; name: string; status: string; input: string }
   | { type: "tool_completed"; task_id: string; run_id: string; seq: number; card_id: string; name: string; status: string; input: string; result: string }
   | { type: "tool_failed"; task_id: string; run_id: string; seq: number; card_id: string; name: string; status: string; input: string; result: string }
+  | { type: "run_stage"; task_id: string; run_id: string; seq: number; stage: string; status: string; tool: string; round: number; evidence: string }
   | { type: "workspace_changed"; task_id: string; run_id: string; seq: number }
   | { type: "preview_state_changed"; task_id: string; run_id: string; seq: number; state: string; url?: string; error?: string }
   | { type: "run_completed"; task_id: string; run_id: string; seq: number; text: string; is_error: boolean; session_id?: string; num_turns?: number }

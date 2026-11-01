@@ -3,6 +3,17 @@
   "slug": "sklearn_digits",
   "framework": "sklearn",
   "task_family": "tabular_image_digit_classification",
+  "input_type": "image",
+  "image": {
+    "ink_polarity": "ink_on_dark",
+    "pixel_scale": 16.0,
+    "canvas": [8, 8]
+  },
+  "preset_questions": [
+    "这是什么数字？",
+    "各类别概率分布如何？",
+    "哪些像素对该预测最重要？"
+  ],
   "model_id": "sklearn-ensemble-rf-digits",
   "revision": "trained-20261029",
   "weights_path": "model.joblib",

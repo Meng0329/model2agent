@@ -107,7 +107,9 @@ class Workspace:
         and the Builder's private files. Weights are included when the license allows."""
         out = Path(out_path)
         out.parent.mkdir(parents=True, exist_ok=True)
-        skip_names = {".env", ".env.local", "chat.json", "__pycache__", ".git", ".pytest_cache"}
+        skip_names = {".env", ".env.local", "chat.json", "conversations.json",
+                      ".m2a_verify.json", "__pycache__", ".git", ".pytest_cache",
+                      "uploads"}
         skip_suffixes = (".pyc",)
         with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
             if not self.project.exists():

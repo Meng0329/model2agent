@@ -1,0 +1,1560 @@
+<html vid="0"><head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web" vid="5"></script>
+    <style vid="6">
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --bg-main: #FDFCFB; 
+            --primary: #1A1A1A; 
+            --accent: #D6A292;  
+            --status-green: #4A6741; 
+            --surface: #FFFFFF;
+            --border: #E5E1DE;
+            --text-main: #2D2D2D;
+            --text-muted: #8E8E8E;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+        }
+        
+        .mockup-container {
+            aspect-ratio: 16 / 10;
+        }
+
+        .bg-primary { background-color: var(--primary); }
+        .text-primary { color: var(--primary); }
+        .border-primary { border-color: var(--primary); }
+        
+        .bg-accent { background-color: var(--accent); }
+        .text-accent { color: var(--accent); }
+        
+        .bg-status { background-color: var(--status-green); }
+        .text-status { color: var(--status-green); }
+        
+        .bg-light-green { background-color: #F7F3F1; } 
+        
+        .shadow-soft {
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 4px 10px -2px rgba(0, 0, 0, 0.02);
+        }
+
+        input, textarea {
+            background-color: #FAF9F8 !important;
+            border-color: var(--border) !important;
+        }
+
+        .rounded-2xl { border-radius: 1.25rem; }
+    </style>
+
+  <style type="text/css">
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
+}
+
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+  --tw-contain-size:  ;
+  --tw-contain-layout:  ;
+  --tw-contain-paint:  ;
+  --tw-contain-style:  ;
+}/*
+! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
+*//*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: #e5e7eb; /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+5. Use the user's configured `sans` font-feature-settings by default.
+6. Use the user's configured `sans` font-variation-settings by default.
+7. Disable tap highlights on iOS
+*/
+
+html,
+:host {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  tab-size: 4; /* 3 */
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+  font-feature-settings: normal; /* 5 */
+  font-variation-settings: normal; /* 6 */
+  -webkit-tap-highlight-color: transparent; /* 7 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font-family by default.
+2. Use the user's configured `mono` font-feature-settings by default.
+3. Use the user's configured `mono` font-variation-settings by default.
+4. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
+  font-feature-settings: normal; /* 2 */
+  font-variation-settings: normal; /* 3 */
+  font-size: 1em; /* 4 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-feature-settings: inherit; /* 1 */
+  font-variation-settings: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  letter-spacing: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+input:where([type='button']),
+input:where([type='reset']),
+input:where([type='submit']) {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Reset default styling for dialogs.
+*/
+dialog {
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: #9ca3af; /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden]:where(:not([hidden="until-found"])) {
+  display: none;
+}
+.pointer-events-none {
+  pointer-events: none;
+}
+.absolute {
+  position: absolute;
+}
+.relative {
+  position: relative;
+}
+.inset-0 {
+  inset: 0px;
+}
+.-bottom-5 {
+  bottom: -1.25rem;
+}
+.right-0 {
+  right: 0px;
+}
+.right-3 {
+  right: 0.75rem;
+}
+.top-3 {
+  top: 0.75rem;
+}
+.mx-3 {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+}
+.mb-1\.5 {
+  margin-bottom: 0.375rem;
+}
+.mb-12 {
+  margin-bottom: 3rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.mt-4 {
+  margin-top: 1rem;
+}
+.block {
+  display: block;
+}
+.flex {
+  display: flex;
+}
+.grid {
+  display: grid;
+}
+.h-1\.5 {
+  height: 0.375rem;
+}
+.h-10 {
+  height: 2.5rem;
+}
+.h-12 {
+  height: 3rem;
+}
+.h-14 {
+  height: 3.5rem;
+}
+.h-20 {
+  height: 5rem;
+}
+.h-4 {
+  height: 1rem;
+}
+.h-7 {
+  height: 1.75rem;
+}
+.h-full {
+  height: 100%;
+}
+.w-1\.5 {
+  width: 0.375rem;
+}
+.w-14 {
+  width: 3.5rem;
+}
+.w-16 {
+  width: 4rem;
+}
+.w-2 {
+  width: 0.5rem;
+}
+.w-36 {
+  width: 9rem;
+}
+.w-4 {
+  width: 1rem;
+}
+.w-5 {
+  width: 1.25rem;
+}
+.w-7 {
+  width: 1.75rem;
+}
+.w-\[99\%\] {
+  width: 99%;
+}
+.w-full {
+  width: 100%;
+}
+.max-w-\[85\%\] {
+  max-width: 85%;
+}
+.flex-1 {
+  flex: 1 1 0%;
+}
+@keyframes pulse {
+
+  50% {
+    opacity: .5;
+  }
+}
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.select-none {
+  user-select: none;
+}
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-start {
+  align-items: flex-start;
+}
+.items-center {
+  align-items: center;
+}
+.justify-end {
+  justify-content: flex-end;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.gap-1\.5 {
+  gap: 0.375rem;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.gap-3 {
+  gap: 0.75rem;
+}
+.gap-4 {
+  gap: 1rem;
+}
+.gap-5 {
+  gap: 1.25rem;
+}
+.gap-6 {
+  gap: 1.5rem;
+}
+.gap-x-12 {
+  column-gap: 3rem;
+}
+.gap-y-16 {
+  row-gap: 4rem;
+}
+.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+}
+.space-y-1\.5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.375rem * var(--tw-space-y-reverse));
+}
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+.space-y-2\.5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.625rem * var(--tw-space-y-reverse));
+}
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+.overflow-y-auto {
+  overflow-y: auto;
+}
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+.rounded-2xl {
+  border-radius: 1rem;
+}
+.rounded-full {
+  border-radius: 9999px;
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+.rounded-tr-none {
+  border-top-right-radius: 0px;
+}
+.border {
+  border-width: 1px;
+}
+.border-2 {
+  border-width: 2px;
+}
+.border-4 {
+  border-width: 4px;
+}
+.border-b {
+  border-bottom-width: 1px;
+}
+.border-r {
+  border-right-width: 1px;
+}
+.border-t {
+  border-top-width: 1px;
+}
+.border-dashed {
+  border-style: dashed;
+}
+.border-none {
+  border-style: none;
+}
+.border-\[\#E5D5CF\] {
+  --tw-border-opacity: 1;
+  border-color: rgb(229 213 207 / var(--tw-border-opacity, 1));
+}
+.border-\[\#E5E1DE\] {
+  --tw-border-opacity: 1;
+  border-color: rgb(229 225 222 / var(--tw-border-opacity, 1));
+}
+.border-\[\#EEEAE7\] {
+  --tw-border-opacity: 1;
+  border-color: rgb(238 234 231 / var(--tw-border-opacity, 1));
+}
+.border-slate-200 {
+  --tw-border-opacity: 1;
+  border-color: rgb(226 232 240 / var(--tw-border-opacity, 1));
+}
+.border-slate-300 {
+  --tw-border-opacity: 1;
+  border-color: rgb(203 213 225 / var(--tw-border-opacity, 1));
+}
+.bg-\[\#E5E1DE\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 225 222 / var(--tw-bg-opacity, 1));
+}
+.bg-\[\#EBF4E9\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(235 244 233 / var(--tw-bg-opacity, 1));
+}
+.bg-\[\#F3E9E5\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 233 229 / var(--tw-bg-opacity, 1));
+}
+.bg-\[\#F9F8F7\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 248 247 / var(--tw-bg-opacity, 1));
+}
+.bg-\[\#FAF6F4\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(250 246 244 / var(--tw-bg-opacity, 1));
+}
+.bg-\[\#FAF9F8\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(250 249 248 / var(--tw-bg-opacity, 1));
+}
+.bg-\[\#FDFCFB\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(253 252 251 / var(--tw-bg-opacity, 1));
+}
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1));
+}
+.bg-slate-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1));
+}
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+.p-1 {
+  padding: 0.25rem;
+}
+.p-1\.5 {
+  padding: 0.375rem;
+}
+.p-10 {
+  padding: 2.5rem;
+}
+.p-2 {
+  padding: 0.5rem;
+}
+.p-2\.5 {
+  padding: 0.625rem;
+}
+.p-3 {
+  padding: 0.75rem;
+}
+.p-4 {
+  padding: 1rem;
+}
+.p-5 {
+  padding: 1.25rem;
+}
+.p-6 {
+  padding: 1.5rem;
+}
+.p-8 {
+  padding: 2rem;
+}
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.px-5 {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+.py-0\.5 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+.py-1\.5 {
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+}
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.pl-5 {
+  padding-left: 1.25rem;
+}
+.pt-4 {
+  padding-top: 1rem;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+.font-serif {
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+.text-\[10px\] {
+  font-size: 10px;
+}
+.text-\[11px\] {
+  font-size: 11px;
+}
+.text-\[8px\] {
+  font-size: 8px;
+}
+.text-\[9px\] {
+  font-size: 9px;
+}
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.font-bold {
+  font-weight: 700;
+}
+.font-light {
+  font-weight: 300;
+}
+.font-medium {
+  font-weight: 500;
+}
+.uppercase {
+  text-transform: uppercase;
+}
+.leading-relaxed {
+  line-height: 1.625;
+}
+.tracking-tight {
+  letter-spacing: -0.025em;
+}
+.tracking-wider {
+  letter-spacing: 0.05em;
+}
+.tracking-widest {
+  letter-spacing: 0.1em;
+}
+.text-slate-200 {
+  --tw-text-opacity: 1;
+  color: rgb(226 232 240 / var(--tw-text-opacity, 1));
+}
+.text-slate-300 {
+  --tw-text-opacity: 1;
+  color: rgb(203 213 225 / var(--tw-text-opacity, 1));
+}
+.text-slate-400 {
+  --tw-text-opacity: 1;
+  color: rgb(148 163 184 / var(--tw-text-opacity, 1));
+}
+.text-slate-500 {
+  --tw-text-opacity: 1;
+  color: rgb(100 116 139 / var(--tw-text-opacity, 1));
+}
+.text-slate-600 {
+  --tw-text-opacity: 1;
+  color: rgb(71 85 105 / var(--tw-text-opacity, 1));
+}
+.text-slate-700 {
+  --tw-text-opacity: 1;
+  color: rgb(51 65 85 / var(--tw-text-opacity, 1));
+}
+.text-slate-800 {
+  --tw-text-opacity: 1;
+  color: rgb(30 41 59 / var(--tw-text-opacity, 1));
+}
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgb(15 23 42 / var(--tw-text-opacity, 1));
+}
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+.opacity-20 {
+  opacity: 0.2;
+}
+.shadow-2xl {
+  --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.shadow-inner {
+  --tw-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: inset 0 2px 4px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.shadow-md {
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.hover\:bg-slate-50:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 250 252 / var(--tw-bg-opacity, 1));
+}
+.focus\:outline-none:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+.focus\:ring-1:focus {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+@media (min-width: 768px) {
+
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+
+  .lg\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}* {
+      -ms-overflow-style: none !important;
+      scrollbar-width: none !important;
+    }
+
+    *::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+  </style></head>
+<body class="w-full h-full p-10 overflow-x-hidden" vid="7">
+
+    <header class="mb-12 flex justify-between items-start" vid="8">
+        <div vid="9">
+            <div class="flex items-center gap-3 mb-3" vid="10">
+                <div class="bg-status p-2 rounded-xl shadow-sm" vid="11">
+                    <i class="ph-fill ph-hexagon text-white text-2xl" vid="12"></i>
+                </div>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-900 flex items-center" vid="13">
+                    Model2Agent <span class="mx-3 text-slate-300 font-light" vid="14">|</span> <span class="text-xl font-medium text-slate-600" vid="15">产品全流程保真原型</span>
+                </h1>
+            </div>
+            <p class="text-slate-500 text-sm flex items-center gap-2 font-medium" vid="16">
+                上传 PyTorch 模型 <i class="ph ph-caret-right text-[10px] text-slate-300" vid="17"></i> 
+                Builder 智能体分析 <i class="ph ph-caret-right text-[10px] text-slate-300" vid="18"></i> 
+                生成独立 Agent <i class="ph ph-caret-right text-[10px] text-slate-300" vid="19"></i> 
+                对话测试 <i class="ph ph-caret-right text-[10px] text-slate-300" vid="20"></i> 
+                查看代码 <i class="ph ph-caret-right text-[10px] text-slate-300" vid="21"></i> 
+                导出部署
+            </p>
+        </div>
+
+        <div class="flex gap-6" vid="22">
+            <div class="flex items-center gap-3" vid="23">
+                <div class="bg-white p-2.5 rounded-xl border border-[#E5E1DE] shadow-sm" vid="24">
+                    <i class="ph ph-package text-status text-xl" vid="25"></i>
+                </div>
+                <div vid="26">
+                    <p class="text-[11px] font-bold text-slate-800" vid="27">支持多种模型</p>
+                    <p class="text-[10px] text-slate-400" vid="28">PyTorch · CNN · XGBoost</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3" vid="29">
+                <div class="bg-white p-2.5 rounded-xl border border-[#E5E1DE] shadow-sm" vid="30">
+                    <i class="ph ph-gear text-accent text-xl" vid="31"></i>
+                </div>
+                <div vid="32">
+                    <p class="text-[11px] font-bold text-slate-800" vid="33">自动生成 Agent</p>
+                    <p class="text-[10px] text-slate-400" vid="34">FastAPI · 推理 · 可视化</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3" vid="35">
+                <div class="bg-white p-2.5 rounded-xl border border-[#E5E1DE] shadow-sm" vid="36">
+                    <i class="ph ph-export text-primary text-xl" vid="37"></i>
+                </div>
+                <div vid="38">
+                    <p class="text-[11px] font-bold text-slate-800" vid="39">一键导出</p>
+                    <p class="text-[10px] text-slate-400" vid="40">ZIP · Docker · 项目</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16" vid="41">
+        
+        <div class="flex flex-col gap-5" vid="42">
+            <div class="flex items-center gap-4" vid="43">
+                <span class="bg-primary text-white font-bold w-7 h-7 flex items-center justify-center rounded-full text-xs" vid="44">01</span>
+                <div vid="45">
+                    <h2 class="font-bold text-slate-800" vid="46">任务工作台 / 最近任务</h2>
+                    <p class="text-[11px] text-slate-500 font-medium" vid="47">管理任务，查看最近的 Builder 任务记录</p>
+                </div>
+            </div>
+            <div class="mockup-container bg-white rounded-2xl shadow-soft border border-[#EEEAE7] overflow-hidden flex flex-col" vid="48">
+                <div class="flex flex-1" vid="49">
+                    <div class="w-36 bg-[#F9F8F7] border-r border-[#EEEAE7] p-3 flex flex-col gap-3" vid="50">
+                        <div class="flex items-center gap-2 mb-3 px-1" vid="51">
+                            <i class="ph-fill ph-hexagon text-status text-xl" vid="52"></i>
+                            <span class="text-[11px] font-bold text-slate-800 tracking-tight" vid="53">Model2Agent</span>
+                        </div>
+                        <button class="bg-primary text-white text-[10px] py-2 rounded-lg font-bold flex items-center justify-center gap-2 shadow-sm" vid="54">
+                            <i class="ph ph-plus" vid="55"></i> 新建任务
+                        </button>
+                        <div class="mt-4" vid="56">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider px-1 mb-2" vid="57">最近任务</p>
+                            <div class="space-y-1.5" vid="58">
+                                <div class="bg-white p-2 rounded-lg border border-[#EEEAE7] shadow-sm" vid="59">
+                                    <p class="text-[10px] font-bold text-slate-800" vid="60">P7-journey</p>
+                                    <p class="text-[8px] text-slate-400" vid="61">cnn_digits 10/31 09:31</p>
+                                </div>
+                                <div class="p-2 px-3" vid="62">
+                                    <p class="text-[10px] font-bold text-slate-500" vid="63">P6-cnn</p>
+                                    <p class="text-[8px] text-slate-400" vid="64">cnn_digits 10/31 07:20</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-1 flex flex-col" vid="65">
+                        <div class="h-12 border-b border-[#EEEAE7] flex items-center justify-between px-5" vid="66">
+                            <span class="text-[11px] font-bold text-slate-800" vid="67">P7-journey</span>
+                            <div class="flex items-center gap-4 text-slate-400 text-[10px]" vid="68">
+                                <span class="flex items-center gap-1.5" vid="69"><i class="ph ph-cpu text-sm" vid="70"></i> cuda:0</span>
+                                <span class="flex items-center gap-1.5" vid="71"><i class="ph ph-file text-sm" vid="72"></i> 文件</span>
+                                <span class="flex items-center gap-1.5" vid="73"><i class="ph ph-eye text-sm" vid="74"></i> 预览</span>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-col items-center justify-center p-8 text-center" vid="75">
+                            <div class="w-16 h-20 bg-[#F9F8F7] rounded-xl flex items-center justify-center mb-5" vid="76">
+                                <i class="ph ph-article text-slate-200 text-4xl" vid="77"></i>
+                            </div>
+                            <h3 class="text-sm font-bold text-slate-800 mb-2" vid="78">还没有开始任务</h3>
+                            <p class="text-[10px] text-slate-400 mb-5 leading-relaxed font-medium" vid="79">上传你的模型文件，让 Builder 智能体<br vid="80">帮你分析并生成独立可运行的 Agent。</p>
+                            <button class="bg-primary text-white text-[10px] py-2 px-5 rounded-lg font-bold flex items-center gap-2 shadow-md" vid="81">
+                                <i class="ph ph-plus" vid="82"></i> 新建任务
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-5" vid="83">
+            <div class="flex items-center gap-4" vid="84">
+                <span class="bg-primary text-white font-bold w-7 h-7 flex items-center justify-center rounded-full text-xs" vid="85">02</span>
+                <div vid="86">
+                    <h2 class="font-bold text-slate-800" vid="87">新建任务表单</h2>
+                    <p class="text-[11px] text-slate-500 font-medium" vid="88">上传资产并配置 Builder 分析参数</p>
+                </div>
+            </div>
+            <div class="mockup-container bg-white rounded-2xl shadow-soft border border-[#EEEAE7] overflow-hidden flex" vid="89">
+                <div class="w-36 bg-[#F9F8F7] border-r border-[#EEEAE7] p-3 flex flex-col gap-3" vid="90">
+                    <div class="flex items-center gap-2 mb-3 px-1" vid="91">
+                        <i class="ph-fill ph-hexagon text-status text-xl" vid="92"></i>
+                        <span class="text-[11px] font-bold text-slate-800" vid="93">Model2Agent</span>
+                    </div>
+                    <div class="mt-2" vid="94">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider px-1 mb-2" vid="95">最近任务</p>
+                        <div class="space-y-1" vid="96">
+                            <div class="bg-white p-2 rounded-lg border border-[#EEEAE7] shadow-sm" vid="97">
+                                <p class="text-[10px] font-bold text-slate-800" vid="98">P7-journey</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 p-6" vid="99">
+                    <h3 class="text-sm font-bold text-slate-900 mb-5 flex items-center gap-2" vid="100">
+                        <i class="ph ph-pencil-simple text-accent" vid="101"></i> 新建任务
+                    </h3>
+                    <div class="space-y-4" vid="102">
+                        <div vid="103">
+                            <label class="text-[10px] font-bold text-slate-600 block mb-1.5" vid="104">任务名称 <span class="text-accent" vid="105">*</span></label>
+                            <input type="text" value="cnn-digits" class="w-full text-[10px] p-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-accent" vid="106">
+                        </div>
+                        <div vid="107">
+                            <label class="text-[10px] font-bold text-slate-600 block mb-1.5" vid="108">任务目标</label>
+                            <textarea class="w-full text-[10px] p-2 border border-slate-200 rounded-lg h-14 focus:outline-none focus:ring-1 focus:ring-accent" vid="109">基于上传的 CNN 模型，生成一个独立可运行的 Agent。</textarea>
+                        </div>
+                        <div vid="110">
+                            <label class="text-[10px] font-bold text-slate-600 block mb-1.5" vid="111">模型资产 <span class="text-accent" vid="112">*</span></label>
+                            <div class="border-2 border-dashed border-[#EEEAE7] bg-[#FAF9F8] rounded-xl p-5 flex flex-col items-center justify-center gap-2 mb-3" vid="113">
+                                <i class="ph ph-upload-simple text-slate-300 text-2xl" vid="114"></i>
+                                <p class="text-[10px] text-slate-500 font-bold" vid="115">点击或拖拽上传 ZIP</p>
+                            </div>
+                            <div class="bg-[#F9F8F7] p-2 rounded-lg flex items-center justify-between border border-[#EEEAE7]" vid="116">
+                                <div class="flex items-center gap-3" vid="117">
+                                    <i class="ph ph-file-zip text-accent text-lg" vid="118"></i>
+                                    <div vid="119">
+                                        <p class="text-[10px] font-bold text-slate-700" vid="120">cnn_digits.zip</p>
+                                        <p class="text-[8px] text-slate-400" vid="121">12.4 MB</p>
+                                    </div>
+                                </div>
+                                <i class="ph ph-trash text-slate-300 text-sm cursor-pointer hover:text-accent" vid="122"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-[#EEEAE7] pt-4" vid="123">
+                            <div class="flex items-center gap-2 text-[10px]" vid="124">
+                                <i class="ph ph-cpu text-slate-400" vid="125"></i>
+                                <span class="font-bold text-slate-700" vid="126">cuda:0</span>
+                            </div>
+                            <div class="flex gap-2" vid="127">
+                                <button class="text-[10px] font-bold px-4 py-1.5 text-slate-500 rounded-lg hover:bg-slate-50" vid="128">取消</button>
+                                <button class="text-[10px] font-bold px-4 py-1.5 bg-primary text-white rounded-lg shadow-sm" vid="129">创建并开始</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-5" vid="130">
+            <div class="flex items-center gap-4" vid="131">
+                <span class="bg-primary text-white font-bold w-7 h-7 flex items-center justify-center rounded-full text-xs" vid="132">03</span>
+                <div vid="133">
+                    <h2 class="font-bold text-slate-800" vid="134">选择运行设备</h2>
+                    <p class="text-[11px] text-slate-500 font-medium" vid="135">选择生成的 Agent 所使用的计算环境</p>
+                </div>
+            </div>
+            <div class="mockup-container bg-[#E5E1DE] rounded-2xl shadow-soft border border-[#EEEAE7] overflow-hidden flex relative" vid="136">
+                <div class="flex-1 flex opacity-20 pointer-events-none" vid="137">
+                    <div class="w-36 bg-[#F9F8F7] border-r border-[#EEEAE7] p-3" vid="138"></div>
+                    <div class="flex-1" vid="139">
+                        <div class="h-12 border-b border-[#EEEAE7] px-5 flex items-center" vid="140"></div>
+                    </div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center p-8" vid="141">
+                    <div class="bg-white w-full rounded-2xl shadow-2xl p-5 border border-[#EEEAE7]" vid="142">
+                        <div class="flex items-center justify-between mb-4" vid="143">
+                            <h3 class="text-xs font-bold text-slate-900" vid="144">选择运行设备</h3>
+                            <i class="ph ph-x text-slate-300 text-sm cursor-pointer" vid="145"></i>
+                        </div>
+                        <div class="space-y-2.5 mb-5" vid="146">
+                            <div class="border-accent border-2 bg-[#FAF6F4] rounded-xl p-3 flex items-center gap-4 relative" vid="147">
+                                <div class="w-4 h-4 rounded-full border-4 border-accent bg-white shadow-sm" vid="148"></div>
+                                <div class="flex-1" vid="149">
+                                    <p class="text-[10px] font-bold text-slate-900" vid="150">NVIDIA RTX A6000 · 48GB</p>
+                                    <p class="text-[9px] text-slate-500 font-medium" vid="151">可用显存 41.2 GB / 48 GB</p>
+                                </div>
+                                <span class="bg-accent text-white text-[8px] font-bold px-2 py-0.5 rounded-full absolute top-3 right-3" vid="152">推荐</span>
+                            </div>
+                            <div class="border border-[#EEEAE7] rounded-xl p-3 flex items-center gap-4 bg-[#F9F8F7]" vid="153">
+                                <div class="w-4 h-4 rounded-full border border-slate-300 bg-white shadow-inner" vid="154"></div>
+                                <div class="flex-1" vid="155">
+                                    <p class="text-[10px] font-bold text-slate-800" vid="156">NVIDIA RTX A6000 (1)</p>
+                                    <p class="text-[9px] text-slate-500" vid="157">32.6 GB / 48 GB</p>
+                                </div>
+                            </div>
+                            <div class="border border-[#EEEAE7] rounded-xl p-3 flex items-center gap-4 bg-[#F9F8F7]" vid="158">
+                                <div class="w-4 h-4 rounded-full border border-slate-300 bg-white" vid="159"></div>
+                                <div class="flex-1" vid="160">
+                                    <p class="text-[10px] font-bold text-slate-800" vid="161">CPU · 32 核</p>
+                                    <p class="text-[9px] text-slate-500" vid="162">通用推理设备</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3" vid="163">
+                            <button class="text-[10px] font-bold px-5 py-2 text-slate-500 rounded-lg border border-[#EEEAE7]" vid="164">取消</button>
+                            <button class="text-[10px] font-bold px-6 py-2 bg-primary text-white rounded-lg shadow-md" vid="165">确定</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-5" vid="166">
+            <div class="flex items-center gap-4" vid="167">
+                <span class="bg-primary text-white font-bold w-7 h-7 flex items-center justify-center rounded-full text-xs" vid="168">04</span>
+                <div vid="169">
+                    <h2 class="font-bold text-slate-800" vid="170">Builder 对话和工具流</h2>
+                    <p class="text-[11px] text-slate-500 font-medium" vid="171">查看 Builder 智能体分析与生成的实时状态</p>
+                </div>
+            </div>
+            <div class="mockup-container bg-white rounded-2xl shadow-soft border border-[#EEEAE7] overflow-hidden flex" vid="172">
+                <div class="w-36 bg-[#F9F8F7] border-r border-[#EEEAE7] p-3 flex flex-col gap-3" vid="173">
+                    <div class="flex items-center gap-2 mb-3 px-1" vid="174">
+                        <i class="ph-fill ph-hexagon text-status text-xl" vid="175"></i>
+                        <span class="text-[11px] font-bold text-slate-800" vid="176">Model2Agent</span>
+                    </div>
+                </div>
+                <div class="flex-1 flex flex-col" vid="177">
+                    <div class="h-12 border-b border-[#EEEAE7] flex items-center justify-between px-5" vid="178">
+                        <span class="text-[11px] font-bold text-slate-800" vid="179">P7-journey</span>
+                        <div class="flex items-center gap-4 text-slate-400 text-[10px] font-bold" vid="180">
+                            <span class="flex items-center gap-1.5 text-status" vid="181"><i class="ph ph-cpu" vid="182"></i> cuda:0</span>
+                            <span class="flex items-center gap-1.5" vid="183"><i class="ph ph-file" vid="184"></i> 文件</span>
+                            <span class="flex items-center gap-1.5" vid="185"><i class="ph ph-eye" vid="186"></i> 预览</span>
+                        </div>
+                    </div>
+                    <div class="flex-1 p-5 overflow-y-auto space-y-4 bg-[#FDFCFB]" vid="187">
+                        <div class="flex justify-end" vid="188">
+                            <div class="bg-primary text-white text-[9px] p-3 rounded-2xl rounded-tr-none max-w-[85%] font-medium leading-relaxed shadow-sm" vid="189">
+                                确认分析上传的 cnn_digits 模型，生成独立可运行的 Agent 并执行测试。
+                            </div>
+                        </div>
+                        <div class="space-y-2" vid="190">
+                            <div class="flex items-start gap-3" vid="191">
+                                <div class="bg-status p-1.5 rounded-lg text-white shadow-sm" vid="192"><i class="ph ph-terminal-window text-[11px]" vid="193"></i></div>
+                                <div class="flex-1 space-y-1.5" vid="194">
+                                    <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-[#EEEAE7] shadow-sm" vid="195">
+                                        <div class="flex items-center gap-2" vid="196">
+                                            <i class="ph ph-caret-right text-[10px] text-slate-300" vid="197"></i>
+                                            <span class="text-[10px] font-bold text-slate-800" vid="198">Generate Agent</span>
+                                        </div>
+                                        <span class="text-[9px] text-status font-bold flex items-center gap-1.5" vid="199"><i class="ph-fill ph-check-circle" vid="200"></i> 已完成</span>
+                                    </div>
+                                    <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-[#EEEAE7] shadow-sm" vid="201">
+                                        <div class="flex items-center gap-2" vid="202">
+                                            <i class="ph ph-caret-right text-[10px] text-slate-300" vid="203"></i>
+                                            <span class="text-[10px] font-bold text-slate-800" vid="204">Verify Agent</span>
+                                        </div>
+                                        <span class="text-[9px] text-status font-bold flex items-center gap-1.5" vid="205"><i class="ph-fill ph-check-circle" vid="206"></i> 已完成</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 border-t border-[#EEEAE7] flex items-center gap-3 bg-[#F9F8F7]" vid="207">
+                        <input type="text" placeholder="描述你的需求..." class="flex-1 bg-white text-[10px] p-2.5 rounded-xl border-none shadow-inner" vid="208">
+                        <button class="bg-primary text-white p-2 rounded-xl shadow-md" vid="209"><i class="ph-fill ph-paper-plane-right text-sm" vid="210"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-5" vid="211">
+            <div class="flex items-center gap-4" vid="212">
+                <span class="bg-primary text-white font-bold w-7 h-7 flex items-center justify-center rounded-full text-xs" vid="213">05</span>
+                <div vid="214">
+                    <h2 class="font-bold text-slate-800" vid="215">生成 Agent 的预览交互</h2>
+                    <p class="text-[11px] text-slate-500 font-medium" vid="216">与生成的 Agent 进行实时对话和模型推理测试</p>
+                </div>
+            </div>
+            <div class="mockup-container bg-white rounded-2xl shadow-soft border border-[#EEEAE7] overflow-hidden flex" vid="217">
+                <div class="w-36 bg-[#F9F8F7] border-r border-[#EEEAE7] p-3 flex flex-col gap-3" vid="218">
+                    <div class="flex items-center gap-2 mb-3 px-1" vid="219">
+                        <i class="ph-fill ph-hexagon text-status text-xl" vid="220"></i>
+                        <span class="text-[11px] font-bold text-slate-800" vid="221">Model2Agent</span>
+                    </div>
+                </div>
+                <div class="flex-1 flex flex-col" vid="222">
+                    <div class="h-12 border-b border-[#EEEAE7] flex items-center justify-between px-5" vid="223">
+                        <div class="flex items-center gap-3" vid="224">
+                            <span class="text-[11px] font-bold text-slate-800" vid="225">P7-journey</span>
+                            <div class="flex items-center gap-2 bg-[#EBF4E9] px-2 py-0.5 rounded-full" vid="226">
+                                <div class="w-1.5 h-1.5 bg-status rounded-full animate-pulse" vid="227"></div>
+                                <span class="text-[9px] text-status font-bold" vid="228">Running</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-1 bg-[#F9F8F7] p-4 flex flex-col" vid="229">
+                        <div class="bg-white rounded-2xl border border-[#EEEAE7] shadow-sm flex-1 flex flex-col overflow-hidden" vid="230">
+                            <div class="flex items-center gap-3 p-3 border-b border-[#EEEAE7] bg-white" vid="231">
+                                <div class="w-7 h-7 bg-status rounded-lg flex items-center justify-center text-white" vid="232"><i class="ph-fill ph-robot text-lg" vid="233"></i></div>
+                                <div vid="234">
+                                    <p class="text-[10px] font-bold text-slate-900" vid="235">cnn_digits</p>
+                                    <p class="text-[8px] text-slate-400 font-medium" vid="236">pytorch · inference agent</p>
+                                </div>
+                            </div>
+                            <div class="flex-1 flex flex-col p-4 overflow-y-auto" vid="237">
+                                <div class="flex justify-end mb-6" vid="238">
+                                    <div class="relative bg-white p-1 rounded-xl shadow-md border border-[#EEEAE7]" vid="239">
+                                        <div class="w-14 h-14 bg-black rounded-lg flex items-center justify-center" vid="240">
+                                            <span class="text-white text-3xl font-serif" vid="241">9</span>
+                                        </div>
+                                        <p class="absolute -bottom-5 right-0 text-[8px] text-slate-400 font-bold" vid="242">digit_9.png</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3" vid="243">
+                                    <div class="bg-accent p-1.5 rounded-lg text-white shadow-sm" vid="244"><i class="ph-fill ph-chart-bar text-[11px]" vid="245"></i></div>
+                                    <div class="flex-1 bg-[#FAF9F8] p-4 rounded-2xl border border-[#EEEAE7] shadow-sm" vid="246">
+                                        <p class="text-[10px] font-bold text-slate-800 mb-3" vid="247">模型推理结果</p>
+                                        <div class="flex items-center gap-3 mb-4" vid="248">
+                                            <div class="text-2xl font-bold text-slate-900" vid="249">9</div>
+                                            <span class="text-[9px] font-bold text-status" vid="250">置信度 99.8%</span>
+                                        </div>
+                                        <div class="space-y-2" vid="251">
+                                            <div class="flex items-center gap-3" vid="252">
+                                                <span class="w-2 text-[9px] font-bold text-slate-400" vid="253">9</span>
+                                                <div class="flex-1 bg-slate-200 h-1.5 rounded-full overflow-hidden" vid="254">
+                                                    <div class="bg-status h-full w-[99%]" vid="255"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3 border-t border-[#EEEAE7] flex items-center gap-3 bg-white" vid="256">
+                                <i class="ph ph-image text-slate-300 text-lg cursor-pointer" vid="257"></i>
+                                <input type="text" placeholder="输入问题..." class="flex-1 text-[10px] p-2 bg-[#F9F8F7] rounded-xl border-none" vid="258">
+                                <button class="bg-primary text-white p-2 rounded-xl shadow-md" vid="259"><i class="ph-fill ph-paper-plane-right" vid="260"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-5" vid="261">
+            <div class="flex items-center gap-4" vid="262">
+                <span class="bg-primary text-white font-bold w-7 h-7 flex items-center justify-center rounded-full text-xs" vid="263">06</span>
+                <div vid="264">
+                    <h2 class="font-bold text-slate-800" vid="265">项目文件与代码查看</h2>
+                    <p class="text-[11px] text-slate-500 font-medium" vid="266">浏览项目架构并导出部署所需的工程文件</p>
+                </div>
+            </div>
+            <div class="mockup-container bg-white rounded-2xl shadow-soft border border-[#EEEAE7] overflow-hidden flex" vid="267">
+                <div class="w-36 bg-[#F9F8F7] border-r border-[#EEEAE7] p-3 flex flex-col gap-3" vid="268">
+                    <div class="flex items-center gap-2 mb-3 px-1" vid="269">
+                        <i class="ph-fill ph-hexagon text-status text-xl" vid="270"></i>
+                        <span class="text-[11px] font-bold text-slate-800" vid="271">Model2Agent</span>
+                    </div>
+                </div>
+                <div class="flex-1 flex flex-col" vid="272">
+                    <div class="h-12 border-b border-[#EEEAE7] flex items-center justify-between px-5" vid="273">
+                        <span class="text-[11px] font-bold text-slate-800" vid="274">P7-journey</span>
+                        <div class="flex items-center gap-4 text-slate-400 text-[10px] font-bold" vid="275">
+                            <span class="flex items-center gap-1.5 text-status" vid="276"><i class="ph ph-file-code" vid="277"></i> 文件</span>
+                            <span class="flex items-center gap-1.5" vid="278"><i class="ph ph-eye" vid="279"></i> 预览</span>
+                            <span class="flex items-center gap-1.5" vid="280"><i class="ph ph-export" vid="281"></i> 导出</span>
+                        </div>
+                    </div>
+                    <div class="flex-1 flex" vid="282">
+                        <div class="w-36 border-r border-[#EEEAE7] p-4 flex flex-col gap-2 overflow-y-auto bg-[#FAF9F8]" vid="283">
+                            <div class="flex items-center gap-2 mb-2" vid="284">
+                                <i class="ph ph-folder-open text-[11px] text-slate-400" vid="285"></i>
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest" vid="286">PROJECT</span>
+                            </div>
+                            <div class="space-y-2" vid="287">
+                                <div class="flex items-center gap-2 px-1" vid="288">
+                                    <i class="ph ph-folder-notch text-accent text-sm" vid="289"></i>
+                                    <span class="text-[10px] font-bold text-slate-700" vid="290">src</span>
+                                </div>
+                                <div class="flex items-center gap-2 pl-5 bg-[#F3E9E5] rounded-lg py-1 shadow-sm border border-[#E5D5CF]" vid="291">
+                                    <i class="ph ph-file-py text-accent text-sm" vid="292"></i>
+                                    <span class="text-[10px] font-bold text-accent" vid="293">model.py</span>
+                                </div>
+                                <div class="flex items-center gap-2 pl-5" vid="294">
+                                    <i class="ph ph-file text-slate-400 text-sm" vid="295"></i>
+                                    <span class="text-[10px] font-medium text-slate-500" vid="296">Dockerfile</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-col" vid="297">
+                            <div class="h-10 border-b border-[#EEEAE7] flex items-center justify-between px-4 bg-white" vid="298">
+                                <span class="text-[10px] font-bold text-slate-600" vid="299">model_exec.py</span>
+                                <button class="bg-primary text-white text-[9px] px-3 py-1.5 rounded-lg font-bold flex items-center gap-2 shadow-sm" vid="300">
+                                    <i class="ph ph-download-simple" vid="301"></i> Download ZIP
+                                </button>
+                            </div>
+                            <div class="flex-1 p-4 bg-white font-mono text-[9px] leading-relaxed text-slate-400 overflow-y-auto" vid="302">
+                                <div class="flex gap-4" vid="303">
+                                    <div class="text-slate-200 text-right w-5 select-none" vid="304">1<br vid="305">2<br vid="306">3<br vid="307">4<br vid="308">5</div>
+                                    <div class="text-slate-700" vid="309">
+                                        <span class="text-accent" vid="310">import</span> torch<br vid="311">
+                                        <span class="text-accent" vid="312">import</span> numpy <span class="text-accent" vid="313">as</span> np<br vid="314"><br vid="315">
+                                        <span class="text-accent" vid="316">class</span> <span class="text-status" vid="317">ModelExecutor</span>:<br vid="318">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-accent" vid="319">def</span> <span class="text-status" vid="320">__init__</span>(self, model_path):<br vid="321">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.model = torch.load(model_path)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="h-12 border-t border-[#EEEAE7] p-3 px-5 bg-[#F9F8F7] flex items-center justify-between" vid="322">
+                                <div class="flex items-center gap-3" vid="323">
+                                    <span class="text-[10px] font-bold text-slate-800" vid="324">Docker 状态</span>
+                                    <div class="flex items-center gap-1.5 bg-[#EBF4E9] px-2 py-0.5 rounded-full" vid="325">
+                                        <div class="w-1.5 h-1.5 bg-status rounded-full" vid="326"></div>
+                                        <span class="text-[9px] text-status font-bold" vid="327">Running</span>
+                                    </div>
+                                </div>
+                                <button class="text-[9px] font-bold px-4 py-1.5 bg-white border border-[#EEEAE7] text-slate-600 rounded-lg shadow-sm" vid="328">验证 Docker</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body></html>
