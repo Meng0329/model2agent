@@ -25,6 +25,7 @@ class ToolEvent:
     status: str                      # running | done | error
     result: Optional[str] = None
     is_error: bool = False
+    id: str = ""
 
 
 @dataclass
@@ -35,6 +36,7 @@ class SessionResult:
     num_turns: int = 0
     session_id: str = ""
     cost_usd: float = 0.0
+    tokens: int = 0
     tool_events: list[ToolEvent] = field(default_factory=list)
     thinking: list[str] = field(default_factory=list)
     latency_ms: float = 0.0
@@ -62,11 +64,14 @@ def build_options(*, cwd: str | Path, agents: dict, system_prompt: str,
         cwd=str(cwd),
         model=config.DEEPSEEK_MODEL,
         permission_mode="bypassPermissions",
-        allowed_tools=["Bash", "Read", "Write", "Edit", "Glob", "Grep", "Task", "Skill"],
+        tools=["Bash", "Read", "Write", "Edit", "Glob", "Grep", "Task"],
+        allowed_tools=["Bash", "Read", "Write", "Edit", "Glob", "Grep", "Task"],
         system_prompt=system_prompt,
         agents=agents,
         mcp_servers=mcp_servers or {},
-        setting_sources=["project"],
+        # SDK isolation: do NOT load the repo's .claude settings/hooks/CLAUDE.md.
+        # Otherwise harness hooks (task-watch etc.) contaminate the experiment.
+        setting_sources=[],
         env=config.agent_env(),
         max_turns=max_turns or config.SCIENTIST_MAX_TURNS,
         max_budget_usd=max_budget_usd if max_budget_usd is not None else config.SCIENTIST_MAX_BUDGET_USD,
@@ -88,27 +93,38 @@ async def run_session(prompt: str, options: Any,
         await client.query(prompt)
         async for message in client.receive_response():
             if isinstance(message, StreamEvent):
-                if message.type == "content_block_delta" and message.delta and message.delta.type == "text_delta":
-                    res.text += message.delta.text
-                    if on_text:
-                        on_text(message.delta.text)
-                elif message.type == "content_block_start" and getattr(message, "content_block", None):
-                    cb = message.content_block
-                    if cb.type == "tool_use":
-                        res.tool_events.append(ToolEvent(cb.name, dict(cb.input or {}), "running"))
+                ev = message.event or {}
+                et = ev.get("type")
+                if et == "content_block_delta":
+                    delta = ev.get("delta") or {}
+                    if delta.get("type") == "text_delta":
+                        txt = delta.get("text", "") or ""
+                        res.text += txt
+                        if on_text:
+                            on_text(txt)
+                elif et == "content_block_start":
+                    cb = ev.get("content_block") or {}
+                    if cb.get("type") == "tool_use":
+                        res.tool_events.append(ToolEvent(
+                            cb.get("name", ""), dict(cb.get("input") or {}),
+                            "running", id=cb.get("id", "")))
             elif isinstance(message, AssistantMessage):
                 for block in message.content or []:
                     t = getattr(block, "type", None)
                     if t == "thinking" and getattr(block, "thinking", None):
                         res.thinking.append(block.thinking)
                     elif t == "tool_use":
-                        res.tool_events.append(ToolEvent(block.name, dict(block.input or {}), "running"))
+                        res.tool_events.append(ToolEvent(
+                            block.name, dict(block.input or {}), "running",
+                            id=getattr(block, "id", "")))
                     elif t == "text":
-                        res.text += getattr(block, "text", "")
+                        txt = getattr(block, "text", "") or ""
+                        if txt and not res.text.endswith(txt):
+                            res.text += txt
             elif isinstance(message, UserMessage):
                 for block in message.content or []:
                     if getattr(block, "type", None) == "tool_result":
-                        ev = _last_running(res, getattr(block, "tool_use_id", None))
+                        ev = _match_tool(res, getattr(block, "tool_use_id", None))
                         if ev:
                             ev.status = "error" if getattr(block, "is_error", False) else "done"
                             ev.is_error = bool(getattr(block, "is_error", False))
@@ -121,7 +137,9 @@ async def run_session(prompt: str, options: Any,
                 res.stop_reason = getattr(message, "stop_reason", "")
                 res.num_turns = int(getattr(message, "num_turns", 0) or 0)
                 res.session_id = getattr(message, "session_id", "") or ""
-                res.cost_usd = float(getattr(message, "cost_usd", 0.0) or 0.0)
+                res.cost_usd = float(getattr(message, "total_cost_usd", 0.0) or 0.0)
+                usage = getattr(message, "usage", None) or {}
+                res.tokens = int(usage.get("input_tokens", 0) or 0) + int(usage.get("output_tokens", 0) or 0)
                 if getattr(message, "result", None):
                     res.text = res.text or str(message.result)
     finally:
@@ -130,9 +148,11 @@ async def run_session(prompt: str, options: Any,
     return res
 
 
-def _last_running(res: SessionResult, tool_use_id: str | None) -> ToolEvent | None:
+def _match_tool(res: SessionResult, tool_use_id: str | None) -> ToolEvent | None:
     if tool_use_id:
-        return None  # SDK tool-result blocks don't always carry tool_use_id; fall back to last
+        for ev in res.tool_events:
+            if ev.id == tool_use_id:
+                return ev
     for ev in reversed(res.tool_events):
         if ev.status == "running":
             return ev

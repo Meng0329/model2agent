@@ -75,15 +75,16 @@ async def main() -> int:
                                     out / "oracle_access.jsonl", budget, args.run_id)
     server = make_tools(budget=budget, ledger=ledger, oracle=oracle)
 
-    from claude_agent_sdk import ClaudeSDKClient, ClaudeAgentOptions
+    from claude_agent_sdk import ClaudeSDKClient, ClaudeAgentOptions, ResultMessage
     opts = ClaudeAgentOptions(
         cwd=str(HERE),
         model=sci.get("agent_model", "deepseek-v4.1-flash"),
         permission_mode="bypassPermissions",
-        allowed_tools=["Bash", "Read", "Write", "Edit", "Glob", "Grep", "Skill"],
+        tools=["Bash", "Read", "Write", "Edit", "Glob", "Grep"],
+        allowed_tools=["Bash", "Read", "Write", "Edit", "Glob", "Grep"],
         system_prompt=build_system_prompt(sci),
         mcp_servers={"m2a_scientist": server},
-        setting_sources=["project"],
+        setting_sources=[],          # isolation: no repo hooks/CLAUDE.md contamination
         max_turns=args.max_turns,
         max_budget_usd=args.max_budget_usd,
         include_partial_messages=True,
@@ -98,13 +99,13 @@ async def main() -> int:
         await client.connect()
         await client.query(task["scientific_question"])
         async for message in client.receive_response():
-            trajectory.append({"type": getattr(message, "type", type(message).__name__),
+            trajectory.append({"type": type(message).__name__,
                                "repr": repr(message)[:4000]})
-            if getattr(message, "type", "") == "result":
+            if isinstance(message, ResultMessage):
                 result.update({
                     "status": "OBSERVED" if not getattr(message, "is_error", True) else "FAILED",
                     "text": getattr(message, "result", "") or "",
-                    "cost_usd": float(getattr(message, "cost_usd", 0.0) or 0.0),
+                    "cost_usd": float(getattr(message, "total_cost_usd", 0.0) or 0.0),
                     "num_turns": int(getattr(message, "num_turns", 0) or 0),
                     "session_id": getattr(message, "session_id", "") or "",
                 })
