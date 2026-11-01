@@ -27,3 +27,6 @@ generated_agent_template/web/playwright-report/
 export.zip
 /tmp/
 *.zip
+
+.claude/
+.codex/
