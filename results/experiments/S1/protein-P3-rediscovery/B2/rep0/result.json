@@ -1,0 +1,22 @@
+{
+  "run_id": "S1:B2:protein-P3-rediscovery:r0:28c99946",
+  "status": "FAILED",
+  "text": "\n\nLet me explore the model interface and oracle to understand what's available.\n\n\n\n\n\n\n\nNow I understand the task: success requires my **top-1** to equal the true highest-fitness mutant. Budget: 100 ESM-2 calls, 20 oracle queries. Let me set up a work directory and check tooling.Numpy is available, no biopython. Let me test the model interface with a few calibration calls.\n\nThe model works (D24E gives +0.096 — a positive delta exists). Let me build probe selection using BLOSUM62 conservative substitutions.\n\nNow let me run a broad first-pass ESM-2 scan: one most-conservative substitution per position (42 calls; 2 already done).Batch A done. Now batch B (positions 23-44, except 24 already scored).\n\nAll 44 first-pass scores collected. Let me view the landscape and then run second probes at every position.My budget is tightening. Let me be efficient. I'll run second probes at the most promising positions (top ~15 by first-pass delta) to find within-position winners.\n\nNow let me query the oracle on the 20 highest-ranked ESM-2 candidates (spanning the top positions) to get real measurements.S12A measured highest (0.467) — ESM-2 ranked it 7th. Writing final answer now.",
+  "cost_usd": 2.7863390000000003,
+  "num_turns": 103,
+  "session_id": "6c4d4b90-e17e-430f-8416-cc09145a8ed3",
+  "latency_s": 592.08,
+  "budget": {
+    "max_tokens": 2500000,
+    "max_model_calls": 100,
+    "max_experiments": 20,
+    "max_wall_seconds": 2400.0,
+    "max_usd": 2.5,
+    "tokens_used": 0,
+    "model_calls": 58,
+    "experiments": 20,
+    "cost_usd": 0.0,
+    "elapsed_s": 592.095
+  },
+  "sdk_version": "0.2.170"
+}

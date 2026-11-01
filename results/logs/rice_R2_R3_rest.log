@@ -1,0 +1,12 @@
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[S1] rice-R2-closed-loop B0 rep0: sisr=False oracle=False calls=0 ev=0 cost=$0.549
+[S1] rice-R2-closed-loop B2 rep0: sisr=True oracle=True calls=1 ev=3 cost=$2.628
+[S1] rice-R2-closed-loop B3 rep0: sisr=True oracle=True calls=1 ev=6 cost=$1.984
+[S1] rice-R3-rediscovery B0 rep0: sisr=False oracle=False calls=0 ev=0 cost=$0.397
+[S1] rice-R3-rediscovery B2 rep0: sisr=True oracle=True calls=3 ev=1 cost=$0.971
+[S1] rice-R3-rediscovery B3 rep0: sisr=True oracle=True calls=2 ev=6 cost=$2.445

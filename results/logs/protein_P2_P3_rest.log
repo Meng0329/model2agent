@@ -1,0 +1,18 @@
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1793551816.213435 2992381 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1793551816.276248 2992381 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1793551818.161403 2992381 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[S1] protein-P2-closed-loop B0 rep0: sisr=False oracle=False calls=0 ev=0 cost=$0.273
+[S1] protein-P2-closed-loop B2 rep0: sisr=False oracle=False calls=45 ev=0 cost=$3.009
+[S1] protein-P2-closed-loop B3 rep0: sisr=True oracle=True calls=90 ev=4 cost=$2.996
+[S1] protein-P3-rediscovery B0 rep0: sisr=False oracle=False calls=0 ev=0 cost=$2.252
+[S1] protein-P3-rediscovery B2 rep0: sisr=False oracle=False calls=58 ev=0 cost=$2.786
+[S1] protein-P3-rediscovery B3 rep0: sisr=False oracle=False calls=69 ev=0 cost=$2.504

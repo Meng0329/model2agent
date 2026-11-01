@@ -1,0 +1,22 @@
+{
+  "run_id": "S1:B2:protein-P2-closed-loop:r0:c489467d",
+  "status": "FAILED",
+  "text": "I'll start by examining the candidate input file and understanding the workspace.\n\n\n\n\n\n\n\nI have a clear picture now. Let me verify the model execution path and check whether the internal per-residue logprobs node is accessible for an efficient E1 scan.\n\nThe internal node works and exactly reproduces `score_variant` (D for A16C: -6.8444 - (-0.0291) = -6.8153, matching). This lets me compute all 834 single-mutation ESM-2 deltas from 44 calls (one per position), since masking a single position gives the exact masked-marginal. Let me run the full positional scan.\n\nLet me continue the positional scan (positions 11–20).Continuing the scan (positions 21–30).Final positional batch (positions 32–44).I now have all 44 per-position masked-marginal log-probability distributions. Let me store them and compute the ESM-2 delta log-likelihood for all 834 candidates.\n\n\n\nAll 834 candidates now have ESM-2 scores (E1), validated exactly against two reference `score_variant` values. Top of the ESM-2 ranking: T17K, F14K, S37N, H40K, T17I, I29L...\n\nNow **round 1** of real measurements (E3) — the 8 highest ESM-2 candidates:**Round 1 (E3) results:** T17K=+0.393, T17I=+0.354, T17V=+0.289 are the clear leaders (position 17 is a hot spot). S37N, M19L, I29L moderate; F14K and H40K were over-predicted by ESM-2.\n\n**Revision after round 1:** T17 substitutions are real winners. H40 (H40K=-0.58) and F14 (F14K=-0.09) were over-predicted. Let me diversify across positions and probe the hot T17 position in round 2.\n\n**Round 2 (E3):** T17R=**+0.485** (new best), R2E=+0.211, S37K=+0.173, N22D=+0.133, T17L=+0.108; R23K, G39N, F14Q confirmed as losers. Position 17 and R2 look genuinely enriched.\n\nUpdated E3 leaderboard: T17R .485 > T17K .393 > T17I .354 > T17V .289 > R2E .211 > S37K .173 > S37N .137 > N22D .133 > M19L .117 > T17L .108 > I29L .105.\n\n**Round 3** — probe remaining hot-position alternatives (T17Q/T17M at the hot spot, R2K/R2N, S37G, N22E, I41L, V44K):",
+  "cost_usd": 3.0087580000000003,
+  "num_turns": 79,
+  "session_id": "8b305244-8db8-474e-86f6-5069eab1b061",
+  "latency_s": 659.48,
+  "budget": {
+    "max_tokens": 3000000,
+    "max_model_calls": 120,
+    "max_experiments": 24,
+    "max_wall_seconds": 2400.0,
+    "max_usd": 3.0,
+    "tokens_used": 0,
+    "model_calls": 45,
+    "experiments": 18,
+    "cost_usd": 0.0,
+    "elapsed_s": 659.486
+  },
+  "sdk_version": "0.2.170"
+}

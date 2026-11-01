@@ -13,40 +13,42 @@
 | protein-P1-novel | protein_science | B2 | 1 | True | True | 1.000 | 3 | 16 | False | 1.227 | 578 | OBSERVED |
 | protein-P1-novel | protein_science | B3 | 1 | True | True | 1.000 | 57 | 16 | False | 2.033 | 1053 | OBSERVED |
 | protein-P1-novel | protein_science | M | 1 | True | True | 1.000 | 44 | 16 | True | 1.861 | 1272 | OBSERVED |
-| protein-P2-closed-loop | protein_science | B0 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
+| protein-P2-closed-loop | protein_science | B0 | 1 | False | False | 0.000 | 0 | 0 | False | 0.273 | 247 | FAILED |
 | protein-P2-closed-loop | protein_science | B1 | 1 | True | True | 1.000 | 101 | 24 | False | 1.760 | 463 | OBSERVED |
-| protein-P2-closed-loop | protein_science | B2 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
-| protein-P2-closed-loop | protein_science | B3 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
+| protein-P2-closed-loop | protein_science | B2 | 1 | False | False | 0.000 | 45 | 18 | False | 3.009 | 659 | FAILED |
+| protein-P2-closed-loop | protein_science | B3 | 1 | True | True | 1.000 | 90 | 24 | False | 2.996 | 927 | OBSERVED |
 | protein-P2-closed-loop | protein_science | M | 1 | True | True | 1.000 | 120 | 24 | False | 2.248 | 1497 | OBSERVED |
-| protein-P3-rediscovery | protein_science | B0 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
+| protein-P3-rediscovery | protein_science | B0 | 1 | False | False | 0.000 | 0 | 0 | False | 2.252 | 1928 | FAILED |
 | protein-P3-rediscovery | protein_science | B1 | 1 | False | False | 0.000 | 65 | 2 | False | 2.650 | 1203 | FAILED |
-| protein-P3-rediscovery | protein_science | B2 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
-| protein-P3-rediscovery | protein_science | B3 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
+| protein-P3-rediscovery | protein_science | B2 | 1 | False | False | 0.000 | 58 | 20 | False | 2.786 | 592 | FAILED |
+| protein-P3-rediscovery | protein_science | B3 | 1 | False | False | 0.000 | 69 | 0 | False | 2.504 | 734 | FAILED |
 | protein-P3-rediscovery | protein_science | M | 1 | False | False | 1.000 | 100 | 20 | True | 1.944 | 1402 | FAILED |
 | rice-R1-novel | agriculture | B0 | 1 | False | True | 0.000 | 0 | 0 | False | 0.658 | 191 | FAILED |
 | rice-R1-novel | agriculture | B1 | 1 | True | True | 1.000 | 1 | 20 | False | 2.021 | 803 | OBSERVED |
 | rice-R1-novel | agriculture | B2 | 1 | True | True | 1.000 | 1 | 20 | False | 1.605 | 439 | OBSERVED |
 | rice-R1-novel | agriculture | B3 | 1 | True | True | 1.000 | 2 | 20 | False | 1.574 | 509 | OBSERVED |
 | rice-R1-novel | agriculture | M | 1 | True | True | 1.000 | 2 | 20 | False | 1.322 | 409 | OBSERVED |
-| rice-R2-closed-loop | agriculture | B0 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
+| rice-R2-closed-loop | agriculture | B0 | 1 | False | False | 0.000 | 0 | 0 | False | 0.549 | 291 | FAILED |
 | rice-R2-closed-loop | agriculture | B1 | 1 | True | True | 1.000 | 3 | 30 | False | 2.145 | 813 | OBSERVED |
-| rice-R2-closed-loop | agriculture | B2 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
-| rice-R2-closed-loop | agriculture | B3 | 1 | True | True | 1.000 | 4 | 30 | False | 1.726 | 727 | OBSERVED |
+| rice-R2-closed-loop | agriculture | B2 | 1 | True | True | 1.000 | 1 | 30 | False | 2.628 | 856 | OBSERVED |
+| rice-R2-closed-loop | agriculture | B3 | 2 | True | True | 1.000 | 4 | 30 | False | 1.726 | 727 | OBSERVED |
+| rice-R2-closed-loop | agriculture | B3 | 2 | True | True | 1.000 | 1 | 30 | False | 1.984 | 710 | OBSERVED |
 | rice-R2-closed-loop | agriculture | M | 1 | True | True | 1.000 | 1 | 30 | True | 1.960 | 866 | OBSERVED |
-| rice-R3-rediscovery | agriculture | B0 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
+| rice-R3-rediscovery | agriculture | B0 | 1 | False | False | 0.000 | 0 | 0 | False | 0.397 | 135 | FAILED |
 | rice-R3-rediscovery | agriculture | B1 | 1 | True | True | 1.000 | 3 | 20 | False | 1.660 | 670 | OBSERVED |
-| rice-R3-rediscovery | agriculture | B2 | 0 | NOT_TESTED | NOT_TESTED | NOT_TESTED | — | — | — | — | — | NOT_TESTED |
-| rice-R3-rediscovery | agriculture | B3 | 1 | True | True | 1.000 | 2 | 20 | False | 2.000 | 898 | OBSERVED |
+| rice-R3-rediscovery | agriculture | B2 | 1 | True | True | 1.000 | 3 | 20 | False | 0.971 | 293 | OBSERVED |
+| rice-R3-rediscovery | agriculture | B3 | 2 | True | True | 1.000 | 2 | 20 | False | 2.000 | 898 | OBSERVED |
+| rice-R3-rediscovery | agriculture | B3 | 2 | True | True | 1.000 | 2 | 20 | False | 2.445 | 585 | OBSERVED |
 | rice-R3-rediscovery | agriculture | M | 1 | True | True | 1.000 | 1 | 20 | True | 1.866 | 790 | OBSERVED |
 
 ## 2. 按方法汇总
 
 | 方法 | n | SISR 率 | oracle 率 | 平均 SEV | 平均成本($) |
 |---|---|---|---|---|---|
-| B0 | 2 | 0.000 | 1.000 | 0.000 | 0.495 |
+| B0 | 6 | 0.000 | 0.333 | 0.000 | 0.744 |
 | B1 | 6 | 0.833 | 0.833 | 0.833 | 2.046 |
-| B2 | 2 | 1.000 | 1.000 | 1.000 | 1.416 |
-| B3 | 4 | 1.000 | 1.000 | 1.000 | 1.833 |
+| B2 | 6 | 0.667 | 0.667 | 0.667 | 2.038 |
+| B3 | 8 | 0.875 | 0.875 | 0.875 | 2.158 |
 | M | 6 | 0.833 | 0.833 | 1.000 | 1.867 |
 
 ## 3. 失败与未解释项（诚实标注）
@@ -55,6 +57,13 @@
 - **B0 / protein-P1-novel**：FAILED。模型调用=0，oracle 查询=0，oracle 命中=True，产物合格=False。
 - **M / protein-P3-rediscovery**：FAILED。模型调用=100，oracle 查询=20，oracle 命中=False，产物合格=True。
 - **B1 / protein-P3-rediscovery**：FAILED。模型调用=65，oracle 查询=2，oracle 命中=False，产物合格=False。
+- **B0 / protein-P2-closed-loop**：FAILED。模型调用=0，oracle 查询=0，oracle 命中=False，产物合格=False。
+- **B0 / rice-R2-closed-loop**：FAILED。模型调用=0，oracle 查询=0，oracle 命中=False，产物合格=False。
+- **B2 / protein-P2-closed-loop**：FAILED。模型调用=45，oracle 查询=18，oracle 命中=False，产物合格=False。
+- **B0 / rice-R3-rediscovery**：FAILED。模型调用=0，oracle 查询=0，oracle 命中=False，产物合格=False。
+- **B0 / protein-P3-rediscovery**：FAILED。模型调用=0，oracle 查询=0，oracle 命中=False，产物合格=False。
+- **B2 / protein-P3-rediscovery**：FAILED。模型调用=58，oracle 查询=20，oracle 命中=False，产物合格=False。
+- **B3 / protein-P3-rediscovery**：FAILED。模型调用=69，oracle 查询=0，oracle 命中=False，产物合格=False。
 
 ### 3.1 修复前 harness 失败（不计入方法成功率）
 
@@ -64,16 +73,7 @@
 
 ## 4. NOT_TESTED（本轮未运行）
 
-- protein-P2-closed-loop / B0
-- protein-P2-closed-loop / B2
-- protein-P2-closed-loop / B3
-- protein-P3-rediscovery / B0
-- protein-P3-rediscovery / B2
-- protein-P3-rediscovery / B3
-- rice-R2-closed-loop / B0
-- rice-R2-closed-loop / B2
-- rice-R3-rediscovery / B0
-- rice-R3-rediscovery / B2
+- 无（全部任务×全部方法均已运行）
 
 ## 5. 局限
 

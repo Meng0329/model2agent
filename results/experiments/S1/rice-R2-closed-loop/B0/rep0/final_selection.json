@@ -1,0 +1,16 @@
+{
+  "top_ids": [
+    "IRIS_313.10000",
+    "IRIS_313.10084",
+    "IRIS_313.10196",
+    "IRIS_313.10307",
+    "IRIS_313.10458",
+    "IRIS_313.10631",
+    "IRIS_313.10818",
+    "IRIS_313.11045",
+    "IRIS_313.11272",
+    "IRIS_313.11495"
+  ],
+  "evidence_level": "E0 (prior/reasoning only; no measurements obtained)",
+  "note": "B0 condition: no oracle and no model-execution tool available. GRWT100 values for all candidates are UNOBSERVABLE here. Selection is a deterministic prior-based ranking over the provided candidate list, not a measured result."
+}

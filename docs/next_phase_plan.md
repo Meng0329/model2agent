@@ -27,19 +27,26 @@
 | 任务 | M | B0 | B1 | B2 | B3 |
 |------|----|----|----|----|----|
 | rice-R1-novel | ✅ SISR | ❌（无工具） | ✅ | ✅ | ✅ |
-| rice-R2-closed-loop | ✅ SISR，7 次修订 | NOT_TESTED | ✅ | NOT_TESTED | ✅ |
-| rice-R3-rediscovery | ✅ SISR | NOT_TESTED | ✅ | NOT_TESTED | ✅ |
-| protein-P1-novel | ✅ SISR | ❌ | ✅ | ✅ | ✅ |
-| protein-P2-closed-loop | ✅ SISR（无修订） | NOT_TESTED | ✅ | NOT_TESTED | NOT_TESTED |
-| protein-P3-rediscovery | ❌ SISR | NOT_TESTED | ❌ | NOT_TESTED | NOT_TESTED |
+| rice-R2-closed-loop | ✅ SISR，7 次修订 | ❌ | ✅ | ✅ | ✅（2 次独立复跑） |
+| rice-R3-rediscovery | ✅ SISR，2 次修订 | ❌ | ✅ | ✅ | ✅（2 次独立复跑） |
+| protein-P1-novel | ✅ SISR，2 次修订 | ❌ | ✅ | ✅ | ✅ |
+| protein-P2-closed-loop | ✅ SISR（无修订） | ❌ | ✅ | ❌ | ✅ |
+| protein-P3-rediscovery | ❌ SISR（100 次调用、20 次 oracle、有修订） | ❌ | ❌ | ❌ | ❌ |
 
-汇总（n=1/格，非 harness 记录）：**M SISR=5/6 (0.833)**，B0=0/2，B1=5/6 (0.833)，
-B2=2/2，B3=4/4。SEV：M=1.0，B1=0.833，B2/B3=1.0。均成本：M $1.87，B2 $1.42。
+汇总（全部 30 格均运行，无 NOT_TESTED；harness 缺陷 run 已剔出，B3 在 R2/R3 各 2 次独立
+复跑）：**M SISR=5/6 (0.833)**，B0=0/6，B1=5/6 (0.833)，B2=4/6 (0.667)，
+B3=7/8 (0.875)。SEV：M=1.0，B1=0.833，B2=0.667，B3=0.875。均成本：M $1.87，B1 $2.05，
+B2 $2.04，B3 $2.16，B0 $0.74。
 
-**如实结论**：在 S1 这些任务上，结构化基线（B1/B2/B3）不劣于 M，B2 更便宜且同成功；
-M 的差异在于**显式、可审计的假设修订**（rice-R2 7 次、R3 2 次、protein-P1 2 次）与
-单会话多智能体编译，而非更高成功率。protein-P3 再发现对 M 与 B1 均失败，属任务/模型
-难度（ESM-2 零样本 + 20 次测量不足以可靠定位该 assay 的最优单突变），非 M 特有缺陷。
+**如实结论**：在 S1 这些任务上，结构化基线（B1/B3）的 SISR **不低于** M（B3 略高、B1 相同），
+B2 在 protein-P2 独有失败但仍更便宜；H1（M > 基线）在本基准上**未获支持**。M 的唯一可测差异
+是**显式、可审计的假设修订**：M 在 4/6 任务记录到 adaptation_success（P1、R2、R3、P3），
+B1/B3 在全部任务均为 0——即 M 在有证据反馈时会改写假设，基线从不改写。protein-P3 再发现对
+**全部五种方法**均失败（M 甚至做了 100 次真实模型调用与 20 次 oracle 查询、且结论 SEV=1.0），
+属任务/模型难度（ESM-2 零样本 + 20 次测量不足以可靠定位该 assay 的最优单突变），非 M 特有缺陷。
+
+S1 门禁（两域各 ≥1 完整任务；基线共享同 LLM/SDK/预算/oracle；失败如实；30/30 格已运行）
+**已达成**；但 H1 在本基准上**未获支持**，按协议如实报告，不改为正向结论。
 
 S1 门禁（两域各 ≥1 完整任务；基线共享同 LLM/SDK/预算/oracle；失败如实）**已达成**；
 但 H1（M > 基线）在本基准上**未获支持**，按协议如实报告，不改为正向结论。
