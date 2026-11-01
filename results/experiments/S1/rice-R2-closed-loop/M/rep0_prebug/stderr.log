@@ -1,0 +1,3 @@
+
+---STDERR---
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"generate_session_title"}

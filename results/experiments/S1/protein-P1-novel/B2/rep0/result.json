@@ -1,0 +1,22 @@
+{
+  "run_id": "S1:B2:protein-P1-novel:r0:28b30b6c",
+  "status": "OBSERVED",
+  "text": "I'll start by examining the candidate file and workspace.\n\n\n\n\n\nAll 834 mutants scored (exactly matching the shipped entry-function values). Now let me calibrate against real measurements.\n\nCalibration: ESM-2 rank correlates positively (Spearman ρ=0.6) with measured fitness; pos 17 is a clear hotspot. Now probing remaining top candidates.\n\nFinal answer written to `final_selection.json` in the working directory.\n\n## What I did\n\n**1. Real ESM-2 scoring (E1) of all 834 single mutants.** I imported the asset's own entry module (`model_assets/esm2_variant/infer.py`, pinned `esm2_t33_650M_UR50D`, rev `08e4846e`) and scored every candidate via per-position masked-marginal delta log-likelihood (44 forward passes). Validation: my scores reproduce the shipped `examples.json` exactly (A16C diff = 0.00e+00, A16D diff = 0.00e+00) and reproduce the sanctioned `run_model` tool exactly (T17R 1.024920, T17M 0.152818, T17V 1.941504). Artifacts: `code/score_all.py`, `scores.json`.\n\nESM-2's top-5 were: T17K, F14K, S37N, H40K, T17I.\n\n**2. 16 real oracle measurements (E3).** I queried a calibration set across the ESM-2 range (including a low-score control L9D), then swept the position-17 cluster and the top non-17 candidates. All 16 measurements are in `evidence.jsonl` (ev-2).\n\nMeasured ranking: T17R 0.485 > T17K 0.393 > T17I 0.354 > T17V 0.289 > T17M 0.272 > S37K 0.173 > S37N 0.137 > N22D 0.133 > M19L 0.117 > T17L 0.108 > I29L 0.105 > F14Y 0.103 > F14K −0.094 > H40N −0.264 > H40K −0.578 > L9D −2.496.\n\n**3. Key finding.** ESM-2's top-region ordering is *not* predictive: only 2/5 of the ESM-2 top-5 appear in the measured top-5; within-top Spearman ρ = −0.036 (p = 0.90). ESM-2 only reliably separates grossly deleterious variants (L9D) from tolerated ones. The real signal was positional — position 17 is a permissive hotspot: 5/6 measured position-17 mutants exceeded 0.25 and took all five top slots, while ESM-2 rated T17R only 5th within that position. I recorded this as a hypothesis revision (`H1'`).\n\n## Final ranking\n```\n[\"T17R\", \"T17K\", \"T17I\", \"T17V\", \"T17M\"]\n```\n\n## Limitations\n- Only 16 of 834 mutants have real measurements; 13 position-17 variants (e.g. T17Q, T17E, T17N, T17S) and nearly all other positions remain **UNOBSERVABLE**, so an unmeasured mutant could outrank these five — I cannot check, the oracle budget is spent.\n- The 16 mutants were chosen using ESM-2, so the sample is biased (clustered at position 17); the ρ estimate is noisy (n=15 excluding the outlier) and not generalizable.\n- Measurements are historical ProteinGym DMS values (SDA_BACSU_Tsuboyama_2023_1PV0), not re-measured here; the ~0.09 fitness span among the top five is small relative to typical assay noise.\n- ESM-2 is sequence-only, ignores structure/ligands, and its scores are not on the fitness scale (E1, never treated as measurements).",
+  "cost_usd": 1.2273600000000002,
+  "num_turns": 47,
+  "session_id": "84a4ce80-fa09-4a45-9575-9529c5e11e10",
+  "latency_s": 577.93,
+  "budget": {
+    "max_tokens": 2000000,
+    "max_model_calls": 80,
+    "max_experiments": 16,
+    "max_wall_seconds": 1800.0,
+    "max_usd": 2.0,
+    "tokens_used": 0,
+    "model_calls": 3,
+    "experiments": 16,
+    "cost_usd": 0.0,
+    "elapsed_s": 577.935
+  },
+  "sdk_version": "0.2.170"
+}

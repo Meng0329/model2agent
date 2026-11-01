@@ -1,0 +1,17 @@
+{
+  "run_id": "S1:M:rice-R2-closed-loop:r0:cc972591",
+  "status": "FAILED",
+  "text": "",
+  "cost_usd": 2.0192848000000003,
+  "num_turns": 70,
+  "session_id": "83b630c6-df8a-4a95-bb7a-e93f56d06cba",
+  "error": null,
+  "budget": {
+    "model_calls": 2,
+    "experiments": 30,
+    "tokens_used": 0,
+    "cost_usd": 0.0,
+    "elapsed_s": 1035.881
+  },
+  "latency_s": 1035.881
+}

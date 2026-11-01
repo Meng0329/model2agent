@@ -38,12 +38,18 @@ def run_scientist_project(project_dir: str | Path, task: dict, run_id: str,
     out.mkdir(parents=True, exist_ok=True)
     task_path = _task_file(task, out)
     env = dict(config.agent_env())
+    # The pre-registered per-task budget is authoritative; the global config value
+    # is only a fallback when a task declares none. This keeps M on the same budget
+    # and turn allowance the task and the baselines share.
+    tb = task.get("experimental_budget") or {}
+    budget_usd = (max_budget_usd if max_budget_usd is not None
+                  else float(tb.get("max_usd", config.SCIENTIST_MAX_BUDGET_USD)))
+    turns = max_turns or int(tb.get("max_turns", config.SCIENTIST_MAX_TURNS))
     cmd = [sys.executable, str(project_dir / "run_research.py"),
            "--task", str(task_path), "--hidden", str(hidden_dir),
            "--out", str(out), "--run-id", run_id,
-           "--max-turns", str(max_turns or config.SCIENTIST_MAX_TURNS),
-           "--max-budget-usd", str(max_budget_usd if max_budget_usd is not None
-                                   else config.SCIENTIST_MAX_BUDGET_USD)]
+           "--max-turns", str(turns),
+           "--max-budget-usd", str(budget_usd)]
     t0 = time.perf_counter()
     proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(project_dir), env=env,
                           timeout=(config.SCIENTIST_WALL_TIME_S + 300))

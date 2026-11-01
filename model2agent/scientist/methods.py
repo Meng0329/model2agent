@@ -97,8 +97,10 @@ async def _run_baseline_async(method: str, task: dict, bundle_dir: Path, out: Pa
     mcp = {} if method == "B0" else {"m2a_scientist": server}
     options = build_options(
         cwd=out, agents={}, system_prompt=_base_system(method, task["domain"]),
-        mcp_servers=mcp, max_turns=config.SCIENTIST_MAX_TURNS,
-        max_budget_usd=float(task["experimental_budget"].get("max_usd", 2.0)))
+        mcp_servers=mcp,
+        max_turns=int((task.get("experimental_budget") or {}).get(
+            "max_turns", config.SCIENTIST_MAX_TURNS)),
+        max_budget_usd=float((task.get("experimental_budget") or {}).get("max_usd", 2.0)))
     if method == "B0":
         options.tools = ["Read", "Write"]
         options.allowed_tools = ["Read", "Write"]

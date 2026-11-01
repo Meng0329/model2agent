@@ -1,0 +1,17 @@
+{
+  "run_id": "S1:M:rice-R2-closed-loop:r0:acec724c",
+  "status": "OBSERVED",
+  "text": "The workflow is complete. The MCP evidence ledger accepted all records (ev-1…ev-5); `final_selection.json` and `conclusions.jsonl` are written in the scientist directory. Summary of the closed-loop selection:\n\n## Final ranked answer\n```json\n{\"top_ids\": [\"IRIS_313.12254\",\"IRIS_313.12349\",\"IRIS_313.12344\",\"IRIS_313.12242\",\n              \"IRIS_313.12228\",\"IRIS_313.12129\",\"IRIS_313.11094\",\"IRIS_313.10679\",\n              \"IRIS_313.12262\",\"IRIS_313.10653\"]}\n```\n\n## How I got there\n1. **Predict (E1):** `run_model` scored all **904** candidates with the Ridge GRWT100 model (1 call); top-12 predicted 3.30–3.66 g.\n2. **Round 1 (E3):** phenotyped E1 ranks 1–12 → 3.1–5.0 g. Revised ranking by measurement.\n3. **Round 2 (E3):** phenotyped ranks 13–24 → 2.0–4.7 g (rank-14 `12349` hit 4.7 g; the tail fell off to 2.0–2.8 g). Revised again.\n4. **Round 3 (E3, final 6):** 3 more high-tier lines (3.1–3.4 g) + stratified controls at model-ranks 226/452/600 (**3.4 / 2.7 / 2.2 g**) to bracket the quartile boundary and test enrichment. **30/30 queries used.**\n\n## Evidence & hypotheses\n- **H1 SUPPORTED:** top-27 model-ranked lines mean **3.39 g** vs controls 2.7/2.2 g; **Spearman(E1 rank, E3 measured) = 0.535** (n=30, vs 0.454 held-out). Falsifier (no enrichment) not observed.\n- **H2 SUPPORTED with caveat:** measured top-8 are 3.6–5.0 g, confidently above the estimated 75th-percentile boundary (~3.3–3.5 g, since the rank-226 control itself measured 3.4 g). Slots 9–10 are exactly 3.4 g → borderline, P(top-quartile)≈0.5.\n\n## Limitations\n- Only 30/904 lines phenotyped (budget exhausted); controls are a 3-line stratified sample, so the population distribution and exact quartile threshold are only bracketed, not measured.\n- Single environment; linear additive marker model ignores GxE, epistasis, dominance.\n- E1 predictions are **not** measurements — all final-10 values are E3-measured, except where noted; ordering uses measured value with E1 prediction as tie-break only.\n\nThis result also independently reproduces the earlier run's top-10 (same set, same order), strengthening confidence in the selection.",
+  "cost_usd": 1.7438279999999997,
+  "num_turns": 73,
+  "session_id": "12712044-f641-4ae7-95ad-d0bebc872147",
+  "error": null,
+  "budget": {
+    "model_calls": 1,
+    "experiments": 30,
+    "tokens_used": 0,
+    "cost_usd": 0.0,
+    "elapsed_s": 565.735
+  },
+  "latency_s": 565.734
+}

@@ -72,7 +72,10 @@ def build_protein() -> list[dict]:
         hidden_reference="protein_sda.json", execution_oracle="reference_exec",
         evidence_oracle="historical",
         scientific_constraints=["single substitutions only", "same protein sequence"],
-        expected_artifacts=["evidence.jsonl", "conclusions.jsonl", "final_selection.json"],
+        # Method-independent contract: every method must produce a real evidence ledger and
+        # its ranked answer. Conclusions are a scored channel (SEV), not an SISR gate, so
+        # baselines without the SMSC conclusion tool are not penalised for a missing artifact.
+        expected_artifacts=["evidence.jsonl", "final_selection.json"],
         failure_conditions=["claims a measured effect without an E3 record"],
     )
     tasks.append({**base, "task_id": "protein-P1-novel",
@@ -142,7 +145,10 @@ def build_agriculture() -> list[dict]:
         hidden_reference="rice_grwt100.json", execution_oracle="reference_exec",
         evidence_oracle="historical",
         scientific_constraints=["single environment", "GRWT100 only", "no unseen markers"],
-        expected_artifacts=["evidence.jsonl", "conclusions.jsonl", "final_selection.json"],
+        # Method-independent contract: every method must produce a real evidence ledger and
+        # its ranked answer. Conclusions are a scored channel (SEV), not an SISR gate, so
+        # baselines without the SMSC conclusion tool are not penalised for a missing artifact.
+        expected_artifacts=["evidence.jsonl", "final_selection.json"],
         failure_conditions=["claims a measured phenotype without an E3 record"],
     )
     tasks = []
@@ -208,6 +214,10 @@ def main() -> None:
         t["scientific_question"] += (
             " Write your final ranked answer to final_selection.json as "
             '{"top_ids": [...]} — your final top-k candidates in order.')
+        # Pre-registered per-task turn allowance (shared by M and every baseline).
+        # Closed-loop/rediscovery tasks need more turns than a single-pass ranking.
+        t.setdefault("experimental_budget", {})["max_turns"] = (
+            60 if t.get("capability_level") == "L4" else 100)
     FROZEN.write_text(json.dumps({"frozen": True, "n_tasks": len(tasks), "tasks": tasks},
                                  ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"frozen": str(FROZEN), "n_tasks": len(tasks),

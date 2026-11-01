@@ -25,6 +25,9 @@ def main() -> None:
         print("no runs yet: ", LOG)
         return
     rows = [json.loads(l) for l in LOG.read_text(encoding="utf-8").splitlines() if l.strip()]
+    # Harness defects (output path / budget cap) are real runs but not evidence
+    # about the method; keep them out of method comparisons.
+    rows = [r for r in rows if not str(r.get("failure_category") or "").startswith("harness_")]
 
     # per (task, method)
     by_key = {}

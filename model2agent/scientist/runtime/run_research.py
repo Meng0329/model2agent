@@ -101,8 +101,11 @@ async def main() -> int:
                  f"Candidate input file: {task.get('input_resources', {}).get('candidate_file', 'n/a')}\n"
                  f"Resource budget: {json.dumps(task.get('experimental_budget', {}))}\n"
                  "Record evidence with record_evidence; query real measurements only via "
-                 "query_evidence_oracle (budget-accounted). Write your final ranked answer to "
-                 'final_selection.json as {"top_ids": [...]}.')
+                 "query_evidence_oracle (budget-accounted).\n"
+                 f"Write your final ranked answer to the ABSOLUTE path '{out / 'final_selection.json'}' "
+                 'as {"top_ids": [...]}. '
+                 f"Write your conclusions to the ABSOLUTE path '{out / 'conclusions.jsonl'}' "
+                 "(one JSON object per line, each citing supporting evidence ids).")
         await client.query(query)
         async for message in client.receive_response():
             trajectory.append({"type": type(message).__name__,

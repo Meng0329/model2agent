@@ -78,13 +78,21 @@ this on every build.
 Success rules are machine-checked against the hidden oracle by the evaluator, not
 by the agent.
 
-**Required-artifact correction (2026-11-01).** The SISR artifact gate is
-`evidence.jsonl` + `final_selection.json` for **every** method. `conclusions.jsonl`
-is a *scored channel* (SEV), not a gate: baselines B0–B3 are not given the SMSC
-conclusion tool, so requiring it would penalise them for an artifact the benchmark
-never provided. This correction only removes a baseline penalty; it cannot inflate
-M (M already produces conclusions). It was made before the S1 analysis was run and
-is recorded here rather than silently applied.
+**Harness corrections (2026-11-01).** Three pre-analysis harness defects were found and fixed;
+the affected runs are preserved in `rep0_prebug/` / `rep0_budgetcap/` and labelled
+`harness_*` in the ledger, excluded from method comparisons:
+1. **Output path ambiguity** — the generated scientist wrote `final_selection.json` /
+   `conclusions.jsonl` to the project cwd instead of the run out dir. Fixed by passing
+   absolute output paths in the run query.
+2. **Budget cap mismatch** — the runner applied a global $2.0 SDK cap instead of the task's
+   declared `max_usd` (R2 = $3.0), cutting a session at $2.019 before it could deliver.
+   Fixed: the per-task budget is authoritative for M and every baseline.
+3. **Turn allowance** — closed-loop / rediscovery tasks need more turns than a single-pass
+   ranking. `max_turns` is now a pre-registered per-task resource (L4 = 60, L5/L6 = 100),
+   shared by M and all baselines.
+
+None of these is a method change; all three make the harness honour the task contract that
+baselines already use.
 
 ## 6. Baselines (fairness)
 
