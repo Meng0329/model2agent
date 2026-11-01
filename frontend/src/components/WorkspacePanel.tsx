@@ -1,7 +1,7 @@
 // Right panel: current task's generated artifacts (Files / Preview / Export tabs).
 // P3: real file tree + viewer, live-synced via workspace_changed SSE.
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Files, PlayCircle, DownloadSimple, FolderOpen, Folder, FileCode, FileText, CaretRight, ArrowsClockwise, X } from "@phosphor-icons/react";
+import { Files, PlayCircle, DownloadSimple, FolderOpen, Folder, FileCode, FileText, CaretRight, ArrowsClockwise } from "@phosphor-icons/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Task } from "../types";
@@ -204,9 +204,10 @@ function PreviewTab({ task, state, zoom, setZoom, onStart, onStop, busy, onRefre
   const [useProxy, setUseProxy] = useState(true);
   const src = useProxy && state.proxy_url ? state.proxy_url : state.url;
   return (
-    <div className="relative flex h-full flex-col">
-      {/* toolbar stays above the zoomed iframe (z-50) so 放大/还原 remain clickable */}
-      <div className="relative z-50 flex flex-wrap items-center gap-2 border-b border-border-soft bg-white px-3 py-2 text-sm">
+    <div className={cn("flex h-full flex-col", zoom ? "fixed inset-0 z-40 bg-white" : "relative")}>
+      {/* Zoom = the whole preview panel goes fullscreen; toolbar stays in normal
+          flow above the iframe so the two never overlap. */}
+      <div className="relative z-10 flex flex-wrap items-center gap-2 border-b border-border-soft bg-white px-3 py-2 text-sm">
         <PlayCircle size={15} className="text-subink" />
         <span className="text-subink">预览状态</span>
         <Badge tone={running ? "ok" : state.state === "error" ? "err" : "neutral"}>{state.state}</Badge>
@@ -225,9 +226,9 @@ function PreviewTab({ task, state, zoom, setZoom, onStart, onStop, busy, onRefre
         <button onClick={onRefresh} className="rounded-lg px-2 py-1 text-xs text-subink transition hover:bg-surface-2">刷新</button>
         <button onClick={() => setZoom(!zoom)} className="rounded-lg px-2 py-1 text-xs text-subink transition hover:bg-surface-2">{zoom ? "还原" : "放大"}</button>
       </div>
-      <div className="scroll-thin flex-1 overflow-auto bg-surface-2">
+      <div className="scroll-thin min-h-0 flex-1 overflow-auto bg-surface-2">
         {src ? (
-          <iframe src={src} className={cn("border-0 bg-white", zoom ? "fixed inset-0 z-40 h-full w-full" : "h-full w-full")} title="generated-agent-preview" />
+          <iframe src={src} className="h-full w-full border-0 bg-white" title="generated-agent-preview" />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-2 text-subink">
             <PlayCircle size={26} className="text-subink/40" />
@@ -237,16 +238,6 @@ function PreviewTab({ task, state, zoom, setZoom, onStart, onStop, busy, onRefre
           </div>
         )}
       </div>
-      {zoom && (
-        <button
-          onClick={() => setZoom(false)}
-          aria-label="还原"
-          title="还原"
-          className="fixed right-4 top-4 z-50 rounded-full bg-white p-1.5 shadow-soft"
-        >
-          <X size={16} />
-        </button>
-      )}
     </div>
   );
 }
