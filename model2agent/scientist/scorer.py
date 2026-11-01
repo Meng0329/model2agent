@@ -67,3 +67,35 @@ def sev_metrics(evidence: list[EvidenceRecord]) -> dict[str, float]:
         "n_conclusions": total,
         "n_supported": len(supported),
     }
+
+
+def sev_from_conclusions(conclusions: list[dict], evidence: list[EvidenceRecord]) -> dict[str, float]:
+    """SEV over the agent's conclusion channel.
+
+    A conclusion counts as supported only when every cited evidence id exists in
+    the ledger AND every declared evidence type matches the ledger record's own
+    type. A conclusion with an unresolvable citation is unsupported, not ignored.
+    """
+    by_id = {e.id: e for e in evidence}
+    total = 0
+    supported = 0
+    for c in conclusions:
+        if not isinstance(c, dict):
+            continue
+        total += 1
+        ids = c.get("supporting_evidence") or []
+        types = c.get("evidence_types") or []
+        if not ids or not c.get("statement"):
+            continue
+        cited = [by_id.get(str(i)) for i in ids]
+        if any(r is None for r in cited):
+            continue
+        if types and not set(map(str, types)).issubset({r.evidence_type for r in cited if r}):
+            continue
+        supported += 1
+    return {
+        "evidence_validity": (supported / total) if total else 0.0,
+        "unsupported_claim_rate": (1.0 - supported / total) if total else 0.0,
+        "n_conclusions": total,
+        "n_supported": supported,
+    }

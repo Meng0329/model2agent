@@ -1,0 +1,3 @@
+returncode 0 latency 410.16
+{"sisr_success": true, "oracle_ok": true, "model_calls": 2, "oracle_queries": 20, "evidence_records": 2, "revisions": 0, "artifacts_ok": true, "status": "OBSERVED", "cost_usd": 1.3215359999999998}
+detail {"rule": {"type": "topk_quartile", "k": 10, "min_hits": 6, "quartile": 0.75}, "top_ids": ["IRIS_313.12254", "IRIS_313.12349", "IRIS_313.12344", "IRIS_313.12242", "IRIS_313.12228", "IRIS_313.12129", "IRIS_313.11094", "IRIS_313.10679", "IRIS_313.12262", "IRIS_313.10653"], "hits": 10, "k": 10, "min_hit

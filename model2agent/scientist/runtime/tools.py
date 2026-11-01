@@ -40,6 +40,18 @@ def make_tools(*, budget: Budget, ledger: Ledger, oracle: HistoricalOracleClient
           {"record_json": str})
     async def record_tool(args):
         rec = json.loads(args["record_json"])
+        # Normalize the scientific schema aliases the agent may use so the
+        # evaluator reads one canonical shape (observed_result / hypothesis_id).
+        if "observed_result" not in rec and "observation" in rec:
+            rec["observed_result"] = rec["observation"]
+        if "hypothesis_id" not in rec and "hypothesis" in rec:
+            rec["hypothesis_id"] = rec["hypothesis"]
+        if rec.get("evidence_type") not in ("E1", "E2", "E3", "E4"):
+            return _text({"error": f"invalid evidence_type: {rec.get('evidence_type')} "
+                                   "(must be E1/E2/E3/E4; nothing recorded)"})
+        if rec.get("evidence_type") in ("E3", "E4") and not rec.get("execution_evidence"):
+            return _text({"error": "E3/E4 require execution_evidence (traceable source); "
+                                   "nothing recorded"})
         rid = ledger.append(rec)
         return _text({"recorded": rid})
 

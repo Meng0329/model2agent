@@ -18,7 +18,7 @@ from .. import config
 from .budget import Budget
 from .evidence import EvidenceLedger, RunLedger, new_run_id
 from .schemas import EvidenceRecord, RunRecord
-from .scorer import ScientificScorer, sev_metrics
+from .scorer import ScientificScorer, sev_from_conclusions, sev_metrics
 
 
 def _task_file(task: dict, out: Path) -> Path:
@@ -107,7 +107,22 @@ def evaluate_task(task: dict, out_dir: str | Path, hidden_dir: str | Path) -> di
             evidence.append(_to_evidence(r))
         except (ValueError, TypeError, KeyError):
             malformed += 1
-    sev = sev_metrics(evidence)
+
+    conclusions = []
+    malformed_conclusions = 0
+    con_path = out / "conclusions.jsonl"
+    if con_path.exists():
+        for l in con_path.read_text(encoding="utf-8").splitlines():
+            if not l.strip():
+                continue
+            try:
+                conclusions.append(json.loads(l))
+            except json.JSONDecodeError:
+                malformed_conclusions += 1
+    sev = (sev_from_conclusions(conclusions, evidence) if conclusions
+           else sev_metrics(evidence))
+    if malformed_conclusions:
+        sev = {**sev, "malformed_conclusions": malformed_conclusions}
     sisr = bool(oracle_ok and model_calls > 0 and evidence_rows and malformed == 0
                 and have_artifacts)
     return {

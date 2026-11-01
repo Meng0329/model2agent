@@ -97,7 +97,13 @@ async def main() -> int:
     client = ClaudeSDKClient(opts)
     try:
         await client.connect()
-        await client.query(task["scientific_question"])
+        query = (f"{task['scientific_question']}\n\n"
+                 f"Candidate input file: {task.get('input_resources', {}).get('candidate_file', 'n/a')}\n"
+                 f"Resource budget: {json.dumps(task.get('experimental_budget', {}))}\n"
+                 "Record evidence with record_evidence; query real measurements only via "
+                 "query_evidence_oracle (budget-accounted). Write your final ranked answer to "
+                 'final_selection.json as {"top_ids": [...]}.')
+        await client.query(query)
         async for message in client.receive_response():
             trajectory.append({"type": type(message).__name__,
                                "repr": repr(message)[:4000]})
