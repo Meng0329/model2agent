@@ -1,4 +1,9 @@
-"""Core pytest suite for Model2Agent V0.3 (no LLM calls where avoidable)."""
+"""Core pytest suite for Model2Agent V3.0 (Model-to-Scientist).
+
+Old V0.3 AGCI/MCG/benchmark-task tests were removed with the pipeline they
+covered. This suite keeps the cross-cutting invariants: reference execution,
+strict numeric comparison, grounded introspection, and the no-secrets rule.
+"""
 import json
 import sys
 from pathlib import Path
@@ -8,61 +13,44 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from model2agent.agci.asset_scanner import scan_bundle
-from model2agent.mcg.graph import build_mcg
-from model2agent.verification.reference_exec import run_reference, compare
-from model2agent.benchmark.tasks import Task, save_tasks, load_tasks
-
-
-def test_scan_cnn_discovers_functions():
-    d = scan_bundle(ROOT / "model_assets" / "cnn_digits")
-    names = {f["name"] for f in d.functions}
-    assert {"predict", "predict_proba", "saliency", "classes"} <= names
-    assert d.evidence["import_error"] is None
-    assert d.evidence["weights_sha256"]
-
-
-def test_scan_xgb_weights_sha():
-    d = scan_bundle(ROOT / "model_assets" / "xgb_tabular")
-    assert d.evidence["weights_sha256"]
-    assert d.task_family == "tabular_classification"
-
-
-def test_mcg_edges_from_dependencies():
-    caps = [
-        {"name": "embed", "entry_function": "embed", "depends_on": []},
-        {"name": "similarity", "entry_function": "similarity", "depends_on": ["embed"]},
-    ]
-    g = build_mcg("toy", caps)
-    assert len(g.nodes) == 2
-    assert any(e["src"] == "similarity" and e["dst"] == "embed" for e in g.edges)
-    # `embed` is depended upon -> not a root; `similarity` is user-facing -> root
-    assert "similarity" in g.root_capabilities
-    assert "embed" not in g.root_capabilities
+from model2agent.verification.reference_exec import run_reference, compare  # noqa: E402
+from model2agent.scientist.model_introspection import inspect_model  # noqa: E402
+from model2agent.oracle.execution_oracle import compare_values  # noqa: E402
 
 
 def test_reference_exec_matches_itself():
     bdir = ROOT / "model_assets" / "cnn_digits"
-    import json as _j
-    ex = _j.loads((bdir / "examples.json").read_text())
+    ex = json.loads((bdir / "examples.json").read_text())
     args = ex["predict"][0]["args"]
     a = run_reference(bdir, "predict", args)
     b = run_reference(bdir, "predict", args)
     assert compare("predict", a, b)
 
 
-def test_task_roundtrip(tmp_path):
-    t = Task(task_id="t1", slug="s", split="tutorial", capability="predict",
-             args={"features": [1, 2]}, reference_output=3, check="exact", nl_prompt="x")
-    p = tmp_path / "tasks.json"
-    save_tasks([t], p)
-    loaded = load_tasks(p)
-    assert loaded[0].task_id == "t1" and loaded[0].reference_output == 3
-
-
 def test_proba_compare():
     assert compare("predict_proba", {"0": 0.5, "1": 0.5}, {"0": 0.5, "1": 0.5})
     assert not compare("predict_proba", {"0": 0.5}, {"0": 0.4, "1": 0.6})
+
+
+def test_execution_oracle_no_none_pass():
+    # a None result is never a success; comparison must be strict and recursive
+    assert not compare_values({"a": 1.0}, {"a": None}, 0.03, 1e-6)
+    assert compare_values({"a": [1.0, 2.0]}, {"a": [1.0, 2.0]}, 0.03, 1e-6)
+    assert not compare_values({"a": [1.0, 2.0]}, {"a": [1.0, 2.1]}, 0.03, 1e-6)
+
+
+def test_inspect_cnn_discovers_functions():
+    facts = inspect_model(ROOT / "model_assets" / "cnn_digits")
+    assert facts.weights_sha256
+    assert facts.import_error is None
+    assert "predict" in facts.callable_functions
+    assert facts.executed_examples, "introspection must run real examples"
+
+
+def test_inspect_rice_grounded():
+    facts = inspect_model(ROOT / "model_assets" / "rice_gs")
+    assert facts.weights_sha256
+    assert "rank_candidates" in facts.callable_functions
 
 
 def test_no_secrets_in_logs_or_tracked_files():

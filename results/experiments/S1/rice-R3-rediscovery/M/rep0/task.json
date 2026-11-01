@@ -1,0 +1,57 @@
+{
+  "domain": "agriculture",
+  "scientific_model": "rice_gs",
+  "input_resources": {
+    "candidate_file": "/data/mzb/paper2agent/m2a_data/research/inputs/rice_candidates.json",
+    "success_rule": {
+      "type": "rediscovery",
+      "k": 1
+    }
+  },
+  "allowed_knowledge": [
+    "model_card",
+    "scientific_profile",
+    "domain_knowledge/rice_gs.md"
+  ],
+  "available_tools": [
+    "run_model",
+    "query_evidence_oracle",
+    "record_evidence"
+  ],
+  "permitted_actions": [
+    "predict_by_ids",
+    "rank_candidates",
+    "query_evidence_oracle",
+    "record_evidence"
+  ],
+  "hidden_reference": "rice_grwt100.json",
+  "execution_oracle": "reference_exec",
+  "evidence_oracle": "historical",
+  "scientific_constraints": [
+    "single environment",
+    "GRWT100 only",
+    "no unseen markers"
+  ],
+  "expected_artifacts": [
+    "evidence.jsonl",
+    "conclusions.jsonl",
+    "final_selection.json"
+  ],
+  "failure_conditions": [
+    "claims a measured phenotype without an E3 record"
+  ],
+  "task_id": "rice-R3-rediscovery",
+  "split": "insight_rediscovery",
+  "capability_level": "L6",
+  "scientific_question": "You are a rice breeding scientist. Without knowing the answer, use the genomic prediction model and at most 20 real phenotype measurements to rediscover the single line with the highest measured 100-grain weight in the candidate set. State uncertainty and limitations. Write your final ranked answer to final_selection.json as {\"top_ids\": [...]} — your final top-k candidates in order.",
+  "experimental_budget": {
+    "oracle_queries": 20,
+    "max_model_calls": 100,
+    "max_tokens": 2500000,
+    "max_usd": 2.5,
+    "max_wall_seconds": 2400
+  },
+  "success_criteria": [
+    "final top-1 equals the true highest-GRWT100 line"
+  ]
+}

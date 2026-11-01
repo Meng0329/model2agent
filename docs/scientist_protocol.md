@@ -78,6 +78,14 @@ this on every build.
 Success rules are machine-checked against the hidden oracle by the evaluator, not
 by the agent.
 
+**Required-artifact correction (2026-11-01).** The SISR artifact gate is
+`evidence.jsonl` + `final_selection.json` for **every** method. `conclusions.jsonl`
+is a *scored channel* (SEV), not a gate: baselines B0–B3 are not given the SMSC
+conclusion tool, so requiring it would penalise them for an artifact the benchmark
+never provided. This correction only removes a baseline penalty; it cannot inflate
+M (M already produces conclusions). It was made before the S1 analysis was run and
+is recorded here rather than silently applied.
+
 ## 6. Baselines (fairness)
 
 Same LLM (`deepseek-v4.1-flash`), same SDK (0.2.170), same task, same budget,

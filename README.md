@@ -1,58 +1,53 @@
-# Model2Agent V0.3 — Paper2Agent-Aligned Model-Agent Research Framework
+# Model2Agent V3.0 — Model-to-Scientist
 
-> 将异构**已训练模型资产**自动转化为经验证、可独立运行的 Agent，并复刻 Nature 2026 Paper2Agent 的
-> 证据链（端到端成功率、工具/能力验证率、tutorial/novel/open-ended 准确率、鲁棒性、统计推断）。
-> 见 [`docs/paper2agent_alignment.md`](docs/paper2agent_alignment.md)。
+把一个**预训练科学模型**编译成**自主领域科学家 Agent**：它能提出可证伪假设、设计受控
+计算实验、执行**真实模型**、在受预算约束的**真实历史测量**上观测、据证据修正假设，
+并对未见科学领域泛化。
 
-## 固定技术栈
-Python · Claude Agent SDK · DeepSeek API（外部 LLM 路由）· Gradio · PyTorch / Transformers / sklearn / XGBoost · pytest · pandas · JSONL。
-单体应用 + Skills 路由（**Skills 仅作内部路由机制，非方法创新**——Paper2Agent 仓库已用 Skills+MCP）。
+> 本仓库只有一条研究主线（SMSC）。旧 V0.3 的 AGCI/MCG/确定性模板生成/五段流水线
+> 已移除，不保留双版本。协议与判据见 [`docs/scientist_protocol.md`](docs/scientist_protocol.md)。
 
-## 核心方法
-1. **AGCI（Asset-Grounded Capability Induction，资产锚定能力归纳）**：扫描模型资产 → 发现推理入口、权重、I/O Schema、约束、可执行来源证据。
-2. **MCG（Model Capability Graph，模型能力图）**：以归纳出的能力为节点、组合依赖为边。
-3. **统一 Agent 构建**：单一模板按 MCG 生成独立 Model Agent（**不为每个测试模型手写 Agent 代码**）。
-4. **参考推理验证与修复**：以原始模型真实执行作为 ground truth（3% 浮点容差 / 概率 1e-6 容差），失败能力不计入成功。
+## 两句话架构
 
-## 快速开始
-```bash
-pip install -r requirements.txt        # 需 PEP668 时加 --break-system-packages
-cp .env.example .env                    # 填入 DEEPSEEK_API_KEY（.env 已被 .gitignore，绝不上库）
-export CUDA_VISIBLE_DEVICES=0           # 本机仅用 GPU0（用户约束）
-python model_assets/<slug>/train.py     # 训练并冻结 pilot 权重（cnn_digits / xgb_tabular 已预训练）
-python scripts/freeze_tasks.py          # 冻结 benchmark 任务 + ground truth（参考推理）
-python scripts/run_pilot.py --reps 5 --methods B0 B2 M   # 2 模型端到端实验
-python scripts/run_analysis.py          # 配对检验 + 聚类 Bootstrap 95% CI
-python scripts/run_robustness.py        # 6 类故障注入
-python scripts/make_figures.py          # Figure 1-5（缺数据仅出模板，不造假）
-pytest tests/                           # 核心单测（含密钥泄漏检查）
-```
+1. **外层编译器** = 一个 Claude Agent SDK 会话 + 多智能体（`model-profiler`、
+   `affordance-analyst`、`capability-graph-builder`、`scientist-synthesizer`、
+   `verification-auditor`）。没有固定流水线、关键词路由、模拟或静默兜底。
+2. **生成的 Scientist** = 单主研究 agent + 科学 Skills（MCP 工具 `run_model` /
+   `plan_experiment` / `record_evidence` / `query_evidence_oracle` / `revise_hypothesis`），
+   以独立子进程 `run_research.py` headless 运行。
+
+确定性代码只做四件事：执行模型、回放真实测量（预算强制）、持久化证据账本、按冻结
+判据评分。生成逻辑全部由 agent 完成。
 
 ## 目录
+
 ```
-model_assets/<slug>/   # 模型资产：manifest.json, infer.py(真实推理入口), 模型卡, 示例, 训练脚本
-model2agent/agci/      # 资产扫描 + 能力归纳
-model2agent/mcg/       # 模型能力图
-model2agent/builder/   # 统一 Agent 生成（含 Gradio/CLI 启动器）
-model2agent/verification/  # 参考执行 oracle + 比对
-model2agent/benchmark/     # 任务 Schema / 运行器 / 指标
-model2agent/baselines/     # B0(B0_raw_assets) B2(B2_direct_synthesis) + 预留 B1/B3
-model2agent/robustness/    # 故障注入
-model2agent/stats/         # 配对检验 / 聚类 Bootstrap / 效应量
-model2agent/skills/        # 内部路由注册表（非创新）
-generated_agents/<slug>/   # 生成的独立 Agent（由只读生成）
-results/                   # frozen/ logs/ csv/ figures/
+model2agent/
+  scientist/        # schema、子代理、SDK 会话、生成式 runtime、runner、scorer、baselines
+  oracle/           # 严格执行 oracle + 历史测量 oracle（预算/访问日志/hidden 隔离）
+  verification/     # 参考执行（真实 ground truth）
+  config.py         # LLM/GPU/预算/路径
+model_assets/       # 真实科学模型资产：esm2_variant（蛋白）、rice_gs（水稻 GS）
+results/frozen/     # scientist_tasks.json（6 个冻结任务，唯一 id，无泄漏）
+results/logs/       # scientist_runs.jsonl（唯一可追溯事实源，入仓）
+results/experiments/ # 每个 run 的证据/结论/最终选择/oracle 访问日志
 ```
 
-## 指标与公平性
-见 `docs/paper2agent_alignment.md`。所有方法与主方法共享同一 LLM（DeepSeek v4.1-flash）、
-同一资产、同一任务、同一预算。失败转换计入端到端成功率分母。静默错误输出**不**视为成功。
+## 运行
 
-## 2 模型 Pilot（P0）已交付
-- 模型：**cnn_digits**（PyTorch CNN，GPU0）、**xgb_tabular**（XGBoost）。
-- 方法：M（完整）、B0（DeepSeek+原始资产）、B2（直接生成）。
-- 产出：可运行代码、原始 JSONL、`summary.csv`、`analysis.json`、Figure 1-5（数据缺失处仅模板）。
+```bash
+pip install -r requirements.txt
+cp .env.example .env                    # DEEPSEEK_API_KEY（唯一 secret 位置）
 
-## 复现与失败报告
-复现信息（commit / 模型 hash / 依赖版本 / 随机种子 / GPU / 成本耗时）写入 `results/logs/`。
-**未执行的实验（100 模型 / 消融 / 未见家族）一律标记为未完成，不伪造成果。**
+python3 scripts/build_scientist_benchmark.py          # 冻结任务 + hidden oracle
+python3 scripts/run_scientist_pilot.py --stage S1 --methods B0 B1 B2 B3 M --reps 1
+python3 scripts/run_scientist_analysis.py             # SISR/SEV/成本/配对差
+```
+
+## 指标
+
+- **SISR**：预注册成功判据 **且** 真实模型调用 > 0 **且** 有效证据 **且** 所需产物齐全。
+- **SEV**：结论的支持率；引用必须解析到证据账本 id，否则计为 unsupported。
+- 辅助：模型调用数、oracle 查询数、成本、时延、假设修订次数。
+
+未运行 = NOT_TESTED，阻塞 = BLOCKED，失败 = FAILED；从不静默改判，从不伪造测量。

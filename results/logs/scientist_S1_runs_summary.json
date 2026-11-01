@@ -1,0 +1,18 @@
+[
+  {
+    "task": "protein-P1-novel",
+    "method": "M",
+    "run_id": "S1:M:protein-P1-novel:r0:3c4b04cf",
+    "status": "OBSERVED",
+    "sisr": true,
+    "oracle_ok": true,
+    "model_calls": 44,
+    "oracle_queries": 16,
+    "evidence": 61,
+    "malformed": 0,
+    "sev": 0.0,
+    "cost": 1.8607032,
+    "latency": 1271.921,
+    "error": null
+  }
+]

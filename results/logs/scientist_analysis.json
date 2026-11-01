@@ -1,0 +1,173 @@
+{
+  "n_runs": 5,
+  "table": [
+    {
+      "task_id": "rice-R1-novel",
+      "method": "B0",
+      "n": 1,
+      "sisr_rate": 0.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 0.0,
+      "mean_cost_usd": 0.6575,
+      "mean_latency_s": 190.6,
+      "mean_model_calls": 0
+    },
+    {
+      "task_id": "rice-R1-novel",
+      "method": "B1",
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 2.0208,
+      "mean_latency_s": 802.9,
+      "mean_model_calls": 1
+    },
+    {
+      "task_id": "rice-R1-novel",
+      "method": "B2",
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 1.6053,
+      "mean_latency_s": 438.8,
+      "mean_model_calls": 1
+    },
+    {
+      "task_id": "rice-R1-novel",
+      "method": "B3",
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 1.5741,
+      "mean_latency_s": 508.8,
+      "mean_model_calls": 2
+    },
+    {
+      "task_id": "rice-R1-novel",
+      "method": "M",
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 1.3215,
+      "mean_latency_s": 409.3,
+      "mean_model_calls": 2
+    }
+  ],
+  "by_method": {
+    "M": {
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 1.3215
+    },
+    "B0": {
+      "n": 1,
+      "sisr_rate": 0.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 0.0,
+      "mean_cost_usd": 0.6575
+    },
+    "B1": {
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 2.0208
+    },
+    "B2": {
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 1.6053
+    },
+    "B3": {
+      "n": 1,
+      "sisr_rate": 1.0,
+      "oracle_ok_rate": 1.0,
+      "mean_sev": 1.0,
+      "mean_cost_usd": 1.5741
+    }
+  },
+  "by_domain_pooled": {
+    "agriculture": {
+      "n": 5,
+      "sisr_rate": 0.8
+    }
+  },
+  "by_method_domain": {
+    "M": {
+      "agriculture": {
+        "n": 1,
+        "sisr_rate": 1.0
+      }
+    },
+    "B0": {
+      "agriculture": {
+        "n": 1,
+        "sisr_rate": 0.0
+      }
+    },
+    "B1": {
+      "agriculture": {
+        "n": 1,
+        "sisr_rate": 1.0
+      }
+    },
+    "B2": {
+      "agriculture": {
+        "n": 1,
+        "sisr_rate": 1.0
+      }
+    },
+    "B3": {
+      "agriculture": {
+        "n": 1,
+        "sisr_rate": 1.0
+      }
+    }
+  },
+  "domain_macro_sisr_by_method": {
+    "M": 1.0,
+    "B0": 0.0,
+    "B1": 1.0,
+    "B2": 1.0,
+    "B3": 1.0
+  },
+  "paired": {
+    "rice-R1-novel:B0": {
+      "m_sisr": 1.0,
+      "B0_sisr": 0.0,
+      "delta": 1.0,
+      "n_m": 1,
+      "n_b": 1
+    },
+    "rice-R1-novel:B1": {
+      "m_sisr": 1.0,
+      "B1_sisr": 1.0,
+      "delta": 0.0,
+      "n_m": 1,
+      "n_b": 1
+    },
+    "rice-R1-novel:B2": {
+      "m_sisr": 1.0,
+      "B2_sisr": 1.0,
+      "delta": 0.0,
+      "n_m": 1,
+      "n_b": 1
+    },
+    "rice-R1-novel:B3": {
+      "m_sisr": 1.0,
+      "B3_sisr": 1.0,
+      "delta": 0.0,
+      "n_m": 1,
+      "n_b": 1
+    }
+  },
+  "note": "n_models=2; n_reps=1; small-n descriptive only, no cross-domain significance claim"
+}

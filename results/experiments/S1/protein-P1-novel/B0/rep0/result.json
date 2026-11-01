@@ -1,0 +1,22 @@
+{
+  "run_id": "S1:B0:protein-P1-novel:r0:7f070ce3",
+  "status": "OBSERVED",
+  "text": "No oracle-execution tool is exposed in this environment (only file Read/Write), so I cannot compute ESM-2 zero-shot scores or obtain any real measurements. I will not fabricate them. I'll produce the ranking from explicit sequence-based reasoning about substitution conservatism and document this as an E1-only, qualitative prior.**Ranking written to `final_selection.json`:**\n\n```json\n{\"top_ids\": [\"E27D\", \"E11D\", \"D24E\", \"K34R\", \"N31Q\"]}\n```\n\n**Evidence (what was actually executed):** I read the candidate file — wild-type sequence `MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV` (44 aa), with 19 single substitutions at each position (836 candidates). The peptide is short, highly charged/polar, with interspersed hydrophobics — consistent with a helical/soluble peptide.\n\n**Critical limitation — no ESM-2 scores and no measurements:** no oracle-execution or model-inference tool was available in this environment (only file Read/Write). I therefore did **not** compute any ESM-2 zero-shot score and obtained **zero** real measurements; all candidate fitness values are **UNOBSERVABLE**. The ranking is a qualitative substitution-conservatism prior, not a model output and not E3 evidence.\n\n**Rationale for the five (E1 reasoning only):**\n1. **E27D** — acid→acid, one methylene shorter; classic near-neutral surface swap.\n2. **E11D** — acid→acid in a polar/helical stretch (`LLIESY`).\n3. **D24E** — acid→acid, isosteric charge-preserving change.\n4. **K34R** — base→base, charge/size-conservative, in a basic cluster (`KRR`).\n5. **N31Q** — amide→amide, similar size and H-bonding.\n\n**Other limitations:** no structure/homolog conservation profile (buried vs. exposed inferred from composition only); functionally critical sites — notably the basic patch 34–36 and turn region 39–40 — may reject even conservative swaps; and the 16-query oracle budget went unused because no measurement interface existed. Details recorded in `evidence.md`.",
+  "cost_usd": 0.33313000000000004,
+  "num_turns": 6,
+  "session_id": "850a2ee2-e93b-4ed8-8b2c-6e9de0210438",
+  "latency_s": 154.38,
+  "budget": {
+    "max_tokens": 2000000,
+    "max_model_calls": 80,
+    "max_experiments": 16,
+    "max_wall_seconds": 1800.0,
+    "max_usd": 2.0,
+    "tokens_used": 0,
+    "model_calls": 0,
+    "experiments": 0,
+    "cost_usd": 0.0,
+    "elapsed_s": 162.283
+  },
+  "sdk_version": "0.2.170"
+}
