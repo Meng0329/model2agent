@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
   Robot, User, Hexagon, ChatCircle, CaretDoubleLeft, CaretDoubleRight,
+  ChartBar, Path, Code, X,
 } from "@phosphor-icons/react";
 import type { AgentConfig, ChatMessage, Conversation, RunResult, ToolCard, Uploaded } from "./types";
 import { fetchConfig, fetchApiDocs, listConversations, createConversation, deleteConversation,
@@ -35,6 +36,7 @@ export default function App() {
   const [apidocErr, setApidocErr] = useState("");
   const [leftOpen, setLeftOpen] = useState(true);
   const [rightOpen, setRightOpen] = useState(true);
+  const [narrow, setNarrow] = useState(false);
   const [rightW, setRightW] = useState(400);
   const scrollRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -62,6 +64,7 @@ export default function App() {
     const apply = () => {
       const w = el.clientWidth;
       if (!w) return;
+      setNarrow(w < 760);
       if (w < 760) { setLeftOpen(false); setRightOpen(false); }
       else if (w < 980) { setLeftOpen(false); setRightOpen(true); }
       else { setLeftOpen(true); setRightOpen(true); }
@@ -96,6 +99,7 @@ export default function App() {
     setAttachment(null);
     setResults([]);
     setErr("");
+    if (narrow) setLeftOpen(false);
     await loadMessages(c.id);
   }
 
@@ -106,6 +110,7 @@ export default function App() {
     setMessages([]);
     setResults([]);
     setAttachment(null);
+    if (narrow) setLeftOpen(false);
   }
 
   async function removeConversation(c: Conversation) {
@@ -208,9 +213,9 @@ export default function App() {
 
   return (
     <div ref={rootRef} className="flex h-full w-full overflow-hidden bg-bg">
-      {/* left: conversation list */}
-      <div className={`shrink-0 transition-all ${leftOpen ? "w-64" : "w-12"}`}>
-        {leftOpen ? (
+      {/* left: conversation list (drawer when narrow, rail otherwise) */}
+      <div className={`shrink-0 transition-all ${leftOpen && !narrow ? "w-64" : "w-12"}`}>
+        {leftOpen && !narrow ? (
           <ConversationList
             conversations={convos}
             activeId={cid}
@@ -229,6 +234,18 @@ export default function App() {
           </div>
         )}
       </div>
+      {narrow && leftOpen && (
+        <div className="absolute left-0 top-0 z-30 h-full w-64 shadow-xl">
+          <ConversationList
+            conversations={convos}
+            activeId={cid}
+            onSelect={selectConversation}
+            onCreate={newConversation}
+            onDelete={removeConversation}
+            onClose={() => setLeftOpen(false)}
+          />
+        </div>
+      )}
 
       {/* center: chat + composer */}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
@@ -269,7 +286,7 @@ export default function App() {
       </div>
 
       {/* draggable divider */}
-      {rightOpen && (
+      {rightOpen && !narrow && (
         <div
           role="separator"
           aria-orientation="vertical"
@@ -280,9 +297,14 @@ export default function App() {
         />
       )}
 
-      {/* right: results / trace / api docs */}
+      {/* right: results / trace / api docs (drawer when narrow) */}
       {rightOpen && (
-        <div className="flex shrink-0 flex-col border-l bg-bg" style={{ borderColor: "var(--color-border-soft)", width: rightW }}>
+        <div
+          className={narrow
+            ? "absolute right-0 top-0 z-30 flex h-full flex-col border-l bg-bg shadow-xl"
+            : "flex shrink-0 flex-col border-l bg-bg"}
+          style={{ borderColor: "var(--color-border-soft)", width: narrow ? `min(${rightW}px, 88%)` : rightW }}
+        >
           <div className="flex items-center gap-1 border-b px-2 py-2" style={{ borderColor: "var(--color-border-soft)" }}>
             <TabBtn active={tab === "result"} onClick={() => setTab("result")}>结果{results.length ? ` (${results.length})` : ""}</TabBtn>
             <TabBtn active={tab === "trace"} onClick={() => setTab("trace")}>执行轨迹</TabBtn>
@@ -314,13 +336,30 @@ export default function App() {
       )}
 
       {!rightOpen && (
-        <button
-          onClick={() => setRightOpen(true)}
-          className="absolute right-2 top-1/2 z-40 -translate-y-1/2 rounded-lg border border-border-soft bg-white p-1.5 text-subink shadow-soft-sm hover:text-accent"
-          title="展开右侧面板"
-        >
-          <CaretDoubleLeft size={15} />
-        </button>
+        narrow ? (
+          <div
+            className="flex w-12 shrink-0 flex-col items-center gap-1 border-l bg-surface-2 py-2"
+            style={{ borderColor: "var(--color-border-soft)" }}
+          >
+            <RailTab icon={<ChartBar size={16} />} title="结果" badge={results.length}
+                     onClick={() => { setTab("result"); setRightOpen(true); }} />
+            <RailTab icon={<Path size={16} />} title="执行轨迹"
+                     onClick={() => { setTab("trace"); setRightOpen(true); }} />
+            <RailTab icon={<Code size={16} />} title="API 文档"
+                     onClick={() => { setTab("apidocs"); setRightOpen(true); }} />
+            <button onClick={() => setRightOpen(true)} className="mt-1 p-1 text-subink hover:text-accent" title="展开右侧面板">
+              <CaretDoubleLeft size={15} />
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setRightOpen(true)}
+            className="absolute right-2 top-1/2 z-40 -translate-y-1/2 rounded-lg border border-border-soft bg-white p-1.5 text-subink shadow-soft-sm hover:text-accent"
+            title="展开右侧面板"
+          >
+            <CaretDoubleLeft size={15} />
+          </button>
+        )
       )}
     </div>
   );
@@ -353,6 +392,26 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
       style={active ? { background: "var(--color-accent-weak)", color: "var(--color-accent)" } : { color: "var(--color-subink)" }}
     >
       {children}
+    </button>
+  );
+}
+
+function RailTab({ icon, title, onClick, badge }: {
+  icon: React.ReactNode; title: string; onClick: () => void; badge?: number;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      aria-label={title}
+      className="relative flex h-8 w-8 items-center justify-center rounded-lg text-subink transition hover:bg-surface-2 hover:text-accent"
+    >
+      {icon}
+      {badge ? (
+        <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[9px] font-semibold text-white">
+          {badge}
+        </span>
+      ) : null}
     </button>
   );
 }

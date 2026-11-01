@@ -1,27 +1,39 @@
 import type { ReactNode } from "react";
 import type { AgentUiInput, Conversation } from "../types";
-import { ChatCircle, Plus, Trash, UploadSimple, Table, TextT, ListNumbers } from "@phosphor-icons/react";
+import { ChatCircle, Plus, Trash, UploadSimple, Table, TextT, ListNumbers, X } from "@phosphor-icons/react";
 
 export default function ConversationList({
-  conversations, activeId, onSelect, onCreate, onDelete,
+  conversations, activeId, onSelect, onCreate, onDelete, onClose,
 }: {
   conversations: Conversation[];
   activeId: string | null;
   onSelect: (c: Conversation) => void;
   onCreate: () => void;
   onDelete: (c: Conversation) => void;
+  onClose?: () => void;
 }) {
   return (
     <div className="flex h-full flex-col bg-surface-2" style={{ borderRight: "1px solid var(--color-border-soft)" }}>
       <div className="flex items-center justify-between px-3 py-3">
         <span className="text-sm font-semibold text-ink">会话</span>
-        <button
-          onClick={onCreate}
-          className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-white transition hover:opacity-90"
-          title="新建会话"
-        >
-          <Plus size={15} weight="bold" />
-        </button>
+        <div className="flex items-center gap-1">
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="flex h-7 w-7 items-center justify-center rounded-lg text-subink transition hover:bg-surface-2 hover:text-accent"
+              title="收起会话"
+            >
+              <X size={15} />
+            </button>
+          )}
+          <button
+            onClick={onCreate}
+            className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-white transition hover:opacity-90"
+            title="新建会话"
+          >
+            <Plus size={15} weight="bold" />
+          </button>
+        </div>
       </div>
       <div className="scroll-thin flex-1 overflow-y-auto px-2 pb-3">
         {conversations.length === 0 && (
