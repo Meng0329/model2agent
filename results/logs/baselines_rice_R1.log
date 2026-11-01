@@ -1,0 +1,8 @@
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[claude-code:unrecognized_model] {"model":"deepseek-v4.1-flash","query_source":"sdk"}
+[S1] rice-R1-novel B0 rep0: sisr=False oracle=True calls=0 ev=0 cost=$0.658
+[S1] rice-R1-novel B1 rep0: sisr=True oracle=True calls=1 ev=2 cost=$2.021
+[S1] rice-R1-novel B2 rep0: sisr=True oracle=True calls=1 ev=4 cost=$1.605
+[S1] rice-R1-novel B3 rep0: sisr=True oracle=True calls=2 ev=3 cost=$1.574

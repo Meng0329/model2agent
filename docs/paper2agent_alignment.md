@@ -1,23 +1,30 @@
 # Model2Agent ↔ Paper2Agent 实验对齐记录
 
-> 本文档为 `Model2Agent V0.3` 与 *Miao et al., "Reimagining research papers as interactive and reliable AI agents", Nature 658:1272–1280 (2026), DOI 10.1038/s41586-026-11044-y* 的实验对齐说明。
+> 本文档为 `Model2Agent V3.0` 与 *Miao et al., "Reimagining research papers as interactive and reliable AI agents", Nature 658:1272–1280 (2026), DOI 10.1038/s41586-026-11044-y* 的实验对齐说明。
 > 来源：主论文 PDF（`docs/s41586-026-11044-y.pdf`，18 页，含 Extended Data Fig.1–2）、公开仓库 `github.com/jmiao24/Paper2Agent`、预印本 arXiv:2509.06917。
-> 生成日期：2026-10-29。
+> 生成日期：2026-10-29；**2026-11-01 主线重定位于 Model→Scientist（见下）**。
 
 ---
 
-## 0. 核心定位差异（决定哪些设计不可照搬）
+## 0. 主线重定位（2026-11-01，取代旧 V0.3 Model→Tool 定位）
 
-| 维度 | Paper2Agent | Model2Agent |
-|------|-------------|-------------|
-| **一级输入** | 研究论文 + 代码仓库 | 已训练模型资产（权重 + 推理代码 + 模型卡 + 示例 I/O） |
-| **被转化对象** | 整篇论文（含图表、补充材料、数据集链接） | 单模型（预测 / 解释 / 不确定性 / 轻量适配） |
-| **验证锚点** | 论文 tutorial 执行作为 gold standard | 原始模型参考推理（reference execution）作为 ground truth |
-| **协议层** | MCP server（tools/resources/prompts） | 单体应用 + Skills 路由（**不引入 MCP 作为方法创新**） |
+**唯一主线**：将预训练科学模型转化为**自主领域科学家 Agent**——提出可证伪假设、设计受控计算
+实验、执行**真实模型与工具**、在真实证据上修正、并对未见领域泛化。方法要素：
+ScientificModelProfile / ScientificAffordance / ResearchCapabilityGraph /
+Hypothesis-Driven Scientific Planning / Evidence-Grounded Research Loop /
+Scientific Evidence Ledger（E1 模型预测 / E2 独立计算 / E3 历史测量 / E4 新实验）/
+Scientific Verification。
 
-**关键事实（来自仓库核查）**：Paper2Agent 的 *当前* 实现已同时使用 **Skills 与 MCP**（README 描述通过 Skill 调度专业 agent、配置环境、完成验证）。因此 **“从 MCP 改为 Skills” 不能作为 Model2Agent 的核心创新**，本文档明确排除该主张。模型语义归纳（AGCI/MCG）才是本研究的方法贡献。
+- 外层 Model2Agent 编译器 = **单 Claude Agent SDK 会话 + 多智能体**（无固定流水线/关键词路由/模拟/回退）。
+- 生成的 Scientist = **单主 agent + 科学 Skills**（MCP 工具 run_model / plan_experiment /
+  record_evidence / query_evidence_oracle / revise_hypothesis）。
+- 旧 Model→Tool 五段流水线（AGCI/MCG/确定性模板生成器）**不再是方法贡献**，代码原地增删改、
+  不保留双版本；其内容仅在本文档中作为"被替换的上一版定位"保留说明。
+- 完整协议与判据：**`docs/scientist_protocol.md`**；数字以 `results/logs/scientist_runs.jsonl` 为准。
 
-**图数差异**：Paper2Agent 正文只有 **Figure 1–4**（无 Figure 5）。Extended Data Fig.1（TISSUE）、Fig.2（AlphaGenome）、Fig.3（Scanpy）、Fig.4（牛皮癣因果基因协作）。本项目的 Figure 5 拟作为“跨模型协作 / 鲁棒性”**可选深入案例**，若数据不足则仅输出模板。
+**关键事实（来自仓库核查，仍有效）**：Paper2Agent 的 *当前* 实现已同时使用 **Skills 与 MCP**（README 描述通过 Skill 调度专业 agent、配置环境、完成验证）。因此 **"从 MCP 改为 Skills" 不能作为 Model2Agent 的核心创新**，本文档明确排除该主张。Model→Scientist 的转化能力与科研证据闭环才是方法贡献。
+
+**图数差异**：Paper2Agent 正文只有 **Figure 1–4**（无 Figure 5）。Extended Data Fig.1（TISSUE）、Fig.2（AlphaGenome）、Fig.3（Scanpy）、Fig.4（牛皮癣因果基因协作）。本项目的 Figure 5 拟作为"跨模型协作 / 鲁棒性"**可选深入案例**，若数据不足则仅输出模板。
 
 ---
 

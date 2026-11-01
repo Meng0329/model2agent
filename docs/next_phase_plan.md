@@ -1,56 +1,58 @@
-# Model2Agent 下一阶段扩展清单（P1–P4）
+# Model2Agent V3.0 — Model-to-Scientist 阶段计划（S0–S3）
 
-> 基于当前 P0（2 模型技术可行性）交付物，按用户指定的单 GPU 分阶段路线推进。
-> **当前状态诚实标注**：P0 已执行（见 `results/`）；P1–P4 **尚未执行**，以下为计划，不视为已完成。
+> 唯一主线：预训练科学模型 → 自主领域科学家 Agent（假设 → 规划 → 真实计算实验 →
+> 观测 → 证据修正 → 结论 → 迁移未见领域）。
+> 旧的 Model→Tool 五段流水线不再是主线，代码在原地增删改，不保留双版本。
+> 协议与判据见 `docs/scientist_protocol.md`；所有数字以
+> `results/logs/scientist_runs.jsonl` 为准。未运行 = NOT_TESTED，阻塞 = BLOCKED，
+> 失败 = FAILED，绝不静默改判。
 
-## 当前已完成（P0）
+## 已完成（S0）
 
 | 项 | 状态 | 证据 |
 |----|------|------|
-| 2 个异质模型端到端转换 | ✅ 已执行 | `cnn_digits`（PyTorch CNN, GPU0, test_acc≈0.964）、`xgb_tabular`（XGBoost, test_acc=1.0） |
-| AGCI / MCG 真实实现 | ✅ | `model2agent/agci/`、`mcg/graph.py`；扫描 4 类框架资产 |
-| 统一 Agent 生成（非手写） | ✅ | `builder/agent_builder.py` 模板生成 `generated_agents/<slug>/` |
-| 参考推理验证 | ✅ | 两模型均在 M 下 success=True、capability verification 4/4 |
-| B0 / B2 / M 三方法 | ✅ 已执行 | `results/logs/pilot_runs.jsonl` |
-| 冻结 benchmark + ground truth | ✅ | `results/frozen/tasks.json`（由参考推理生成） |
-| 统计脚本 | ✅ | `scripts/run_analysis.py`（配对检验 + 聚类 Bootstrap） |
-| 鲁棒性框架 | ✅ 代码就绪（待运行） | `robustness/fault_injection.py`（6 类故障） |
-| Figure 1–5 脚本 | ✅ | `scripts/make_figures.py`（缺数据处仅模板） |
+| 证据/假设/任务/运行 schema（严格校验） | ✅ 已执行 | `model2agent/scientist/schemas.py`，`tests/test_scientist.py` |
+| 严格执行 oracle（递归数值比较，无"非空即过"） | ✅ | `model2agent/oracle/execution_oracle.py` |
+| 历史测量 oracle（预算强制 + 访问日志 + 0700 hidden） | ✅ | `model2agent/oracle/historical_oracle.py` |
+| 追加式 Run/Evidence Ledger | ✅ | `model2agent/scientist/evidence.py` |
+| 单会话多智能体外层编译器（5 个真实子代理） | ✅ | `model2agent/scientist/subagents.py`、`orchestrator.run_smsc` |
+| 生成式 Scientist（单主 agent + Skills） | ✅ | `model2agent/scientist/runtime/*` |
+| 独立子进程 runner + oracle 判分 | ✅ | `model2agent/scientist/runner.py` |
+| 两个真实科学域资产（蛋白 ESM-2 / 水稻 GS） | ✅ | `model_assets/esm2_variant/`、`model_assets/rice_gs/` |
+| 冻结 benchmark（6 任务，唯一 id，无泄漏） | ✅ | `results/frozen/scientist_tasks.json` |
+| 公平基线 B0–B3 | ✅ 代码就绪 | `model2agent/scientist/methods.py` |
 
-## P1 — 方法探索（10 模型）
+## S1 — 两域各至少一个完整可验证科研任务（进行中）
 
-- [ ] 扩充到 10 个模型，覆盖开发集 4 个家族各若干：**表格分类、图像分类、文本分类、文本嵌入**（已具备 `bert_zh` 文本嵌入/分类雏形、`sklearn_digits`/`cnn_digits`/`xgb_tabular`）。
-- [ ] 增加 B1（Generic Model Wrapper + Agent SDK）与 B3（在具备论文/代码的模型子集运行 Paper2Agent/Code2Skill）。
-- [ ] 运行 A1–A5 消融（尤其 **A5 No Model-specific Semantics**，最关键内部效度检验）。
-- [ ] 建立失败类型分类法（缺权重 / 缺依赖 / 非标准 I/O / 无语义 / 不可安全修复）。
-- [ ] 校准开放式 Rubric 与双评估者流程（评分者一致性）。
+| 任务 | 状态 | 证据 |
+|------|------|------|
+| rice-R1-novel (M) | ✅ OBSERVED — SISR=true, oracle hits 10/10, SEV=1.0 (3/3), $1.32, 410s | `results/experiments/S1/rice-R1-novel/M/rep0/` |
+| rice-R1-novel (B0–B3) | ⏳ 运行中 | 运行 ledger |
+| protein-P1-novel (M) | ⏳ 生成+运行中 | 运行 ledger |
+| rice-R2 / rice-R3 | ⬜ NOT_TESTED | — |
+| protein-P2 / protein-P3 | ⬜ NOT_TESTED | — |
 
-## P2 — 方法冻结（30 模型）
+S1 门禁：两域各 ≥1 完整可验证任务；≥1 任务证明下一步决策受真实反馈影响；基线共享
+同 LLM/SDK/任务/预算/oracle；失败如实记录。**未达成前不进入 S2 分析。**
 
-- [ ] 验证集 30 模型：**表格回归、目标检测、异常检测**。
-- [ ] 冻结 AGCI/MCG 生成算法、prompt 版本、skill 版本、Rubric。
-- [ ] 完成消融与鲁棒性数字；确认 A5 是否显著。
-- [ ] 成本预算估算（单次生成 / 单查询），确定重复次数可行性。
+## S2（本轮部分）— 消融与内部效度
 
-## P3 — 正式评估（100 模型，10 家族 × 10）
+- [ ] A5 无证据反馈重规划（one-shot vs 闭环，ASIG）
+- [ ] A6 无独立验证（去掉 verification-auditor / oracle 判分）
+- [ ] A1 无 SAD / 能力图
+- [ ] A9 外层单智能体 vs 多智能体（同预算）
+- [ ] 矛盾证据注入：真实反向证据下的识别与修订（不伪造测量）
+- [ ] 配对统计 + 域宏平均；跨 0 的不确定性如实报告
 
-- [ ] 开发 40 / 验证 30 / 未见家族 30 的划分正式冻结。
-- [ ] 未见家族：**语义分割、音频分类、时间序列预测**（严格保留，测试期不得加入专用 Skill/修复规则）。
-- [ ] 300 tutorial + 300 novel + 3×30 open-ended，每任务 5 次独立运行。
-- [ ] 全量 B0/B1/B2/B3/M 对比；失败转换计入端到端成功率分母。
-- [ ] 模型级聚类 Bootstrap 95% CI；报告效应量、成本、延迟（不依赖单一 P 值）。
+## S3（本轮不做，标 NOT_TESTED）
 
-## P4 — 深入案例（3 模型）
+- [ ] 第三/第四科学域（材料 CHGNet 需先验证 CHGNet 权重与 GPU0 可行性）
+- [ ] HDSS 未见域泛化（需独立 held-out 域，禁止在保留域调参）
+- [ ] 人工专家盲评（本轮不做，不伪造）
 
-- [ ] CNN、XGBoost、Transformer 代表性案例（Figure 2）。
-- [ ] 开放式多步任务（≥2 实际步骤：数据校验→推理→聚合→报告）。
-- [ ] 跨 Model Agent 协作（Figure 5 可选深入）。
-- [ ] 详细解释与不确定性分析。
+## 明确不做
 
-## 关键风险与对策
-
-1. **底层 LLM 预训练覆盖**：DeepSeek 可能见过目标模型 → “未见家族”仅指对研发/调参保留，需在论文明确声明。
-2. **开源模型许可/权重可得性**：按统一规则运行前筛选，无效许可或超硬件上限者剔除；转换失败不得事后移除。
-3. **A5 若不显著**：需诚实报告，AGCI 的模型语义归纳可能缺乏独立贡献——这是内部效度核心问题。
-4. **单 GPU 成本**：100 模型 × 6 任务 × 5 reps/方法 ≈ 3,000 次/方法，五方法上限 ~15,000 次；先估算再全量，不为省成本事后只保留好结果。
-5. **Claude Agent SDK 运行时**：当前仅配置 DeepSeek 凭证，`runtime.py` 已支持 SDK 优先、DeepSeek 回退；P1 需验证 SDK 路径实际可用或明确记录为不可用基线条件。
+- 不把"模型封装为工具"当作主贡献。
+- 不做残缺资产恢复主线。
+- 不改前端；科研工作台以 CLI/脚本 + 可追溯 ledger 交付。
+- 不以 LLM 猜测值生成 `config.json`；生成只来自真实加载/执行。

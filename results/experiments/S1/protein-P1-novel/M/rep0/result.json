@@ -1,0 +1,17 @@
+{
+  "run_id": "S1:M:protein-P1-novel:r0:3c4b04cf",
+  "status": "OBSERVED",
+  "text": "## Summary\n\n**Research question.** Using ESM-2 zero-shot scores, rank the 834 single mutants of the 44-aa sequence `MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV` by likely measured fitness and identify the top 5, using ≤16 real measurements.\n\n**Design (pre-registered).** Broad E1 scan of one *most-conservative* (BLOSUM62-argmax) substitution per position, 44 positions → 44 `score_variant` calls. Rank by E1, then spend the 16-query oracle budget on the E1 top-16, and select finally by measured fitness with E1 only as a tie-breaker.\n\n**What was measured (E3, all real, 0 UNOBSERVABLE):**\n\n| Rank by E3 | Mutant | Measured fitness | E1 (ΔlogL) |\n|---|---|---|---|\n| 1 | **S12A** | 0.4672 | +0.728 |\n| 2 | **D24E** | 0.1363 | +0.096 |\n| 3 | **N22D** | 0.1332 | +1.679 |\n| 4 | **M19L** | 0.1165 | +1.858 |\n| 5 | **F14Y** | 0.1031 | +0.889 |\n| 6 | H40Y | 0.0468 | +0.036 |\n| 7 | V44I | 0.0446 | +0.194 |\n| 8 | R2K | −0.0071 | +1.288 |\n| 9 | E7D | −0.0600 | −0.456 |\n| 10 | R23K | −0.0606 | +1.286 |\n| 11 | I41V | −0.0659 | −0.319 |\n| 12 | G39A | −0.0825 | −0.526 |\n| 13 | E27D | −0.1268 | −0.464 |\n| 14 | T17S | −0.1883 | −0.306 |\n| 15 | I42V | −0.3121 | −0.083 |\n| 16 | R35K | −0.7212 | +0.302 |\n\n**Hypothesis verdicts.**\n- **H1 (E1 enriches for high measured fitness): partially supported.** Spearman ρ = **0.54** over the 16 queried candidates — positive but modest; R2K (3rd by E1) measured below the queried median, while S12A (6th by E1) was the clear measured winner.\n- **H2 (≥3 of final 5 in the true pool top quartile): UNVERIFIED.** The 5 chosen values all exceed the *queried-set* 75th percentile (0.1031) and median (−0.034), but the 834-candidate pool threshold is not computable from 16 measurements.\n\n**Final answer written to `final_selection.json`:**\n```json\n{\"top_ids\": [\"S12A\", \"D24E\", \"N22D\", \"M19L\", \"F14Y\"]}\n```\n\n**Artifacts** (run `S1:M:protein-P1-novel:r0:3c4b04cf`, dir `results/experiments/S1/protein-P1-novel/M/rep0/`): `evidence.jsonl` (44 E1 + 16 E3 + 1 E4, with `oracle_access.jsonl` ordinals 1–16), `revisions.jsonl` (H1, H2), `conclusions.jsonl` (4 E4 records, each with `execution_evidence`).\n\n**Limitations.** E1 scores are model predictions, never measurements. Only 44/834 candidates were scored (one conservative probe per position — non-conservative substitutions at each position were not evaluated) and only 16/834 were measured; the oracle budget is exhausted. No experimental validation was performed; results are specific to SDA_BACSU_Tsuboyama_2023_1PV0 and this sequence, and multi-mutants/epistasis were not examined.\n\n**Budget:** 44/80 model calls, 16/16 oracle queries, ~$1.82/$2.00.",
+  "cost_usd": 1.8607032,
+  "num_turns": 150,
+  "session_id": "7441ec6e-37ec-4a8e-9e15-915835225853",
+  "error": null,
+  "budget": {
+    "model_calls": 44,
+    "experiments": 16,
+    "tokens_used": 0,
+    "cost_usd": 0.0,
+    "elapsed_s": 1271.922
+  },
+  "latency_s": 1271.921
+}

@@ -57,13 +57,26 @@ def main() -> None:
                       "mean_sev": round(statistics.mean([float(r["evidence_validity"] or 0.0) for r in rs]), 3),
                       "mean_cost_usd": round(statistics.mean([float(r["cost"] or 0.0) for r in rs]), 4)}
 
-    # domain macro-avg of SISR (each domain weighted equally)
+    # domain macro-avg of SISR PER METHOD (each domain weighted equally)
+    method_dom = {}
+    for r in rows:
+        method_dom.setdefault(r["method_id"], {}).setdefault(r["scientific_domain"], []).append(r)
+    by_method_domain = {
+        m: {d: {"n": len(rs),
+                "sisr_rate": round(_rate([bool(x["scientific_task_success"]) for x in rs]), 3)}
+            for d, rs in doms.items()}
+        for m, doms in method_dom.items()
+    }
+    domain_macro_by_method = {
+        m: round(statistics.mean([v["sisr_rate"] for v in d.values()]), 3)
+        for m, d in by_method_domain.items()
+    }
+    # pooled (all methods) kept only for transparency, NOT the headline number
     dom = {}
     for r in rows:
         dom.setdefault(r["scientific_domain"], []).append(r)
-    domains = {d: {"n": len(rs), "sisr_rate": round(_rate([bool(r["scientific_task_success"]) for r in rs]), 3)}
-               for d, rs in dom.items()}
-    macro = round(statistics.mean([v["sisr_rate"] for v in domains.values()]), 3) if domains else 0.0
+    domains_pooled = {d: {"n": len(rs), "sisr_rate": round(_rate([bool(r["scientific_task_success"]) for r in rs]), 3)}
+                      for d, rs in dom.items()}
 
     # paired M vs each baseline, per task (only tasks with both)
     paired = {}
@@ -82,9 +95,11 @@ def main() -> None:
                 "n_m": len(mrows), "n_b": len(brows)}
 
     out = {"n_runs": len(rows), "table": table, "by_method": methods,
-           "by_domain": domains, "domain_macro_sisr": macro,
+           "by_domain_pooled": domains_pooled,
+           "by_method_domain": by_method_domain,
+           "domain_macro_sisr_by_method": domain_macro_by_method,
            "paired": paired,
-           "note": "n_models=2; small-n descriptive only, no cross-domain significance claim"}
+           "note": "n_models=2; n_reps=1; small-n descriptive only, no cross-domain significance claim"}
     JSON_OUT.parent.mkdir(parents=True, exist_ok=True)
     JSON_OUT.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
 
@@ -95,8 +110,10 @@ def main() -> None:
                                "mean_sev", "mean_cost_usd", "mean_latency_s")))
     CSV.parent.mkdir(parents=True, exist_ok=True)
     CSV.write_text("\n".join(lines), encoding="utf-8")
-    print(json.dumps({"n_runs": len(rows), "by_method": methods, "by_domain": domains,
-                      "domain_macro_sisr": macro, "paired": paired}, ensure_ascii=False, indent=2))
+    print(json.dumps({"n_runs": len(rows), "by_method": methods,
+                      "by_method_domain": by_method_domain,
+                      "domain_macro_sisr_by_method": domain_macro_by_method,
+                      "paired": paired}, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

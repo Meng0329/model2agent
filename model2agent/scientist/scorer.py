@@ -83,9 +83,10 @@ def sev_from_conclusions(conclusions: list[dict], evidence: list[EvidenceRecord]
         if not isinstance(c, dict):
             continue
         total += 1
-        ids = c.get("supporting_evidence") or []
+        ids = c.get("supporting_evidence") or c.get("supporting_records") or []
         types = c.get("evidence_types") or []
-        if not ids or not c.get("statement"):
+        statement = c.get("statement") or c.get("claim")
+        if not ids or not statement:
             continue
         cited = [by_id.get(str(i)) for i in ids]
         if any(r is None for r in cited):
