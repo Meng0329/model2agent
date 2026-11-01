@@ -1,0 +1,17 @@
+{
+  "run_id": "S1:M:protein-P3-rediscovery:r0:4c5ca832",
+  "status": "OBSERVED",
+  "text": "All outputs written. Final summary:\n\n## Research question & approach\n**Which single mutant in the 834-candidate set (44 positions × ~19 substitutions of `MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV`) has the highest measured fitness?**\n\n- **H₀ (falsifiable):** ESM-2 `score_variant` magnitude ranks single-mutant fitness (falsifier: no correlation with measurements).\n- **Design:** Since only 20 measurements were allowed but 834 candidates, I used a **two-stage ESM-2 screen** — Stage A scored one conservative substitution at *all 44 positions* to map position tolerance; Stage B scored 4 extra substitutions at the 12 most tolerant positions (98 model calls, budget 100/100). Then I concentrated the 20 oracle measurements on the highest-ranked, position-diverse predictions.\n\n## Key result — ESM-2 was a weak cross-position guide (H₀ falsified)\n- **Spearman(ESM-2, measured fitness) = +0.009** (Pearson +0.254) over 20 measurements.\n- The *highest*-scoring variant **H40K (+2.04 ESM-2) measured the worst (−0.578)**; all position-40 substitutions were deleterious. Position-specific importance dominates, not raw LL score.\n- ESM-2 retained some value only *within* a position (at S12 it correctly ordered A/T > N/Q/G).\n\n## Measured landscape (top)\n| Variant | Measured fitness |\n|---|---|\n| **S12T** | **+0.513** |\n| S12A | +0.467 |\n| R2S | +0.435 |\n| I41L | +0.313 |\n| T17V | +0.289 |\n\nPosition 12 is the clear beneficial hotspot; positions 40 and 35 are intolerant.\n\n## Conclusion & uncertainty\n**S12T** is the highest-fitness single mutant among those measured (**+0.513**). However, only **20 of 834** candidates were measured and *both budgets are exhausted* (oracle 20/20, model 100/100). The **global maximum over all 834 candidates is UNOBSERVED** — the true answer could be an unmeasured variant, most plausibly a sibling position-12 substitution (S12C/S12V) or an unmeasured variant at positions 2/41/17. S12T is the best-evidenced candidate, not a proven global maximum.\n\n**Outputs:**\n- `final_selection.json` → `[\"S12T\",\"S12A\",\"R2S\",\"I41L\",\"T17V\",\"T17Q\",\"M19L\",\"F14Y\"]`\n- `conclusions.jsonl` (C1–C5, each citing evidence `ev-2`/`ev-3`/`ev-4`)\n- Evidence recorded: `ev-1` (E1 screen, 100 predictions), `ev-2`/`ev-3` (E3, 20 measurements + correlation), `ev-4` (E4 conclusion); H₀ revision logged.",
+  "cost_usd": 1.9440680000000004,
+  "num_turns": 141,
+  "session_id": "12daf46d-0e1b-4476-9b25-9c0ad7bb34cc",
+  "error": null,
+  "budget": {
+    "model_calls": 100,
+    "experiments": 20,
+    "tokens_used": 0,
+    "cost_usd": 0.0,
+    "elapsed_s": 1402.379
+  },
+  "latency_s": 1402.379
+}

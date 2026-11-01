@@ -1,0 +1,22 @@
+{
+  "run_id": "S1:B3:rice-R3-rediscovery:r0:5031ed32",
+  "status": "OBSERVED",
+  "text": "I'll start by examining the candidate file and available tools.\n\n\n\n\n\n\n\n\n\nNow I'll record the E1 model evidence:\n\n## Answer\n\n**`IRIS_313.12254` — the single line with the highest measured 100-grain weight: 5.0 g/100 grains.**\n\nWritten to `final_selection.json` (`{\"top_ids\": [...]}`, 904 ids: the 20 phenotyped lines ordered by measurement, then unmeasured lines ordered by model prediction).\n\n## Scientific loop\n\n| Step | Evidence | Result |\n|---|---|---|\n| H1: true argmax lies in the model's top-20; rank-1 line holds the measured max | — | falsifiable, plan `exp-1` |\n| `run_model(rank_candidates, 904 ids)` | **E1** (`ev-1`) | preds 1.499–3.662 g, mean 2.479, sd 0.302; rank-1 = 12254 |\n| 20/20 oracle queries on the top-20 predicted lines | **E3** (`ev-2`) | max **5.0 (12254)**; runner-up 4.7 (12349); measured 2.8–5.0 |\n| Calibration + posterior risk | **E2** (`ev-3`) | `meas = −8.10 + 3.49·pred`, residual sd 0.465; P(no unqueried > 5.0) = 0.93–1.00 |\n\n- **Query-design rationale:** under a Gaussian error model, P(line is the true argmax) is monotone in the prediction, so spending all 20 queries on the top-20 predicted lines maximizes the probability that the true maximum is actually measured (this is what the coverage calculation shows; it is not an assumption of the answer).\n- **Falsification test:** Spearman(predicted, measured) = **+0.473**, Pearson = 0.680, and the rank-1 predicted line *did* hold the measured maximum → neither refutation clause triggered; H1 supported and revised to the specific claim about 12254.\n\n## Uncertainty and limitations\n- **884 of 904 lines were never phenotyped.** The answer is the maximum of a 20-line sample, not of the panel; P(no unmeasured line exceeds 5.0 g) ≈ 0.93–1.00 (point estimate 0.998), highest residual risk at IRIS_313.11705/.12251/.12049.\n- The calibration is **extrapolated from a truncated sample** (predictions span only 3.17–3.66 g), so slope and residual sd are uncertain; the exceedance probability is model-based (**E2**), not measured.\n- **E1 predictions are compressed** (1.50–3.66 g) vs measurements (2.8–5.0 g) — they are never phenotypes. Held-out pool Spearman is 0.4535, so the ordering is informative, not deterministic.\n- Single environment, no GxE; linear additive Ridge (no epistasis/dominance); one measurement per line, no replication; 0.1 g rounding, and the 0.3 g margin is only ~0.6 residual sd.\n- `rank_candidates` silently dropped 2 of 904 ids; both were rescored separately (2.54, 2.77 g — mid-pool, no effect on the top-20).\n\nArtifacts: `evidence.jsonl` (E1/E3/E2), `conclusions.jsonl` (C1–C4), `plans.jsonl`, `oracle_access.jsonl` (20/20), `analysis/`, `NOTES.md`.",
+  "cost_usd": 1.999887,
+  "num_turns": 59,
+  "session_id": "69468b26-0e92-44ac-b991-63b1c1941e9b",
+  "latency_s": 898.12,
+  "budget": {
+    "max_tokens": 2500000,
+    "max_model_calls": 100,
+    "max_experiments": 20,
+    "max_wall_seconds": 2400.0,
+    "max_usd": 2.5,
+    "tokens_used": 0,
+    "model_calls": 2,
+    "experiments": 20,
+    "cost_usd": 0.0,
+    "elapsed_s": 898.126
+  },
+  "sdk_version": "0.2.170"
+}

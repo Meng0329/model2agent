@@ -1,0 +1,2 @@
+[S1] protein-P2-closed-loop M rep0: sisr=True oracle=True calls=120 ev=6 cost=$2.248
+[S1] protein-P3-rediscovery M rep0: sisr=False oracle=False calls=100 ev=4 cost=$1.944

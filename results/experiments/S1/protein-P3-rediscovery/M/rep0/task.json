@@ -1,0 +1,56 @@
+{
+  "domain": "protein_science",
+  "scientific_model": "esm2_variant",
+  "input_resources": {
+    "candidate_file": "/data/mzb/paper2agent/m2a_data/research/inputs/protein_candidates.json",
+    "sequence": "MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV",
+    "success_rule": {
+      "type": "rediscovery",
+      "k": 1
+    }
+  },
+  "allowed_knowledge": [
+    "model_card",
+    "scientific_profile",
+    "domain_knowledge/esm2_notes.md"
+  ],
+  "available_tools": [
+    "run_model",
+    "query_evidence_oracle",
+    "record_evidence"
+  ],
+  "permitted_actions": [
+    "score_variant",
+    "query_evidence_oracle",
+    "record_evidence"
+  ],
+  "hidden_reference": "protein_sda.json",
+  "execution_oracle": "reference_exec",
+  "evidence_oracle": "historical",
+  "scientific_constraints": [
+    "single substitutions only",
+    "same protein sequence"
+  ],
+  "expected_artifacts": [
+    "evidence.jsonl",
+    "final_selection.json"
+  ],
+  "failure_conditions": [
+    "claims a measured effect without an E3 record"
+  ],
+  "task_id": "protein-P3-rediscovery",
+  "split": "insight_rediscovery",
+  "capability_level": "L6",
+  "scientific_question": "You are a protein scientist. Without knowing the answer in advance, use ESM-2 and at most 20 real measurements to rediscover the single mutant with the highest measured fitness in the candidate set. Justify your conclusion with evidence and state uncertainty. Write your final ranked answer to final_selection.json as {\"top_ids\": [...]} — your final top-k candidates in order.",
+  "experimental_budget": {
+    "oracle_queries": 20,
+    "max_model_calls": 100,
+    "max_tokens": 2500000,
+    "max_usd": 2.5,
+    "max_wall_seconds": 2400,
+    "max_turns": 100
+  },
+  "success_criteria": [
+    "final top-1 equals the true highest-fitness mutant"
+  ]
+}

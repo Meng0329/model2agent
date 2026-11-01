@@ -1,0 +1,2 @@
+[S1] rice-R2-closed-loop M rep0: sisr=False oracle=False calls=1 ev=5 cost=$1.744
+[S1] rice-R3-rediscovery M rep0: sisr=False oracle=False calls=6 ev=5 cost=$1.830

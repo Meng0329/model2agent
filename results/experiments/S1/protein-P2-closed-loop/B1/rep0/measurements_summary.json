@@ -1,0 +1,10 @@
+{
+  "measured_24": {
+    "S12T": 0.5131, "S12V": 0.4838, "S12A": 0.4672, "S12C": 0.2339, "S43T": 0.1753,
+    "F25W": 0.1578, "G39S": 0.1574, "S37N": 0.1370, "D24E": 0.1363, "N22S": 0.1265,
+    "M19L": 0.1165, "I29L": 0.1046, "F14Y": 0.1031, "S43A": 0.0927, "R2K": -0.0071,
+    "N31S": -0.0236, "S5T": -0.0455, "E7D": -0.0600, "R23K": -0.0606, "D6N": -0.0665,
+    "T17S": -0.1883, "H40N": -0.2638, "S12N": -0.3802, "S12G": -0.5832
+  },
+  "note": "All values are historical measurements returned by query_evidence_oracle (E3). ESM-2 scores were E1 predictions only."
+}

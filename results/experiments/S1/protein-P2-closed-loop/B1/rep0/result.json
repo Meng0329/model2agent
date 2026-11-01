@@ -1,0 +1,22 @@
+{
+  "run_id": "S1:B1:protein-P2-closed-loop:r0:cd908493",
+  "status": "OBSERVED",
+  "text": "I'll start by inspecting the candidate file and environment.\n\n\n\n\n\n\n\n\n\nRound 1 measurements are in. Critically, ESM-2 delta log-likelihood shows no alignment with the measured values (my strongest-negative control, F25W, measured positive). Let me record this and run round 2.\n\nPosition 12 is a clear hotspot: S12T (0.513) and S12A (0.467) are the top two measured values by a wide margin. Round 3: characterize position 12 further and fill remaining slots.\n\nAll 24 oracle queries are spent. Let me record the final evidence and write the selection.Done. Closed-loop investigation complete within budget.\n\n## What I ran\n\n**Stage 0 — ESM-2 scoring (E1, 101/120 model calls)**\n834 candidates span 44 positions × 18–19 substitutions. Since `score_variant` is single-mutation, I prioritized with a BLOSUM62 prior (top-2 conservative substitutions per position = 88 scored), then added 12 targeted follow-ups at the most tolerant positions. Top ESM-2 deltas: S37N +2.18, I29L +1.95, M19L +1.86, H40N +1.51, R2K/R23K +1.29, N22S +1.15.\n\n**Round 1 — 10 oracle queries (E3).** The ESM ranking failed outright:\n| candidate | ESM-2 delta | measured |\n|---|---|---|\n| S37N | +2.18 | 0.137 |\n| I29L | +1.95 | 0.105 |\n| H40N | +1.51 | −0.264 |\n| **F25W (negative control)** | **−7.69** | **+0.158** |\n| S12A | +0.73 | **+0.467** |\n\nThe ESM-*worst* control beat most ESM-preferred variants → **H1 (ESM-2 ranks fitness) rejected**; recorded, and revised to H2: effects are position-specific and ESM-invisible.\n\n**Round 2 — 8 queries.** Surface-polar/conservative sweep (S5T, S43A, T17S, D6N, E7D, D24E, N31S) was flat; the within-position control **S12T measured 0.513**, a new maximum.\n\n**Round 3 — 6 queries.** Position-12 scan: T 0.513, V 0.484, A 0.467, C 0.234, N −0.380, G −0.583. The ordering tracks helix-favouring vs helix-breaking residues at that site (an inference from substitution classes, not a structural measurement).\n\n## Final ranking (all five are measured, E3)\n\n1. **S12T** 0.513\n2. **S12V** 0.484\n3. **S12A** 0.467\n4. **S12C** 0.234\n5. **S43T** 0.175\n\nWritten to `final_selection.json` as `{\"top_ids\": [\"S12T\",\"S12V\",\"S12A\",\"S12C\",\"S43T\"]}`.\n\n## Caveats\n- 24/24 oracle queries used, no replicates; ordering within the top three is within plausible assay noise.\n- Only 24 of 834 candidates measured — an unmeasured position-12 substitution (e.g. S12I/S12L) could exceed these, and that remains unresolved rather than assumed.\n- ESM-2 values were never treated as measurements; `measurements_summary.json` contains only oracle-returned values.",
+  "cost_usd": 1.7600529999999999,
+  "num_turns": 145,
+  "session_id": "227660c1-8e1f-4acc-a5aa-310d80824c5c",
+  "latency_s": 463.3,
+  "budget": {
+    "max_tokens": 3000000,
+    "max_model_calls": 120,
+    "max_experiments": 24,
+    "max_wall_seconds": 2400.0,
+    "max_usd": 3.0,
+    "tokens_used": 0,
+    "model_calls": 101,
+    "experiments": 24,
+    "cost_usd": 0.0,
+    "elapsed_s": 469.795
+  },
+  "sdk_version": "0.2.170"
+}
