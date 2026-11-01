@@ -61,3 +61,65 @@ export type SseEvent =
   | { type: "run_completed"; task_id: string; run_id: string; seq: number; text: string; is_error: boolean; session_id?: string; num_turns?: number }
   | { type: "run_failed"; task_id: string; run_id: string; seq: number; text: string; error?: string }
   | { type: "run_cancelled"; task_id: string; run_id: string; seq: number };
+
+// ---- Model-to-Scientist benchmark (read-only dashboard) ----
+export interface ScientistCell {
+  n: number;
+  status: "OBSERVED" | "FAILED" | "NOT_TESTED";
+  sisr_rate?: number | null;
+  oracle_ok_rate?: number | null;
+  mean_sev?: number | null;
+  mean_cost_usd?: number | null;
+  mean_latency_s?: number | null;
+}
+
+export interface ScientistRun {
+  run_id: string;
+  stage: string;
+  method_id: string;
+  scientific_task_id: string;
+  scientific_domain: string;
+  scientific_task_success: boolean;
+  final_conclusion_validity: boolean;
+  evidence_validity: number | null;
+  model_call_count: number | null;
+  experiment_count: number | null;
+  adaptation_success: boolean;
+  cost: number | null;
+  latency: number | null;
+  failure_category: string | null;
+  notes: string | null;
+  artifact_path: string | null;
+}
+
+export interface ScientistTask {
+  task_id: string;
+  domain: string;
+  scientific_model: string;
+  split: string;
+  capability_level: string;
+  scientific_question: string;
+  success_rule: Record<string, unknown> | null;
+  budget: Record<string, unknown>;
+  has_hidden_oracle: boolean;
+  expected_artifacts: string[];
+}
+
+export interface ScientistBenchmark {
+  tasks: ScientistTask[];
+  by_method: Record<string, ScientistCell>;
+  cells: Record<string, Record<string, ScientistCell>>;
+  n_runs: number;
+  n_harness_runs: number;
+}
+
+export interface ScientistRunDetail {
+  run: Record<string, unknown>;
+  result: Record<string, unknown> | null;
+  conclusions: Record<string, unknown>[];
+  evidence: Record<string, unknown>[];
+  final_selection: { top_ids?: string[] } | null;
+  revisions: Record<string, unknown>[];
+  oracle_queries: number | null;
+  harness_artifact_note: string;
+}

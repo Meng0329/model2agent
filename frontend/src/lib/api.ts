@@ -1,5 +1,7 @@
 // REST + SSE client for the Model2Agent V2.0 backend.
-import type { DeviceInfo, Task } from "../types";
+import type {
+  DeviceInfo, ScientistBenchmark, ScientistRun, ScientistRunDetail, Task,
+} from "../types";
 
 const API = "/api";
 
@@ -42,6 +44,10 @@ export const api = {
 
   exportTask: (id: string) => `${API}/tasks/${id}/export/download`,
   exportStatus: (id: string) => fetch(`${API}/tasks/${id}/export`).then(j<{ docker_status: string; available: boolean }>),
+
+  scientistBenchmark: () => fetch(`${API}/scientist/benchmark`).then(j<ScientistBenchmark>),
+  scientistRuns: () => fetch(`${API}/scientist/runs`).then(j<{ runs: ScientistRun[] }>),
+  scientistRun: (runId: string) => fetch(`${API}/scientist/runs/${encodeURIComponent(runId)}`).then(j<ScientistRunDetail>),
 };
 
 export const API_BASE = API;

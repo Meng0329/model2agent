@@ -73,10 +73,31 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   const setCurrent = (t: Task | null) => setCurrentTask(t);
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
-      await Promise.all([refreshTasks(), refreshDevices()]);
-      setLoading(false);
+      try {
+        await Promise.all([refreshTasks(), refreshDevices()]);
+      } catch {
+        // keep the app usable; the list shows empty and retries on focus
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     })();
+    // Task list could have changed while the tab was hidden or after a backend
+    // restart; refresh on focus/visibility and periodically so "recent tasks"
+    // never silently go stale.
+    const onVisible = () => {
+      if (document.visibilityState === "visible") refreshTasks().catch(() => {});
+    };
+    const id = window.setInterval(() => refreshTasks().catch(() => {}), 30000);
+    window.addEventListener("focus", onVisible);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+      window.removeEventListener("focus", onVisible);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, []);
 
   const value: TasksCtx = {

@@ -8,11 +8,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from . import config, db
-from .routers import devices, tasks, chat, workspace, preview, export
+from .routers import devices, tasks, chat, workspace, preview, export, scientist
 from .preview import PREVIEWS
 from .workspace import start_watcher, stop_watcher
 
-app = FastAPI(title="Model2Agent V2.0", version="2.0.0")
+app = FastAPI(title="Model2Agent V3.0", version="3.0.0")
 config.ensure_dirs()
 db.init()
 start_watcher()
@@ -32,6 +32,7 @@ app.include_router(chat.router)
 app.include_router(workspace.router)
 app.include_router(preview.router)
 app.include_router(export.router)
+app.include_router(scientist.router)
 
 
 @app.on_event("shutdown")

@@ -23,6 +23,10 @@ SKILLS_DIR = BACKEND_DIR / "skills"
 FRONTEND_DIST = ROOT / "frontend" / "dist"
 FRONTEND_DEV_URL = os.getenv("FRONTEND_DEV_URL", "http://localhost:5173")
 
+# Model-to-Scientist research artifacts (read-only dashboard).
+SCIENTIST_TASKS_PATH = ROOT / "results" / "frozen" / "scientist_tasks.json"
+SCIENTIST_RUN_LOG = ROOT / "results" / "logs" / "scientist_runs.jsonl"
+
 # Agent runtime LLM: Claude Agent SDK drives Claude Code CLI -> Anthropic-compatible DeepSeek.
 ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL", "") or os.getenv("DEEPSEEK_BASE_URL", "").replace("/v1", "")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "") or os.getenv("DEEPSEEK_API_KEY", "")

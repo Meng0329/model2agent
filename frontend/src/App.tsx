@@ -6,7 +6,8 @@ import { NewTaskPage } from "./components/NewTaskPage";
 import { DeviceSetupModal } from "./components/DeviceSetupModal";
 import { Workbench } from "./components/Workbench";
 import { WorkspacePanel } from "./components/WorkspacePanel";
-import { Sliders, SidebarSimple, Sidebar, Plus } from "@phosphor-icons/react";
+import { ScientistBench } from "./components/ScientistBench";
+import { Sliders, SidebarSimple, Sidebar, Plus, Atom } from "@phosphor-icons/react";
 import { cn } from "./components/ui";
 
 const RIGHT_MIN = 320;
@@ -14,6 +15,7 @@ const RIGHT_MAX = 760;
 
 export default function App() {
   const { loading, currentTask, deviceConfigured, device, setCurrent } = useTasks();
+  const [view, setView] = useState<"builder" | "scientist">("builder");
   const [newTask, setNewTask] = useState(false);
   const [deviceOpen, setDeviceOpen] = useState(false);
   const [leftOpen, setLeftOpen] = useState(true);
@@ -23,8 +25,8 @@ export default function App() {
   // first-run device gate: only open once devices finished loading AND none configured
   const [deviceGate, setDeviceGate] = useState(false);
   useEffect(() => {
-    if (!loading && !deviceConfigured) setDeviceGate(true);
-  }, [loading, deviceConfigured]);
+    if (view === "builder" && !loading && !deviceConfigured) setDeviceGate(true);
+  }, [loading, deviceConfigured, view]);
 
   const dragRef = useRef<{ x: number; w: number } | null>(null);
   const onResizeDown = (e: ReactPointerEvent<HTMLDivElement>) => {
@@ -52,7 +54,12 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-full w-full overflow-hidden overflow-x-hidden bg-bg">
+    <div className="flex h-full w-full flex-col overflow-hidden bg-bg">
+      <TopBar view={view} onView={setView} />
+      {view === "scientist" ? (
+        <ScientistBench onExit={() => setView("builder")} />
+      ) : (
+    <div className="flex min-h-0 flex-1 overflow-hidden overflow-x-hidden">
       {/* Left */}
       <div className={cn("shrink-0 transition-all", leftOpen ? "w-72" : "w-12")}>
         {leftOpen ? (
@@ -122,6 +129,33 @@ export default function App() {
       )}
 
       <DeviceSetupModal open={deviceOpen || deviceGate} onClose={() => { setDeviceOpen(false); setDeviceGate(false); }} />
+    </div>
+      )}
+    </div>
+  );
+}
+
+function TopBar({ view, onView }: { view: "builder" | "scientist"; onView: (v: "builder" | "scientist") => void }) {
+  return (
+    <div className="flex h-11 shrink-0 items-center gap-1 border-b border-border-soft bg-white px-4">
+      <div className="mr-2 flex items-center gap-1.5 text-sm font-semibold text-ink">
+        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary text-white">
+          <Atom size={14} weight="bold" />
+        </span>
+        Model2Agent
+      </div>
+      {(["builder", "scientist"] as const).map((v) => (
+        <button
+          key={v}
+          onClick={() => onView(v)}
+          className={cn(
+            "rounded-lg px-3 py-1.5 text-xs font-medium transition",
+            view === v ? "bg-surface-2 text-ink" : "text-subink hover:bg-surface-2/60",
+          )}
+        >
+          {v === "builder" ? "Builder 工作台" : "Scientist 基准"}
+        </button>
+      ))}
     </div>
   );
 }
