@@ -1,0 +1,31 @@
+{
+  "domain": "agriculture",
+  "subdomain": "rice_genomic_selection",
+  "scientific_goal": "Rank rice breeding lines by expected 100-grain weight and, within a phenotyping budget, identify lines that are likely in the high-yield quartile.",
+  "input_entity": "rice line genotype (2000 pruned SNP dosages) and line identifier",
+  "output_variable": "predicted 100-grain weight (GRWT100), unit: g",
+  "units": {"trait": "gram per 100 grains"},
+  "applicability": [
+    "indica/japonica diversity panel represented in the Orhobor et al. 2018 dataset",
+    "single-environment measured GRWT100",
+    "linear additive marker effects"
+  ],
+  "known_limits": [
+    "no genotype-by-environment interaction is modeled",
+    "linear model ignores epistasis and non-additive effects",
+    "predicted values are E1 model predictions, not measured phenotypes",
+    "cannot rank lines outside the reference panel or with unseen markers"
+  ],
+  "uncertainty_sources": [
+    "residual prediction error (held-out Spearman ~0.45, not 1.0)",
+    "marker imputation uncertainty",
+    "environmental variance not captured by genotype"
+  ],
+  "experimental_operations": [
+    "predict_by_ids(ids) -> predicted trait per line (E1)",
+    "rank_candidates(ids) -> descending ranking (E1)",
+    "feature_importance(top_k) -> largest standardized coefficients (association only)"
+  ],
+  "historical_measurement": "real measured GRWT100 per line from the source dataset; exposed only through the hidden evidence oracle (E3)",
+  "resource_need": {"device": "cpu", "memory_gb": 1, "notes": "no GPU required"}
+}

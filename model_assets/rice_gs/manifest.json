@@ -1,0 +1,16 @@
+{
+  "slug": "rice_gs",
+  "name": "Rice genomic selection (Ridge on pruned SNPs)",
+  "framework": "sklearn",
+  "task_family": "crop_genomic_selection",
+  "entry_module": "infer.py",
+  "entry_functions": ["predict_by_ids", "rank_candidates", "predict_phenotype", "feature_importance", "trait"],
+  "examples": "examples.json",
+  "weights_path": "model.json",
+  "device": "cpu",
+  "model_id": "rice_gs_ridge_grwt100",
+  "revision": "train:20261029",
+  "input_type": "rice_line_ids",
+  "license": "CC-BY-SA-4.0",
+  "deps": ["numpy", "sklearn"]
+}

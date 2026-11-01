@@ -1,0 +1,355 @@
+{
+  "frozen": true,
+  "n_tasks": 6,
+  "tasks": [
+    {
+      "domain": "protein_science",
+      "scientific_model": "esm2_variant",
+      "input_resources": {
+        "candidate_file": "/data/mzb/paper2agent/m2a_data/research/inputs/protein_candidates.json",
+        "sequence": "MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV",
+        "success_rule": {
+          "type": "topk_quartile",
+          "k": 5,
+          "min_hits": 3,
+          "quartile": 0.75
+        }
+      },
+      "allowed_knowledge": [
+        "model_card",
+        "scientific_profile",
+        "domain_knowledge/esm2_notes.md"
+      ],
+      "available_tools": [
+        "run_model",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "permitted_actions": [
+        "score_variant",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "hidden_reference": "protein_sda.json",
+      "execution_oracle": "reference_exec",
+      "evidence_oracle": "historical",
+      "scientific_constraints": [
+        "single substitutions only",
+        "same protein sequence"
+      ],
+      "expected_artifacts": [
+        "evidence.jsonl",
+        "conclusions.jsonl",
+        "final_selection.json"
+      ],
+      "failure_conditions": [
+        "claims a measured effect without an E3 record"
+      ],
+      "task_id": "protein-P1-novel",
+      "split": "novel",
+      "capability_level": "L4",
+      "scientific_question": "You are a protein scientist. Using ESM-2 zero-shot scores, rank the single mutants in the candidate file by likely fitness. Within at most 16 real measurement queries, identify the 5 mutants most likely to have high measured fitness. Record evidence and state limitations. Write your final ranked answer to final_selection.json as {\"top_ids\": [...]} — your final top-k candidates in order.",
+      "experimental_budget": {
+        "oracle_queries": 16,
+        "max_model_calls": 80,
+        "max_tokens": 2000000,
+        "max_usd": 2.0,
+        "max_wall_seconds": 1800
+      },
+      "success_criteria": [
+        "final top-5 contains >=3 true top-quartile mutants"
+      ]
+    },
+    {
+      "domain": "protein_science",
+      "scientific_model": "esm2_variant",
+      "input_resources": {
+        "candidate_file": "/data/mzb/paper2agent/m2a_data/research/inputs/protein_candidates.json",
+        "sequence": "MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV",
+        "success_rule": {
+          "type": "topk_quartile",
+          "k": 5,
+          "min_hits": 3,
+          "quartile": 0.75
+        }
+      },
+      "allowed_knowledge": [
+        "model_card",
+        "scientific_profile",
+        "domain_knowledge/esm2_notes.md"
+      ],
+      "available_tools": [
+        "run_model",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "permitted_actions": [
+        "score_variant",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "hidden_reference": "protein_sda.json",
+      "execution_oracle": "reference_exec",
+      "evidence_oracle": "historical",
+      "scientific_constraints": [
+        "single substitutions only",
+        "same protein sequence"
+      ],
+      "expected_artifacts": [
+        "evidence.jsonl",
+        "conclusions.jsonl",
+        "final_selection.json"
+      ],
+      "failure_conditions": [
+        "claims a measured effect without an E3 record"
+      ],
+      "task_id": "protein-P2-closed-loop",
+      "split": "closed_loop",
+      "capability_level": "L5",
+      "scientific_question": "You are a protein scientist. Run a closed-loop investigation: score candidates with ESM-2, query real measurements in two or more rounds, revise your selection after each round, and finish with the 5 mutants most likely to have high measured fitness. Do not exceed 24 measurement queries. Write your final ranked answer to final_selection.json as {\"top_ids\": [...]} — your final top-k candidates in order.",
+      "experimental_budget": {
+        "oracle_queries": 24,
+        "max_model_calls": 120,
+        "max_tokens": 3000000,
+        "max_usd": 3.0,
+        "max_wall_seconds": 2400
+      },
+      "success_criteria": [
+        "final top-5 contains >=3 true top-quartile mutants",
+        "at least one hypothesis revision after feedback"
+      ]
+    },
+    {
+      "domain": "protein_science",
+      "scientific_model": "esm2_variant",
+      "input_resources": {
+        "candidate_file": "/data/mzb/paper2agent/m2a_data/research/inputs/protein_candidates.json",
+        "sequence": "MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV",
+        "success_rule": {
+          "type": "rediscovery",
+          "k": 1
+        }
+      },
+      "allowed_knowledge": [
+        "model_card",
+        "scientific_profile",
+        "domain_knowledge/esm2_notes.md"
+      ],
+      "available_tools": [
+        "run_model",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "permitted_actions": [
+        "score_variant",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "hidden_reference": "protein_sda.json",
+      "execution_oracle": "reference_exec",
+      "evidence_oracle": "historical",
+      "scientific_constraints": [
+        "single substitutions only",
+        "same protein sequence"
+      ],
+      "expected_artifacts": [
+        "evidence.jsonl",
+        "conclusions.jsonl",
+        "final_selection.json"
+      ],
+      "failure_conditions": [
+        "claims a measured effect without an E3 record"
+      ],
+      "task_id": "protein-P3-rediscovery",
+      "split": "insight_rediscovery",
+      "capability_level": "L6",
+      "scientific_question": "You are a protein scientist. Without knowing the answer in advance, use ESM-2 and at most 20 real measurements to rediscover the single mutant with the highest measured fitness in the candidate set. Justify your conclusion with evidence and state uncertainty. Write your final ranked answer to final_selection.json as {\"top_ids\": [...]} — your final top-k candidates in order.",
+      "experimental_budget": {
+        "oracle_queries": 20,
+        "max_model_calls": 100,
+        "max_tokens": 2500000,
+        "max_usd": 2.5,
+        "max_wall_seconds": 2400
+      },
+      "success_criteria": [
+        "final top-1 equals the true highest-fitness mutant"
+      ]
+    },
+    {
+      "domain": "agriculture",
+      "scientific_model": "rice_gs",
+      "input_resources": {
+        "candidate_file": "/data/mzb/paper2agent/m2a_data/research/inputs/rice_candidates.json",
+        "success_rule": {
+          "type": "topk_quartile",
+          "k": 10,
+          "min_hits": 6,
+          "quartile": 0.75
+        }
+      },
+      "allowed_knowledge": [
+        "model_card",
+        "scientific_profile",
+        "domain_knowledge/rice_gs.md"
+      ],
+      "available_tools": [
+        "run_model",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "permitted_actions": [
+        "predict_by_ids",
+        "rank_candidates",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "hidden_reference": "rice_grwt100.json",
+      "execution_oracle": "reference_exec",
+      "evidence_oracle": "historical",
+      "scientific_constraints": [
+        "single environment",
+        "GRWT100 only",
+        "no unseen markers"
+      ],
+      "expected_artifacts": [
+        "evidence.jsonl",
+        "conclusions.jsonl",
+        "final_selection.json"
+      ],
+      "failure_conditions": [
+        "claims a measured phenotype without an E3 record"
+      ],
+      "task_id": "rice-R1-novel",
+      "split": "novel",
+      "capability_level": "L4",
+      "scientific_question": "You are a rice breeding scientist. Using the genomic prediction model, rank candidate lines and, within at most 20 real phenotyping queries, identify the 10 lines most likely to be in the high-grain-weight quartile. Record evidence and limitations. Write your final ranked answer to final_selection.json as {\"top_ids\": [...]} — your final top-k candidates in order.",
+      "experimental_budget": {
+        "oracle_queries": 20,
+        "max_model_calls": 80,
+        "max_tokens": 2000000,
+        "max_usd": 2.0,
+        "max_wall_seconds": 1800
+      },
+      "success_criteria": [
+        "final top-10 contains >=6 true top-quartile lines"
+      ]
+    },
+    {
+      "domain": "agriculture",
+      "scientific_model": "rice_gs",
+      "input_resources": {
+        "candidate_file": "/data/mzb/paper2agent/m2a_data/research/inputs/rice_candidates.json",
+        "success_rule": {
+          "type": "topk_quartile",
+          "k": 10,
+          "min_hits": 6,
+          "quartile": 0.75
+        }
+      },
+      "allowed_knowledge": [
+        "model_card",
+        "scientific_profile",
+        "domain_knowledge/rice_gs.md"
+      ],
+      "available_tools": [
+        "run_model",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "permitted_actions": [
+        "predict_by_ids",
+        "rank_candidates",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "hidden_reference": "rice_grwt100.json",
+      "execution_oracle": "reference_exec",
+      "evidence_oracle": "historical",
+      "scientific_constraints": [
+        "single environment",
+        "GRWT100 only",
+        "no unseen markers"
+      ],
+      "expected_artifacts": [
+        "evidence.jsonl",
+        "conclusions.jsonl",
+        "final_selection.json"
+      ],
+      "failure_conditions": [
+        "claims a measured phenotype without an E3 record"
+      ],
+      "task_id": "rice-R2-closed-loop",
+      "split": "closed_loop",
+      "capability_level": "L5",
+      "scientific_question": "You are a rice breeding scientist. Run a closed-loop selection: predict, query real phenotype measurements in two or more rounds, revise the ranking after each round, and finish with the 10 lines most likely to be in the high-grain-weight quartile. At most 30 phenotyping queries. Write your final ranked answer to final_selection.json as {\"top_ids\": [...]} — your final top-k candidates in order.",
+      "experimental_budget": {
+        "oracle_queries": 30,
+        "max_model_calls": 120,
+        "max_tokens": 3000000,
+        "max_usd": 3.0,
+        "max_wall_seconds": 2400
+      },
+      "success_criteria": [
+        "final top-10 contains >=6 true top-quartile lines",
+        "at least one hypothesis revision after feedback"
+      ]
+    },
+    {
+      "domain": "agriculture",
+      "scientific_model": "rice_gs",
+      "input_resources": {
+        "candidate_file": "/data/mzb/paper2agent/m2a_data/research/inputs/rice_candidates.json",
+        "success_rule": {
+          "type": "rediscovery",
+          "k": 1
+        }
+      },
+      "allowed_knowledge": [
+        "model_card",
+        "scientific_profile",
+        "domain_knowledge/rice_gs.md"
+      ],
+      "available_tools": [
+        "run_model",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "permitted_actions": [
+        "predict_by_ids",
+        "rank_candidates",
+        "query_evidence_oracle",
+        "record_evidence"
+      ],
+      "hidden_reference": "rice_grwt100.json",
+      "execution_oracle": "reference_exec",
+      "evidence_oracle": "historical",
+      "scientific_constraints": [
+        "single environment",
+        "GRWT100 only",
+        "no unseen markers"
+      ],
+      "expected_artifacts": [
+        "evidence.jsonl",
+        "conclusions.jsonl",
+        "final_selection.json"
+      ],
+      "failure_conditions": [
+        "claims a measured phenotype without an E3 record"
+      ],
+      "task_id": "rice-R3-rediscovery",
+      "split": "insight_rediscovery",
+      "capability_level": "L6",
+      "scientific_question": "You are a rice breeding scientist. Without knowing the answer, use the genomic prediction model and at most 20 real phenotype measurements to rediscover the single line with the highest measured 100-grain weight in the candidate set. State uncertainty and limitations. Write your final ranked answer to final_selection.json as {\"top_ids\": [...]} — your final top-k candidates in order.",
+      "experimental_budget": {
+        "oracle_queries": 20,
+        "max_model_calls": 100,
+        "max_tokens": 2500000,
+        "max_usd": 2.5,
+        "max_wall_seconds": 2400
+      },
+      "success_criteria": [
+        "final top-1 equals the true highest-GRWT100 line"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "slug": "esm2_variant",
+  "name": "ESM-2 650M zero-shot variant effect",
+  "framework": "transformers",
+  "task_family": "protein_variant_effect",
+  "entry_module": "infer.py",
+  "entry_functions": ["score_variant", "score_sequence", "embed"],
+  "examples": "examples.json",
+  "weights_path": null,
+  "device": "cuda:0",
+  "model_id": "facebook/esm2_t33_650M_UR50D",
+  "revision": "08e4846e537177426273712802403f7ba8261b6c",
+  "input_type": "protein_sequence",
+  "license": "MIT",
+  "deps": ["torch", "transformers"]
+}

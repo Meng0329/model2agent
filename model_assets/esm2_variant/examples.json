@@ -1,0 +1,26 @@
+{
+ "score_variant": [
+  {
+   "args": {
+    "sequence": "MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV",
+    "mutations": "A16C"
+   },
+   "output": -6.815322548151016
+  },
+  {
+   "args": {
+    "sequence": "MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV",
+    "mutations": "A16D"
+   },
+   "output": -9.651920467615128
+  }
+ ],
+ "score_sequence": [
+  {
+   "args": {
+    "sequence": "MRKLSDELLIESYFKATEMNLNRDFIELIENEIKRRSLGHIISV"
+   },
+   "output": -6.443746021779424
+  }
+ ]
+}

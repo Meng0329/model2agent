@@ -1,0 +1,11 @@
+{
+  "trait": "GRWT100",
+  "model": "Ridge",
+  "alpha": 1000.0,
+  "cv_spearman_train": 0.4673,
+  "heldout_spearman_pool": 0.4535,
+  "heldout_top20_quartile_hit": 1.0,
+  "n_lines": 2259,
+  "n_snps": 2000,
+  "seed": 20261029
+}

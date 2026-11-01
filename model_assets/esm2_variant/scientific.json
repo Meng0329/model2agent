@@ -1,0 +1,31 @@
+{
+  "domain": "protein_science",
+  "subdomain": "variant_effect_prediction",
+  "scientific_goal": "Rank single amino-acid substitutions by their likely effect on protein fitness and, within a measurement budget, identify variants with high measured fitness.",
+  "input_entity": "wild-type protein sequence and one or more substitutions (WT position MUT)",
+  "output_variable": "masked-marginal delta log-likelihood (dimensionless)",
+  "units": {"score": "log-likelihood ratio"},
+  "applicability": [
+    "single-chain protein sequences up to the ESM-2 context limit",
+    "single or few substitutions",
+    "zero-shot ranking within one protein"
+  ],
+  "known_limits": [
+    "scores are model predictions (E1), not fitness measurements",
+    "no experimental validation in this asset",
+    "ranking quality varies by protein and assay",
+    "sequence-only: ignores structure, ligands, and environment"
+  ],
+  "uncertainty_sources": [
+    "masked-marginal approximation",
+    "assay-specific fitness definitions",
+    "epistasis not modeled for multi-mutants"
+  ],
+  "experimental_operations": [
+    "score_variant(sequence, mutations) -> delta log-likelihood (E1)",
+    "score_sequence(sequence) -> mean per-residue log-likelihood (E1)",
+    "embed(sequence) -> 1280-dim representation"
+  ],
+  "historical_measurement": "real DMS fitness measurements from ProteinGym v1 (SDA_BACSU_Tsuboyama_2023_1PV0), exposed only through the hidden evidence oracle (E3)",
+  "resource_need": {"device": "cuda:0", "memory_gb": 3, "notes": "ESM-2 650M"}
+}

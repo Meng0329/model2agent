@@ -43,6 +43,19 @@ def make_tools(*, budget: Budget, ledger: Ledger, oracle: HistoricalOracleClient
         rid = ledger.append(rec)
         return _text({"recorded": rid})
 
+    @tool("revise_hypothesis",
+          "Record a hypothesis revision after new evidence (appends revisions.jsonl).",
+          {"hypothesis_id": str, "revision": str, "reason": str})
+    async def revise_tool(args):
+        import json as _json
+        import time as _time
+        out = ledger.path.parent / "revisions.jsonl"
+        with open(out, "a", encoding="utf-8") as f:
+            f.write(_json.dumps({"hypothesis_id": args["hypothesis_id"],
+                                 "revision": args["revision"], "reason": args["reason"],
+                                 "ts": _time.time()}, ensure_ascii=False) + "\n")
+        return _text({"revised": args["hypothesis_id"]})
+
     server = create_sdk_mcp_server("m2a_scientist",
-                                   tools=[run_model_tool, query_tool, record_tool])
+                                   tools=[run_model_tool, query_tool, record_tool, revise_tool])
     return server
