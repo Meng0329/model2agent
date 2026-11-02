@@ -6,7 +6,7 @@ import { ArrowsClockwise, CheckCircle, CircleNotch, XCircle, MinusCircle, X } fr
 import { api } from "../lib/api";
 import { Badge, cn } from "./ui";
 import type {
-  ScientistBenchmark, ScientistCell, ScientistRun, ScientistRunDetail,
+  ScientistAblations, ScientistBenchmark, ScientistCell, ScientistRun, ScientistRunDetail,
 } from "../types";
 
 const METHODS = ["B0", "B1", "B2", "B3", "M"];
@@ -37,6 +37,7 @@ function StatusDot({ cell }: { cell?: ScientistCell }) {
 export function ScientistBench({ onExit }: { onExit?: () => void }) {
   const [bench, setBench] = useState<ScientistBenchmark | null>(null);
   const [runs, setRuns] = useState<ScientistRun[]>([]);
+  const [abl, setAbl] = useState<ScientistAblations | null>(null);
   const [detail, setDetail] = useState<ScientistRunDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,9 +45,12 @@ export function ScientistBench({ onExit }: { onExit?: () => void }) {
 
   const load = useCallback(async () => {
     try {
-      const [b, r] = await Promise.all([api.scientistBenchmark(), api.scientistRuns()]);
+      const [b, r, a] = await Promise.all([
+        api.scientistBenchmark(), api.scientistRuns(), api.scientistAblations(),
+      ]);
       setBench(b);
       setRuns(r.runs);
+      setAbl(a);
       setError(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -221,6 +225,86 @@ export function ScientistBench({ onExit }: { onExit?: () => void }) {
             </tbody>
           </table>
         </div>
+
+        {abl && (abl.ablations.length > 0 || Object.keys(abl.contradiction_audit?.tasks || {}).length > 0) && (
+          <div className="mt-5 grid grid-cols-1 gap-3 xl:grid-cols-2">
+            {/* ablation table */}
+            <div className="overflow-hidden rounded-2xl border border-border-soft bg-white shadow-soft">
+              <div className="border-b border-border-soft px-4 py-2.5">
+                <div className="text-sm font-semibold text-ink">S2 消融（真·编译消融）</div>
+                <div className="mt-0.5 text-xs text-subink">
+                  去掉结构后重新编译、真实运行、同一 oracle 评分 · n=1 仅描述性
+                </div>
+              </div>
+              <table className="w-full border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-border-soft bg-surface-2/60 text-left text-xs text-subink">
+                    <th className="px-3 py-2 font-medium">消融</th>
+                    <th className="px-2 py-2 text-center font-medium">SISR</th>
+                    <th className="px-2 py-2 text-center font-medium">SEV</th>
+                    <th className="px-2 py-2 text-center font-medium">修订</th>
+                    <th className="px-2 py-2 text-right font-medium">运行/编译($)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {abl.ablations.map((a) => (
+                    <tr key={`${a.ablation}:${a.task_id}`} className="border-b border-border-soft/70 last:border-0">
+                      <td className="px-3 py-2.5">
+                        <div className="font-medium text-ink">{a.ablation}</div>
+                        <div className="text-[11px] text-subink">{a.ablation_desc}</div>
+                      </td>
+                      <td className="px-2 py-2.5 text-center">
+                        <Badge tone={a.sisr ? "ok" : "err"}>{a.sisr ? "True" : "False"}</Badge>
+                      </td>
+                      <td className="px-2 py-2.5 text-center text-xs text-subink">{a.sev.toFixed(2)}</td>
+                      <td className="px-2 py-2.5 text-center text-xs text-subink">{a.revisions}</td>
+                      <td className="px-2 py-2.5 text-right text-xs text-subink">
+                        {usd(a.cost_usd)}/{usd(a.generation_cost_usd)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* contradiction audit */}
+            <div className="overflow-hidden rounded-2xl border border-border-soft bg-white shadow-soft">
+              <div className="border-b border-border-soft px-4 py-2.5">
+                <div className="text-sm font-semibold text-ink">矛盾证据响应（观察性）</div>
+                <div className="mt-0.5 text-xs text-subink">
+                  真实 E1 预测 vs E3 实测矛盾 · 非受控注入，未伪造任何测量
+                </div>
+              </div>
+              <table className="w-full border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-border-soft bg-surface-2/60 text-left text-xs text-subink">
+                    <th className="px-3 py-2 font-medium">任务</th>
+                    <th className="px-2 py-2 text-center font-medium">矛盾数</th>
+                    <th className="px-2 py-2 text-center font-medium">修订</th>
+                    <th className="px-3 py-2 text-center font-medium">是否响应</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(abl.contradiction_audit?.tasks || {}).map(([task, t]) => (
+                    <tr key={task} className="border-b border-border-soft/70 last:border-0">
+                      <td className="px-3 py-2.5">
+                        <div className="font-medium text-ink">{task}</div>
+                        <div className="text-[11px] text-subink">
+                          {t.n_contradicted > 0 ? t.contradicted_top_ids.join(", ") : "顶层预测被实测证实"}
+                        </div>
+                      </td>
+                      <td className="px-2 py-2.5 text-center text-xs text-subink">{t.n_contradicted}</td>
+                      <td className="px-2 py-2.5 text-center text-xs text-subink">{t.revisions_recorded}</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <Badge tone={t.responded ? "ok" : "err"}>{t.responded ? "是" : "否"}</Badge>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
         <div className="mt-4 rounded-xl border border-border-soft bg-white px-4 py-3 text-xs leading-5 text-subink">
           <b className="text-ink">读法：</b>SISR = 预注册成功判据 ∧ 真实模型调用 &gt; 0 ∧ 有效证据 ∧ 产物齐全；

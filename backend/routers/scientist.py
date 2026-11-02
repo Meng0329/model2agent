@@ -18,6 +18,8 @@ router = APIRouter(prefix="/api/scientist", tags=["scientist"])
 TASKS = config.SCIENTIST_TASKS_PATH
 LOG = config.SCIENTIST_RUN_LOG
 EXPERIMENTS = config.ROOT / "results" / "experiments"
+ABL_LOG = config.ROOT / "results" / "logs" / "scientist_ablations.jsonl"
+CONTRA_LOG = config.ROOT / "results" / "logs" / "scientist_contradiction_audit.json"
 
 METHODS = ["B0", "B1", "B2", "B3", "M"]
 _SAFE = ("harness_output_path_bug", "harness_budget_cap")
@@ -113,6 +115,15 @@ def benchmark():
         "cells": task_cells,
         "n_runs": len(normal),
         "n_harness_runs": len(harness),
+    }
+
+
+@router.get("/ablations")
+def ablations():
+    """S2 ablations + the observational contradiction audit (separate from S1)."""
+    return {
+        "ablations": _load_lines(ABL_LOG, limit=1000),
+        "contradiction_audit": _load(CONTRA_LOG, {}),
     }
 
 

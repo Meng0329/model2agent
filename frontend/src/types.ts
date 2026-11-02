@@ -123,3 +123,41 @@ export interface ScientistRunDetail {
   oracle_queries: number | null;
   harness_artifact_note: string;
 }
+
+export interface ScientistAblation {
+  ablation: string;
+  ablation_desc: string;
+  task_id: string;
+  domain: string;
+  generation_status: string;
+  generation_cost_usd: number;
+  sisr: boolean;
+  oracle_ok: boolean;
+  sev: number;
+  revisions: number;
+  model_calls: number;
+  cost_usd: number;
+  error: string | null;
+  s1_m_baseline: {
+    run_id: string; sisr: boolean; oracle_ok: boolean;
+    model_calls: number | null; cost_usd: number | null;
+  } | null;
+}
+
+export interface ContradictionTask {
+  run_id: string;
+  n_e1_ids: number;
+  n_e3_measured: number;
+  e3_median: number;
+  e1_topk: number;
+  contradicted_top_ids: string[];
+  n_contradicted: number;
+  revisions_recorded: number;
+  contradiction_mentions_in_revisions: number;
+  responded: boolean;
+}
+
+export interface ScientistAblations {
+  ablations: ScientistAblation[];
+  contradiction_audit: { tasks?: Record<string, ContradictionTask>; note?: string };
+}
