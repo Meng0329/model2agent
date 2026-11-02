@@ -1,0 +1,17 @@
+{
+  "run_id": "S2:A1-no-graph:rice-R2-closed-loop:r0:a6346219",
+  "status": "OBSERVED",
+  "text": "Done. Closed-loop selection complete.\n\n## Summary\n\n**Question:** Which 10 of 904 rice lines are most likely in the high-GRWT100 (100-grain weight) quartile?\n\n**What I did (real calls only):**\n- `run_model(trait)` → `GRWT100`; `run_model(rank_candidates)` on all 904 ids → complete **E1** ranking (ev-1), range 1.50–3.66 g.\n- **Round 1 (24 E3 queries, ev-2):** 18 top-E1 lines + 6 stratified controls (E1 ranks 61/181/361/541/721/891).\n- **Round 2 (6 E3 queries, ev-3):** the next 6 E1 lines (ranks 19–24).\n- Recorded E1/E2/E3 evidence (ev-1…ev-4), one hypothesis revision (H1→H1′), and a plan.\n\n**Findings (E2/E3):**\n- Strong enrichment: top-18 measured mean **3.67 g** vs controls **2.22 g**; Spearman(E1 prediction, E3 measured) ≈ **+0.66** over 24 lines (H1 supported).\n- A clear **E1 cliff** past rank ~18: ranks 19–24 measured only **2.0–3.3 g** (e.g. 12049=2.0, 10448=2.1), so E1 alone cannot be trusted at the boundary — measured values drove the final ranking.\n- Bracketed pool 75th-percentile boundary ≈ **2.6–2.9 g** (from stratified controls); all finalists measure ≥3.4 g.\n\n**Final selection (measured value desc, E1 tie-break):**\n12254 (5.0), 12349 (4.7), 12344 (4.6), 12242 (4.5), 12228 (3.8), 12129 (3.8), 11094 (3.6), 10679 (3.6), 11898 (3.5), 12262 (3.4) g/100 grains.\n\n**Limitations:** oracle budget fully spent (30/30); only 30 of 904 lines measured, so E1-ranked ≥24 lines remain unvalidated; single environment, one measurement per line, values rounded to 0.1 g; E1 predictions are never treated as E3 measurements.\n\n**Artifacts written:**\n- `/data/mzb/paper2agent/results/experiments/S2/rice-R2-closed-loop/A1-no-graph/rep0/final_selection.json`\n- `/data/mzb/paper2agent/results/experiments/S2/rice-R2-closed-loop/A1-no-graph/rep0/conclusions.jsonl` (C1–C4, each citing evidence ids)",
+  "cost_usd": 1.4200056,
+  "num_turns": 55,
+  "session_id": "8c109673-34b4-4337-9da4-2698d4c402d3",
+  "error": null,
+  "budget": {
+    "model_calls": 2,
+    "experiments": 30,
+    "tokens_used": 0,
+    "cost_usd": 0.0,
+    "elapsed_s": 604.219
+  },
+  "latency_s": 604.218
+}

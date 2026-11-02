@@ -48,19 +48,37 @@ B1/B3 在全部任务均为 0——即 M 在有证据反馈时会改写假设，
 S1 门禁（两域各 ≥1 完整任务；基线共享同 LLM/SDK/预算/oracle；失败如实；30/30 格已运行）
 **已达成**；但 H1 在本基准上**未获支持**，按协议如实报告，不改为正向结论。
 
-S1 门禁（两域各 ≥1 完整任务；基线共享同 LLM/SDK/预算/oracle；失败如实）**已达成**；
-但 H1（M > 基线）在本基准上**未获支持**，按协议如实报告，不改为正向结论。
-
 ## S2（本轮部分）— 消融与内部效度
 
 - [x] **A5 无证据反馈重规划**（部分）：rice-R2 闭环上 B1（无反馈环）与 M 均 SISR 成功，
       但 M 记录 7 次显式假设修订、B1 为 0——成功率无差，过程可审计性有差（ASIG 未定义）。
 - [x] **A6 无独立验证**（结构性）：所有 M 结论均由 evaluator 用隐藏 oracle 独立判分，
       不依赖 agent 自述；未运行"无独立验证"的对照 run。
-- [ ] A1 无 SAD / 能力图：NOT_TESTED
-- [ ] A9 外层单智能体 vs 多智能体（同预算）：NOT_TESTED
-- [ ] 矛盾证据注入：NOT_TESTED
-- [ ] 配对统计 + 域宏平均：n=1，仅描述性，不做显著性
+- [x] **矛盾证据响应（观察性，非受控注入）**：`scripts/run_scientist_ablations.py
+      --contradiction-audit` 在真实 S1 M ledgers 上检测 E1 预测 vs E3 实测的矛盾
+      （模型 top-K 候选实测值低于该 run E3 中位数）。结果：
+      protein-P1 有 2 处矛盾（R23K、R35K）且 M 记录 2 次修订（responded=True）；
+      protein-P3 有 2 处矛盾（H40K、H40N）且 M 记录 1 次修订（responded=True）；
+      protein-P2 有 3 处矛盾但 M **未**记录修订（responded=False）；
+      rice-R2/R3 的模型 top 预测被实测证实（0 矛盾）。来源：
+      `results/logs/scientist_contradiction_audit.json`。**这不是受控注入**（测量值均为
+      agent 真实查询所得，未伪造），只作观察性证据。
+- [x] **A1 无 SAD / 能力图**（真·编译消融，rice-R2，n=1）：用去掉 `affordance-analyst`
+      与 `capability-graph-builder` 的编译器重新生成 scientist 项目并真实运行评分。
+      结果：编译 OBSERVED（gen $3.03），**SISR=True / oracle=True / SEV=0.75 / 1 次修订 /
+      2 次模型调用 / 运行 $1.42**。SEV 下降是真实测量（C1 声明了 E1/E2/E3，但只引用到
+      E1+E3 记录，按评分规则判为 unsupported），不是 harness 缺陷。
+      来源：`results/logs/scientist_ablations.jsonl`。
+- [x] **A9 外层单智能体 vs 多智能体**（同预算，rice-R2，n=1）：单智能体编译器
+      （`agents={}`）生成并真实运行。结果：编译 OBSERVED（gen $3.31），
+      **SISR=True / oracle=True / SEV=1.0 / 1 次修订 / 2 次模型调用 / 运行 $1.42**。
+      对照 S1 的完整 M（rice-R2）：SISR=True / SEV=1.0 / **7 次修订** / 1 次调用 / $1.96。
+- **S2 消融的如实结论（n=1，仅描述性）**：在 rice-R2 这个已饱和任务上，去掉外层多智能体
+  （A9）或去掉能力图/affordance（A1）都**没有丢失 SISR 成功**——即结构不是该任务成功的
+  必要条件。可测差异在证据审计质量与自适应修订：A1 的 SEV 降到 0.75，完整 M 记录到 7 次
+  修订（两个消融各仅 1 次）。这与 S1 主结论一致：结构主要影响**可审计性与证据接地**，
+  而非饱和任务上的原始成功率。
+- [ ] 配对统计 + 域宏平均：S1 每格 n=1、S2 每格 n=1，仅描述性，不做显著性
 
 ## S3（本轮不做，标 NOT_TESTED）
 

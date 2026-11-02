@@ -7,6 +7,8 @@ generated_agents/*/  # generated standalone agents (regenerated)
 results/logs/*.jsonl
 # scientist run ledger is the reproducibility source of truth — commit it
 !results/logs/scientist_runs.jsonl
+# S2 ablation ledger is also reproducible evidence — commit it
+!results/logs/scientist_ablations.jsonl
 # raw agent trajectories are large and re-derivable from the ledger + artifacts
 results/experiments/**/trajectory.jsonl
 *.joblib

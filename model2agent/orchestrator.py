@@ -56,11 +56,14 @@ def _mission_prompt(bundle_dir: Path, project_dir: Path, task: dict) -> str:
 
 
 async def _run_smsc_async(bundle_dir: Path, task: dict, project_dir: Path,
-                          max_turns: int, max_budget_usd: float) -> dict:
+                          max_turns: int, max_budget_usd: float,
+                          agents: dict | None = None,
+                          ablation: str | None = None) -> dict:
     scaffold_project(project_dir)
     server = make_builder_tools()
     options = build_options(
-        cwd=config.ROOT, agents=BUILDER_AGENTS, system_prompt=_BUILDER_SYSTEM,
+        cwd=config.ROOT, agents=agents if agents is not None else BUILDER_AGENTS,
+        system_prompt=_BUILDER_SYSTEM,
         mcp_servers={"m2a_builder_tools": server},
         max_turns=max_turns, max_budget_usd=max_budget_usd)
     result = await run_session(_mission_prompt(bundle_dir, project_dir, task), options)
@@ -75,6 +78,7 @@ async def _run_smsc_async(bundle_dir: Path, task: dict, project_dir: Path,
 
     return {
         "method": "M",
+        "ablation": ablation,
         "sdk_version": sdk_version(),
         "session": {
             "is_error": result.is_error,
@@ -96,12 +100,19 @@ async def _run_smsc_async(bundle_dir: Path, task: dict, project_dir: Path,
 
 
 def run_smsc(bundle_dir: str | Path, task: dict, *, project_dir: str | Path | None = None,
-             max_turns: int | None = None, max_budget_usd: float | None = None) -> dict:
-    """Compile one scientific model into a scientist agent (single session, multi-agent)."""
+             max_turns: int | None = None, max_budget_usd: float | None = None,
+             agents: dict | None = None, ablation: str | None = None) -> dict:
+    """Compile one scientific model into a scientist agent (single session, multi-agent).
+
+    ``agents``/``ablation`` exist only for S2 ablations (A9 single-agent compiler,
+    A1 no affordance/capability-graph). The default path is unchanged: the full
+    BUILDER_AGENTS multi-agent compiler.
+    """
     config.assert_secrets()
     bundle_dir = Path(bundle_dir)
     project_dir = Path(project_dir or (config.SCIENTIST_PROJECTS_DIR / bundle_dir.name))
     return asyncio.run(_run_smsc_async(
         bundle_dir, task, project_dir,
         max_turns or config.SCIENTIST_MAX_TURNS,
-        max_budget_usd if max_budget_usd is not None else config.SCIENTIST_MAX_BUDGET_USD))
+        max_budget_usd if max_budget_usd is not None else config.SCIENTIST_MAX_BUDGET_USD,
+        agents=agents, ablation=ablation))

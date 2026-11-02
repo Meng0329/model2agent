@@ -80,3 +80,13 @@
 - 每个（任务, 方法）n=1，不能做显著性推断；报告效应量而非 p 值。
 - 隐藏测量按预算强制访问；E1 预测从不当作 E3/E4。
 - 生成失败/未写交付物按 FAILED 计入分母，未静默剔除。
+
+
+## 6. S2 消融（真·编译消融，独立 ledger）
+
+| 消融 | 任务 | 编译 | SISR | oracle | SEV | 修订 | 模型调用 | 运行成本($) | 编译成本($) |
+|---|---|---|---|---|---|---|---|---|---|
+| A9-single | rice-R2-closed-loop | OBSERVED | True | True | 1.000 | 1 | 2 | 1.419 | 3.305 |
+| A1-no-graph | rice-R2-closed-loop | OBSERVED | True | True | 0.750 | 1 | 2 | 1.420 | 3.028 |
+
+> A9-single = 无子代理的外层单智能体；A1-no-graph = 去掉 affordance-analyst 与 capability-graph-builder。n=1，仅描述性。对照 S1 完整 M（rice-R2）：SISR=True、SEV=1.0、7 次修订。

@@ -110,6 +110,25 @@ def main() -> None:
               "- 隐藏测量按预算强制访问；E1 预测从不当作 E3/E4。",
               "- 生成失败/未写交付物按 FAILED 计入分母，未静默剔除。", ""]
 
+    # ---- S2 ablations (separate ledger; never mixed into the S1 grid) ----
+    abl_log = ROOT / "results" / "logs" / "scientist_ablations.jsonl"
+    if abl_log.exists():
+        abl = [json.loads(l) for l in abl_log.read_text(encoding="utf-8").splitlines() if l.strip()]
+        if abl:
+            lines += ["", "## 6. S2 消融（真·编译消融，独立 ledger）", "",
+                      "| 消融 | 任务 | 编译 | SISR | oracle | SEV | 修订 | 模型调用 | 运行成本($) | 编译成本($) |",
+                      "|---|---|---|---|---|---|---|---|---|---|"]
+            for r in abl:
+                lines.append(
+                    f"| {r['ablation']} | {r['task_id']} | {r['generation_status']} "
+                    f"| {r['sisr']} | {r['oracle_ok']} | {_fmt(float(r['sev']))} "
+                    f"| {r['revisions']} | {r['model_calls']} "
+                    f"| {_fmt(float(r['cost_usd']))} | {_fmt(float(r['generation_cost_usd']))} |")
+            lines += ["",
+                      "> A9-single = 无子代理的外层单智能体；A1-no-graph = 去掉 affordance-analyst 与 "
+                      "capability-graph-builder。n=1，仅描述性。对照 S1 完整 M（rice-R2）：SISR=True、"
+                      "SEV=1.0、7 次修订。", ""]
+
     OUT.write_text("\n".join(lines), encoding="utf-8")
     print(f"wrote {OUT} ({len(rows)} runs, {len(missing)} NOT_TESTED cells)")
 

@@ -1,0 +1,76 @@
+{
+  "kind": "observational_contradiction_audit",
+  "note": "Real E1-vs-E3 contradictions found in existing S1 M runs. Not a controlled injection; no measurement is fabricated.",
+  "tasks": {
+    "protein-P1-novel": {
+      "run_id": "rep0",
+      "n_e1_ids": 44,
+      "n_e3_measured": 16,
+      "e3_median": -0.0336,
+      "e1_topk": 8,
+      "contradicted_top_ids": [
+        "R23K",
+        "R35K"
+      ],
+      "n_contradicted": 2,
+      "revisions_recorded": 2,
+      "contradiction_mentions_in_revisions": 1,
+      "responded": true
+    },
+    "protein-P2-closed-loop": {
+      "run_id": "rep0",
+      "n_e1_ids": 10,
+      "n_e3_measured": 24,
+      "e3_median": 0.1106,
+      "e1_topk": 5,
+      "contradicted_top_ids": [
+        "I29L",
+        "R23K",
+        "R2K"
+      ],
+      "n_contradicted": 3,
+      "revisions_recorded": 0,
+      "contradiction_mentions_in_revisions": 0,
+      "responded": false
+    },
+    "protein-P3-rediscovery": {
+      "run_id": "rep0",
+      "n_e1_ids": 15,
+      "n_e3_measured": 20,
+      "e3_median": -0.0339,
+      "e1_topk": 5,
+      "contradicted_top_ids": [
+        "H40K",
+        "H40N"
+      ],
+      "n_contradicted": 2,
+      "revisions_recorded": 1,
+      "contradiction_mentions_in_revisions": 1,
+      "responded": true
+    },
+    "rice-R2-closed-loop": {
+      "run_id": "rep0",
+      "n_e1_ids": 15,
+      "n_e3_measured": 80,
+      "e3_median": 2.9,
+      "e1_topk": 5,
+      "contradicted_top_ids": [],
+      "n_contradicted": 0,
+      "revisions_recorded": 7,
+      "contradiction_mentions_in_revisions": 0,
+      "responded": false
+    },
+    "rice-R3-rediscovery": {
+      "run_id": "rep0",
+      "n_e1_ids": 21,
+      "n_e3_measured": 20,
+      "e3_median": 3.4,
+      "e1_topk": 5,
+      "contradicted_top_ids": [],
+      "n_contradicted": 0,
+      "revisions_recorded": 2,
+      "contradiction_mentions_in_revisions": 0,
+      "responded": false
+    }
+  }
+}

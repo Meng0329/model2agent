@@ -1,0 +1,17 @@
+{
+  "run_id": "S2:A9-single:rice-R2-closed-loop:r0:b86310f3",
+  "status": "OBSERVED",
+  "text": "Closed-loop selection complete. Summary:\n\n**Research question.** Which 10 of 904 candidate rice lines are most likely in the high-GRWT100 (100-grain weight) quartile?\n\n**Known prior (model card).** Ridge (α=1000) on 2000 train-variance SNPs; held-out pool Spearman 0.454; E1 predictions are not measurements.\n\n**Round 1 — E1 (ev-1).** One real `rank_candidates` call scored all 904 lines (trait = GRWT100, ranking strictly decreasing, all ids valid).\n\n**Round 2 — first phenotyping (ev-2, ev-3).** 12 oracle queries: E1 ranks 1–8 + 4 stratified controls (E1 ranks 150/226/400/800). E1 top-8 mean measured 3.90 g vs control mean 2.98 g; Spearman(predicted, measured) = +0.92 on this extreme-tail sample. H1 (enrichment) not refuted.\n\n**Round 3 — revision (ev-4, ev-5).** 18 more queries at E1 ranks 9–26. Individual ordering within the top-30 was clearly noisy: `IRIS_313.12049` (rank 23) = 2.0 g and `IRIS_313.10448` (rank 24) = 2.1 g were the two *lowest* values, while `IRIS_313.12349` (rank 14) = 4.7 g was second highest. Full-data Spearman = 0.64 (top-enriched, not an unbiased pool estimate). H1 was revised (`revise_hypothesis`): enrichment holds, individual ordering does not — so the final top-10 is re-ranked on **measured** values with E1 only as tie-break.\n\n**Final top-10 (measured GRWT100, g/100 grains):** 12254 (5.0), 12349 (4.7), 12344 (4.6), 12242 (4.5), 12228 (3.8), 12129 (3.8), 11094 (3.6), 10679 (3.6), 12262 (3.4), 10653 (3.4). The 3.4 g tie (four lines) was broken by E1 rank.\n\n**Limitations.** Only 30/904 lines (3.3%) phenotyped, one measurement each, single environment; the quartile boundary is only *bracketed* at ~3.3–3.5 g from four controls, so the two 3.4 g finalists are the riskiest picks. The 30-query oracle budget is exhausted — no further measurement is possible and any unqueried line remains UNOBSERVED, not assumed.\n\nFiles written:\n- `/data/mzb/paper2agent/results/experiments/S2/rice-R2-closed-loop/A9-single/rep0/final_selection.json`\n- `/data/mzb/paper2agent/results/experiments/S2/rice-R2-closed-loop/A9-single/rep0/conclusions.jsonl` (7 conclusions, each citing evidence ids ev-1…ev-5)",
+  "cost_usd": 1.4194024,
+  "num_turns": 65,
+  "session_id": "cdd4f695-f932-4cca-bcde-d977bde343f5",
+  "error": null,
+  "budget": {
+    "model_calls": 2,
+    "experiments": 30,
+    "tokens_used": 0,
+    "cost_usd": 0.0,
+    "elapsed_s": 478.471
+  },
+  "latency_s": 478.471
+}
