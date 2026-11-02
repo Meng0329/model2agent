@@ -20,7 +20,7 @@ from pydantic import BaseModel
 from .. import db
 from ..agent_bridge import SESSIONS
 from ..workspace import Workspace
-from ..config import MAIN_TOOLS
+from ..config import agent_env
 
 router = APIRouter(prefix="/api", tags=["chat"])
 
@@ -44,6 +44,7 @@ _STAGE_MAP = {
     "rebuild_ui": "重建前端",
     "start_preview": "预览",
     "stop_preview": "停止预览",
+    "inspect_model": "资产分析", "execution_check": "验证",
     "Read": "资产分析", "Grep": "资产分析", "Glob": "资产分析",
     "Bash": "资产分析", "Write": "改写产物", "Edit": "改写产物",
 }
@@ -95,7 +96,9 @@ async def _run(task_id: str, prompt: str):
     try:
         # ensure a workspace exists (inside try so any failure is reported & run finished)
         ws = Workspace(task_id).create()
-        session = await SESSIONS.get_or_create(task_id, str(ws.root), resume_session_id=task.get("session_id"), with_builder_tools=True)
+        session = await SESSIONS.get_or_create(
+            task_id, str(ws.root), resume_session_id=task.get("session_id"),
+            with_builder_tools=True, env_override=agent_env())
         async for ev in session.respond(prompt):
             kind = ev.get("type")
             if kind == "text":
