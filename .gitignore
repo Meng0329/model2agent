@@ -11,6 +11,8 @@ results/logs/*.jsonl
 !results/logs/scientist_ablations.jsonl
 # raw agent trajectories are large and re-derivable from the ledger + artifacts
 results/experiments/**/trajectory.jsonl
+# runtime logs (backend/preview/ablation transcripts) are not source of truth
+results/logs/*.log
 *.joblib
 !model_assets/**/*.joblib
 .venv/
