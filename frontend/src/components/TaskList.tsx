@@ -8,23 +8,22 @@ export function TaskList({ onNewTask, onCollapse }: { onNewTask: () => void; onC
 
   return (
     <div className="flex h-full flex-col border-r border-border-soft bg-surface-2">
-      <div className="flex items-center justify-end border-b border-border-soft px-3 py-2.5">
-        <button
-          onClick={onCollapse}
-          className="rounded-lg p-1.5 text-subink transition hover:bg-white"
-          title="折叠任务栏"
-        >
-          <SidebarSimple size={17} />
-        </button>
-      </div>
-
       <div className="p-3">
-        <button
-          onClick={onNewTask}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-medium text-white shadow-soft-sm transition hover:opacity-90"
-        >
-          <Plus size={16} weight="bold" /> 新建任务
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onNewTask}
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-medium text-white shadow-soft-sm transition hover:opacity-90"
+          >
+            <Plus size={16} weight="bold" /> 新建任务
+          </button>
+          <button
+            onClick={onCollapse}
+            className="rounded-lg border border-border-soft p-2.5 text-subink transition hover:bg-white"
+            title="折叠任务栏"
+          >
+            <SidebarSimple size={17} />
+          </button>
+        </div>
       </div>
 
       <div className="scroll-thin flex-1 overflow-y-auto px-2 pb-3">
