@@ -1,5 +1,5 @@
 // Left column: task history + new-task entry.
-import { Plus, ChatCircle, Trash, Cpu, CheckCircle, WarningCircle, Hexagon, SidebarSimple } from "@phosphor-icons/react";
+import { Plus, ChatCircle, Trash, Cpu, CheckCircle, WarningCircle, SidebarSimple } from "@phosphor-icons/react";
 import { useTasks } from "../state/TasksProvider";
 import { cn } from "./ui";
 
@@ -8,13 +8,7 @@ export function TaskList({ onNewTask, onCollapse }: { onNewTask: () => void; onC
 
   return (
     <div className="flex h-full flex-col border-r border-border-soft bg-surface-2">
-      <div className="flex items-center justify-between border-b border-border-soft px-4 py-3">
-        <div className="flex items-center gap-2 font-semibold text-ink">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-ok text-white shadow-soft-sm">
-            <Hexagon size={16} weight="fill" />
-          </span>
-          <span>Model2Agent</span>
-        </div>
+      <div className="flex items-center justify-end border-b border-border-soft px-3 py-2.5">
         <button
           onClick={onCollapse}
           className="rounded-lg p-1.5 text-subink transition hover:bg-white"
